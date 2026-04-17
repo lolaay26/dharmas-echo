@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dharma's Echo</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --cream: #f8f0d8;
+  --cream-border: #d8c080;
+  --gold: #c8a030;
+  --gold-dark: #a08030;
+  --amber: #b06818;
+  --text: #2a2010;
+  --text-mid: #4a3a18;
+  --text-label: #6a5820;
+  --text-faint: #c8a855;
+}
+
+body {
+  background: #ffffff;
+  font-family: 'Lora', Georgia, serif;
+  color: var(--text);
+  max-width: 680px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-bottom: 5rem;
+}
+
+/* ── Header ── */
+.header {
+  padding: 2.4rem 3rem 1.8rem;
+  border-bottom: 1px solid var(--cream-border);
+}
+.header-name {
+  font-family: sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.42em;
+  font-weight: 300;
+  color: var(--text);
+}
+.header-sub {
+  font-family: sans-serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 0.5rem;
+}
+
+/* ── Key gate ── */
+.key-gate {
+  padding: 0.9rem 3rem;
+  border-bottom: 1px solid var(--cream-border);
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.key-gate.hidden { display: none; }
+.key-label {
+  font-family: sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  white-space: nowrap;
+  font-weight: 600;
+}
+.key-input {
+  flex: 1;
+  border: none;
+  border-bottom: 1px solid var(--cream-border);
+  padding: 0.35rem 0.5rem;
+  font-family: monospace;
+  font-size: 0.82rem;
+  color: var(--text);
+  outline: none;
+  background: transparent;
+  min-width: 0;
+}
+.key-save {
+  background: none;
+  border: none;
+  font-family: sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  cursor: pointer;
+  padding: 0.3rem 0;
+}
+.key-save:hover { color: var(--text); }
+
+/* ── Write area ── */
+.write-area { padding: 3rem 3rem 0; }
+textarea {
+  width: 100%;
+  min-height: 80px;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--text);
+  background: transparent;
+  display: block;
+}
+textarea::placeholder { color: var(--text-faint); font-style: italic; font-size: 1.05rem; }
+.write-hint {
+  font-family: sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-top: 0.5rem;
+  transition: opacity 0.3s;
+}
+.write-hint.hidden { opacity: 0; }
+
+.echo-row {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 3rem 2.5rem;
+}
+.echo-btn {
+  background: none;
+  border: none;
+  font-family: sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  cursor: pointer;
+  padding: 0.3rem 0;
+  transition: color 0.2s;
+}
+.echo-btn:hover { color: var(--text); }
+.echo-btn:disabled { color: var(--text-faint); cursor: not-allowed; }
+
+/* ── Loading ── */
+.loading { display: none; padding: 2.5rem 3rem; }
+.loading.visible { display: block; }
+.loading-text {
+  font-family: sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+/* ── Response ── */
+.response { display: none; animation: fadeIn 0.7s ease; }
+.response.visible { display: block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+/* You wrote */
+.you-wrote {
+  padding: 2.8rem 3rem 2.4rem;
+  border-bottom: 1px solid var(--amber);
+  margin-bottom: 2.8rem;
+}
+.you-wrote-label {
+  font-family: sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 0.9rem;
+}
+.you-wrote-text {
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--gold);
+  line-height: 1.9;
+}
+
+/* Response body */
+.response-body { padding: 0 3rem; }
+
+/* Opening */
+.opening {
+  font-size: 0.97rem;
+  line-height: 1.9;
+  color: var(--text);
+  margin-bottom: 2.4rem;
+}
+
+/* Term block */
+.term-block {
+  background: var(--cream);
+  border: 1px solid var(--cream-border);
+  border-left: 3px solid var(--gold);
+  padding: 1.8rem 2rem;
+  margin-bottom: 2.4rem;
+}
+.term-scripts {
+  display: flex;
+  gap: 2rem;
+  align-items: baseline;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+.term-script {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+.term-script-tibetan {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: var(--gold-dark);
+  line-height: 1.4;
+}
+.term-roman {
+  font-family: sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 1.1rem;
+  font-weight: 600;
+}
+.term-first {
+  font-size: 0.97rem;
+  line-height: 1.85;
+  color: var(--text);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.term-body {
+  font-size: 0.97rem;
+  line-height: 1.9;
+  color: var(--text-mid);
+}
+
+/* Seal line */
+.seal-line {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 0.97rem;
+  line-height: 1.8;
+  color: var(--text-label);
+  margin-bottom: 2.8rem;
+  font-style: italic;
+}
+
+/* Section divider — amber line */
+.section-rule {
+  border: none;
+  border-top: 1px solid var(--amber);
+  margin: 0 0 2.4rem;
+  opacity: 0.5;
+}
+
+/* Figure + Source */
+.figure-source { margin-bottom: 2.4rem; }
+
+.figure-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+.figure-tradition {
+  font-family: sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 0.7rem;
+}
+.figure-key-work {
+  font-family: sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 0.6rem;
+}
+.figure-key-work em {
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.75rem;
+}
+.figure-desc {
+  font-size: 0.97rem;
+  line-height: 1.9;
+  color: var(--text-mid);
+  margin-bottom: 1.6rem;
+}
+.source-title {
+  font-family: sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  color: var(--gold-dark);
+  margin-bottom: 0.7rem;
+}
+.source-title em {
+  font-style: italic;
+  font-family: 'Lora', Georgia, serif;
+  letter-spacing: 0.02em;
+  font-size: 0.78rem;
+}
+.source-title .source-ref-upper {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.62rem;
+}
+.source-box {
+  background: var(--cream);
+  border: 1px solid var(--cream-border);
+  border-left: 3px solid var(--amber);
+  padding: 1.2rem 1.6rem;
+}
+.source-passage {
+  font-size: 0.97rem;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.9;
+  margin-bottom: 0.55rem;
+}
+.source-translator {
+  font-family: sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-label);
+}
+
+/* Divider star */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2.4rem 0;
+}
+.divider-line { flex:1; height:1px; background: var(--amber); opacity: 0.4; }
+
+/* Image */
+.image-block {
+  background: var(--cream);
+  border: 1px solid var(--cream-border);
+  padding: 1.8rem;
+  margin-bottom: 2.4rem;
+  text-align: center;
+}
+.image-block img {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 1.1rem;
+}
+.image-title {
+  font-family: sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 0.45rem;
+}
+.image-why {
+  font-size: 0.9rem;
+  color: var(--text-label);
+  line-height: 1.75;
+}
+
+/* Verse */
+.verse-block { margin-bottom: 1rem; }
+.verse-label {
+  font-family: sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 1rem;
+}
+.verse-text {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 2.1;
+  margin-bottom: 0.8rem;
+}
+.verse-attr {
+  font-family: sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+
+/* Again */
+.again-row { padding: 2rem 3rem 0; display: none; }
+.again-row.visible { display: flex; }
+.again-btn {
+  background: none;
+  border: none;
+  font-family: sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  cursor: pointer;
+  padding: 0;
+}
+.again-btn:hover { color: var(--text); }
+
+/* Error */
+.error { display: none; padding: 1rem 3rem; color: #904040; font-style: italic; font-size: 0.9rem; }
+.error.visible { display: block; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-name">DHARMA'S ECHO</div>
+  <div class="header-sub">the dharma echoes back what was always already there</div>
+</div>
+
+<div class="key-gate" id="keyGate">
+  <div class="key-label">API Key</div>
+  <input class="key-input" id="keyInput" type="password" placeholder="sk-ant-..." />
+  <button class="key-save" onclick="saveKey()">Save ›</button>
+</div>
+
+<div class="write-area">
+  <textarea id="entry" placeholder="write"></textarea>
+  <div class="write-hint" id="writeHint">the dharma will find the echo</div>
+</div>
+<div class="echo-row">
+  <button class="echo-btn" id="echoBtn" onclick="submitEntry()">Echo ›</button>
+</div>
+
+<div class="loading" id="loading"><div class="loading-text">Listening...</div></div>
+<div class="error" id="error">Something did not land. Please try again.</div>
+
+<div class="response" id="response">
+
+  <div class="you-wrote">
+    <div class="you-wrote-label">You wrote</div>
+    <div class="you-wrote-text" id="youWroteText"></div>
+  </div>
+
+  <div class="response-body">
+
+    <div class="opening" id="opening"></div>
+
+    <div class="term-block">
+      <div class="term-scripts">
+        <div class="term-script" id="termSanskrit"></div>
+        <div class="term-script-tibetan" id="termTibetan"></div>
+      </div>
+      <div class="term-roman" id="termRoman"></div>
+      <div class="term-first" id="termFirst"></div>
+      <div class="term-body" id="termBody"></div>
+    </div>
+
+    <div class="seal-line" id="sealLine"></div>
+
+    <hr class="section-rule">
+
+    <div class="figure-source">
+      <div class="figure-name" id="figureName"></div>
+      <div class="figure-tradition" id="figureTradition"></div>
+      <div class="figure-key-work" id="figureKeyWork"></div>
+      <div class="figure-desc" id="figureDesc"></div>
+      <div class="source-title" id="sourceTitle"></div>
+      <div class="source-box">
+        <div class="source-passage" id="sourcePassage"></div>
+        <div class="source-translator" id="sourceTranslator"></div>
+      </div>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <svg width="8" height="8" viewBox="0 0 10 10"><polygon points="5,0 6.2,3.8 10,5 6.2,6.2 5,10 3.8,6.2 0,5 3.8,3.8" fill="#b06818" opacity="0.7"/></svg>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="image-block">
+      <img id="artImg" src="" alt="" style="display:none;" onerror="this.style.display='none'">
+      <div class="image-title" id="imgTitle"></div>
+      <div class="image-why" id="imgWhy"></div>
+    </div>
+
+    <div class="verse-block">
+      <div class="verse-label">A verse</div>
+      <div class="verse-text" id="verseText"></div>
+      <div class="verse-attr" id="verseAttr"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="again-row" id="againRow">
+  <button class="again-btn" onclick="reset()">Write another entry ›</button>
+</div>
+
+<script>
+const IMAGES = [
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Wheel_of_life-Tibetan_Buddhist.jpg/800px-Wheel_of_life-Tibetan_Buddhist.jpg", title:"Wheel of Life (Bhavacakra)", artist:"Tibetan, 19th century", tradition:"Tibetan Buddhist", tags:["dukkha","samsara","impermanence","anicca","suffering","conditioned","rebirth","second seal"] },
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg/600px-Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg", title:"Buddha, First Sermon, Sarnath", artist:"Gupta period, 5th century CE", tradition:"Indian Buddhist", tags:["dukkha","four noble truths","path","teaching","dharma","suffering","first sermon","pali"] },
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Milarepa.jpg/600px-Milarepa.jpg", title:"Milarepa", artist:"Tibetan thangka, 19th century", tradition:"Kagyu, Tibetan Buddhist", tags:["practice","renunciation","liberation","impermanence","anicca","mahamudra","solitude","mountain","cave","viveka"] },
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Manjushri_thangka.jpg/600px-Manjushri_thangka.jpg", title:"Mañjuśrī", artist:"Tibetan thangka, 18th century", tradition:"Tibetan Buddhist", tags:["prajna","wisdom","emptiness","sunyata","anatta","insight","third seal","madhyamaka"] },
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Vajrasattva_thangka.jpg/600px-Vajrasattva_thangka.jpg", title:"Vajrasattva", artist:"Tibetan thangka, 19th century", tradition:"Tibetan Buddhist", tags:["purification","primordial purity","rigpa","buddha nature","anatta","self","emptiness","natural state","dzogchen"] },
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Tara_green_Tibetan.jpg/600px-Tara_green_Tibetan.jpg", title:"Green Tārā", artist:"Tibetan thangka, 18th century", tradition:"Tibetan Buddhist", tags:["compassion","fear","protection","bodhicitta","liberation","swift","interdependence"] },
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Avalokiteshvara_Thangka.jpg/600px-Avalokiteshvara_Thangka.jpg", title:"Avalokiteśvara", artist:"Tibetan thangka, 18th century", tradition:"Tibetan Buddhist", tags:["compassion","bodhicitta","karuna","interdependence","love","suffering"] },
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Amitabha_Buddha_thangka.jpg/600px-Amitabha_Buddha_thangka.jpg", title:"Amitābha Buddha", artist:"Tibetan thangka, 18th century", tradition:"Tibetan Buddhist", tags:["nirvana","pure land","fourth seal","beyond extremes","liberation","death","impermanence"] },
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Samantabhadra_thangka.jpg/600px-Samantabhadra_thangka.jpg", title:"Samantabhadra, Primordial Buddha", artist:"Tibetan thangka, 18th century", tradition:"Dzogchen, Tibetan Buddhist", tags:["rigpa","dzogchen","primordial","sunyata","emptiness","anatta","ground","natural state","fourth seal","beyond extremes"] },
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Sakyamuni_Buddha.jpg/600px-Sakyamuni_Buddha.jpg", title:"Śākyamuni Buddha", artist:"Tibetan thangka, 19th century", tradition:"Tibetan Buddhist", tags:["buddha","teaching","dharma","awakening","enlightenment","path","shakyamuni","first sermon"] },
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Medicine_Buddha_Thangka.jpg/600px-Medicine_Buddha_Thangka.jpg", title:"Medicine Buddha (Sangye Menla)", artist:"Tibetan thangka, 18th century", tradition:"Tibetan Buddhist", tags:["healing","dukkha","suffering","body","purification","compassion"] },
+  { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Bodhisattva%2C_Kushan_period.jpg/600px-Bodhisattva%2C_Kushan_period.jpg", title:"Bodhisattva, Gandharan sculpture", artist:"Kushan period, 2nd–3rd century CE", tradition:"Gandharan Buddhist", tags:["bodhicitta","compassion","awakening","mahayana","interdependence","early","ancient"] }
+];
+
+function selectImage(keywords) {
+  const terms = (keywords || '').toLowerCase();
+  let best = IMAGES[Math.floor(Math.random() * IMAGES.length)];
+  let bestScore = 0;
+  for (const img of IMAGES) {
+    let score = 0;
+    for (const tag of img.tags) { if (terms.includes(tag)) score++; }
+    if (score > bestScore) { bestScore = score; best = img; }
+  }
+  return best;
+}
+
+let API_KEY = '';
+function saveKey() {
+  const k = document.getElementById('keyInput').value.trim();
+  if (!k) return;
+  API_KEY = k;
+  document.getElementById('keyGate').classList.add('hidden');
+}
+
+const SYSTEM_PROMPT = `You are the philosophical heart of Dharma's Echo. You do not interpret, counsel, or affirm. You receive what has been written and find where in the Buddhist tradition — across all schools, centuries, and languages — that territory has been named with the greatest precision. Then the tradition speaks. You do not.
+
+THE OPENING LINE — three possible modes, choose the most precise:
+
+Mode 1 — a figure is directly connected to the entry's territory:
+Name the figure directly. "Milarepa sang about this." "Nagarjuna spent his life on this question." "The Buddha addressed this in his first teaching." One sentence only. The figure's name comes first. Never start with "He" or "She."
+
+Mode 2 — a specific sutra or text is the most direct source:
+Name the actual text, not the category. Italicize the text title. "The *Dhammacakkappavattana Sutta* names what is present here." "This is the territory of Nagarjuna's *Mulamadhyamakakarika*." Never say "Pali sutras" as a category — name the specific sutta.
+
+Mode 3 — a word from the entry is the clearest hook:
+Echo one word or phrase from the entry, then step aside. "'Liberation' — the tradition has a precise word for what that points to." Only use this mode if a word from the entry is genuinely the sharpest entry point.
+
+Never interpret what the person felt or experienced. Never affirm, summarize, or bridge. The opening is a door — it opens directly onto the tradition.
+
+THE TERM — the single most precise concept. Not the broadest — the most exact.
+
+term_sanskrit: The term in Sanskrit Devanagari script if the concept has Sanskrit form. If Pali only, use Pali romanized. Never invent a script rendering.
+term_tibetan: The term in Tibetan script ONLY if you are certain it exists in the Tibetan tradition under that name with equivalent or closely related meaning. If uncertain, leave empty. If you include the Tibetan, you must also include its Wylie transliteration in term_tibetan_roman. Accuracy over completeness.
+term_tibetan_roman: Wylie transliteration of the Tibetan term if term_tibetan is provided — else empty string.
+term_transliteration: Full romanized form of the PRIMARY term (Sanskrit or Pali) with diacritics.
+term_tradition: Pali / Sanskrit / Tibetan / Sanskrit and Tibetan — only list traditions where the term genuinely exists with that meaning.
+term_first_line: One sentence. Not the flat English word — the hook that opens the real meaning.
+term_translation: Two parts. First: one sentence of philosophical precision — what the tradition actually means by this term, where it appears, what it identifies or names. No metaphor yet. Second: one short poetic line that earns its place — beginning with "Like" — a simile that illuminates the concept without interpreting the entry. In the spirit of Thrinley Norbu Rinpoche's writing: direct, simple, the image lands without explanation. The simile serves the term, not the person who wrote. Example: "Tṛṣṇā is the craving identified in the second noble truth as the origin of dukkha — the compulsive grasping that perpetuates the cycle of becoming. Like consciousness projecting a distant shore while standing on solid ground." If the Tibetan term carries a meaningfully different nuance, one additional sentence may note this.
+
+THE SEAL — conversational, one sentence, in italic register:
+
+If the entry genuinely meets a seal:
+"Your entry meets the [first/second/third/fourth] seal — [seal name]. [One-line statement of what that seal actually teaches.]"
+
+If the entry moves against the dharma or points away from a seal:
+State the relevant seal clearly and let it speak for itself. "The first seal — anicca — teaches that all compounded things are impermanent." Do not correct the person. The seal is a compass, not a judgment.
+
+THE FIGURE — always named. Strict source hierarchy:
+1. The Buddha directly, from the Pali suttas or early Mahayana sutras
+2. Early Indian masters: Nagarjuna, Chandrakirti, Aryadeva, Vasubandhu, Asanga, Shantideva, Atisha
+3. Among Tibetan schools, follow this order of preference unless a lower school holds the concept more precisely:
+   — Nyingma first and strongly preferred: Longchenpa, Jigme Lingpa, Patrul Rinpoche, Mipham Rinpoche, Chogyur Lingpa, Dudjom Rinpoche, Yeshe Tsogyal.
+     · Longchenpa (1308–1364): the master of Dzogchen, the Seven Treasuries, the vast expanse of mind. For natural state, rigpa, emptiness, the ground of being, the nature of phenomena, primordial purity — Longchenpa is almost always the most precise Tibetan voice.
+     · Patrul Rinpoche: Words of My Perfect Teacher — for foundational teachings, bodhicitta, the preliminary practices, the ordinary mind that is buddha nature.
+     · Jigme Lingpa: for the Heart Essence of the Vast Expanse (Longchen Nyingthig), terma, the nature of mind.
+     · Mipham Rinpoche: for philosophical precision across traditions, especially where Madhyamaka meets Dzogchen.
+     · Dudjom Rinpoche: for tantric view, the nature of perception, the purity of phenomena.
+     · Chogyur Lingpa: for terma and Rimé territory.
+     · Yeshe Tsogyal: for the feminine principle, the dakini, the ground of experience.
+   — Sakya second: Sakya Pandita, Gorampa — for precise philosophical and Lamdre territory
+   — Kagyu third — ONLY when the concept is specifically and precisely Mahamudra territory, or the entry is unmistakably in the Kagyu stream (mountain solitude, the dohas, the songs of realization). Do not default to Milarepa. Milarepa is one figure among many — reach for Longchenpa, Patrul Rinpoche, or Jigme Lingpa first unless the Kagyu match is exact.
+     · Milarepa: his domain is the songs (Mila Grubum), mountain retreat, the direct path through hardship, Mahamudra realization through practice. Not a default.
+     · Marpa, Gampopa, Tilopa, Naropa, Machig Labdrön, Niguma: each has a specific domain.
+   — Gelug: Tsongkhapa — when Madhyamaka philosophical precision specifically requires it
+4. Later masters: Thrinley Norbu Rinpoche (elements and elemental mind), Dilgo Khyentse Rinpoche, Dzongsar Khyentse Rinpoche
+5. Contemporary teachers only when nothing above fits more precisely
+
+The figure's name always comes first in the description. Never start with "He" or "She."
+One sentence only. What they refused, showed, or opened. Never biographical.
+
+For figure_key_verb use the most precise relationship:
+- "author of" — for writers of treatises and commentaries (Longchenpa, Nagarjuna, Shantideva, Patrul Rinpoche)
+- "singer of" — for Milarepa and his songs
+- "revealer of" — for tertöns who revealed terma (Chogyur Lingpa, Jigme Lingpa)
+- "translator of" — for Marpa, whose primary role was transmission
+- Leave empty for figures with no primary authored text (Tilopa, Naropa) and always for Buddha Śākyamuni
+
+For Buddha Śākyamuni: figure_tradition, figure_dates, figure_key_verb, and figure_key_work must all be empty strings. The name alone carries everything.
+
+THE SOURCE — strict hierarchy:
+1. Pali Canon suttas — always named specifically with both the Pali name and the MN/SN/DN/AN number. E.g. "Cūḷamālunkya Sutta · MN 63" or "Dhammacakkappavattana Sutta · SN 56.11". Never just "Pali Canon" — name the specific sutta.
+2. Early Mahayana sutras — Heart Sutra, Diamond Sutra, Vimalakirti Nirdesha, Lankavatara — with chapter where possible
+3. Shastras — Nagarjuna's Mulamadhyamakakarika (with chapter and verse), Shantideva's Bodhicharyavatara (chapter and verse), Vasubandhu's Abhidharmakosa
+4. Tibetan treasuries — Longchenpa's Precious Treasury of the Dharmadhatu, Patrul Rinpoche's Words of My Perfect Teacher (chapter), Milarepa's Hundred Thousand Songs (song name/number)
+5. Other texts only if more precise than the above
+
+Passage: under 40 words, verified and precise. From Pali Canon, use Bhikkhu Bodhi or Bhikkhu Sujato translation and name them. From copyrighted translations (Padmakara, Shambhala, others), paraphrase carefully and name translator, publisher, chapter. For the translator credit always prefix with "Trans." Never invent a quote. If uncertain about the exact passage, choose one you are certain of rather than approximating.
+
+THE IMAGE — one sentence about the quality this territory shares with art from this tradition. Do not reference a specific image by name.
+
+THE VERSE — real verified verse only. Never invented. Lines separated by \\n. Not italic.
+
+TONE: Warm, precise, learned. Never therapeutic, never wellness, never academic performance.
+Forbidden: invites us to, reminds us, journey, healing, transform, sit with, hold space, unpack, explore, process, navigate, tapestry, landscape, resonate, profound.
+Never use nationality words for figures. Never biography — only what they saw or showed.
+
+Return ONLY valid JSON, no markdown, no backticks, no preamble:
+{
+  "opening": "One sentence. Door opens directly onto tradition. Never interpretive.",
+  "term_sanskrit": "Sanskrit Devanagari or Pali romanized",
+  "term_tibetan": "Tibetan script only if identical concept exists — else empty string",
+  "term_tibetan_roman": "Wylie transliteration of Tibetan term if provided — else empty string",
+  "term_transliteration": "Romanized with diacritics",
+  "term_tradition": "Pali / Sanskrit / Tibetan / Sanskrit and Tibetan",
+  "term_first_line": "One sentence — the hook, not the flat English word",
+  "term_translation": "2–3 sentences of careful philosophical translation",
+  "seal": "One conversational sentence in italic register.",
+  "figure_name": "Name — for the Buddha use 'Buddha Śākyamuni' exactly, no other name",
+  "figure_tradition": "School — e.g. Nyingma, Madhyamaka, Kagyu, Theravada. Empty string if the figure is Buddha Śākyamuni.",
+  "figure_dates": "Birth–death years e.g. 1308–1364. Empty string if the figure is Buddha Śākyamuni.",
+  "figure_key_verb": "The precise relationship verb — 'author of', 'singer of', 'revealer of', 'translator of'. Empty string if the figure is Buddha Śākyamuni or had no primary text.",
+  "figure_key_work": "The single most important text in italics — just the title, no verb. Empty string if the figure is Buddha Śākyamuni or had no primary authored text.",
+  "figure_description": "One sentence starting with the figure's name. What they refused, showed, or opened.",
+  ""source_text": "Pali or Sanskrit title first — English title after a dash if it has one. E.g. Khaggavisāṇa Sutta — Rhinoceros Horn Sutta. The source_text displays in uppercase so no italics needed here — italics are handled in the opening line only.",
+  "source_reference": "Sutta ID, chapter, verse, or song number",
+  "source_translation": "Trans. [Name] · [Publisher]",
+  "source_passage": "Passage under 40 words. Paraphrased carefully if copyrighted.",
+  "concept_keywords": "6–8 keywords from: dukkha, samsara, anicca, anatta, sunyata, bodhicitta, compassion, impermanence, emptiness, nirvana, rigpa, clinging, self, interdependence, liberation, wisdom, suffering, practice, renunciation, purification, natural state, four noble truths, beyond extremes, mahamudra, dzogchen, path, teaching, dharma, first sermon, buddha, viveka, solitude, mountain, madhyamaka, second seal, third seal, fourth seal, pali",
+  "artwork_why": "One sentence about the quality this territory shares with art from this tradition.",
+  "verse_text": "3–5 lines. Real verified verse only. Lines separated by \\n.",
+  "verse_attribution": "Name · tradition · century — omit tradition entirely if the speaker is Buddha Śākyamuni",
+  "verse_source": "Title of text"
+}`;
+
+async function submitEntry() {
+  if (!API_KEY) { alert('Please enter your Anthropic API key first.'); return; }
+  const entry = document.getElementById('entry').value.trim();
+  if (!entry) return;
+
+  const btn = document.getElementById('echoBtn');
+  btn.disabled = true;
+  document.getElementById('loading').classList.add('visible');
+  document.getElementById('response').classList.remove('visible');
+  document.getElementById('error').classList.remove('visible');
+  document.getElementById('againRow').classList.remove('visible');
+  document.getElementById('youWroteText').textContent = entry;
+  document.querySelector('.write-area').style.display = 'none';
+  document.querySelector('.echo-row').style.display = 'none';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1400,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: `Journal entry: "${entry}"` }]
+      })
+    });
+
+    const data = await res.json();
+    const text = data.content.map(b => b.text || '').join('');
+    const clean = text.replace(/```json|```/g, '').trim();
+    const d = JSON.parse(clean);
+    render(d);
+
+  } catch(e) {
+    console.error(e);
+    document.getElementById('loading').classList.remove('visible');
+    document.getElementById('error').classList.add('visible');
+    btn.disabled = false;
+    document.querySelector('.write-area').style.display = '';
+    document.querySelector('.echo-row').style.display = '';
+  }
+}
+
+function render(d) {
+  document.getElementById('loading').classList.remove('visible');
+
+  // Render opening — italicize text titles wrapped in *...*
+  const openingEl = document.getElementById('opening');
+  const openingRaw = d.opening || '';
+  openingEl.innerHTML = openingRaw.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+  document.getElementById('termSanskrit').textContent = d.term_sanskrit || '';
+  const tibEl = document.getElementById('termTibetan');
+  if (d.term_tibetan && d.term_tibetan.trim()) {
+    tibEl.textContent = d.term_tibetan;
+    tibEl.style.display = '';
+  } else {
+    tibEl.style.display = 'none';
+  }
+  // Build romanized line: primary term · tradition, plus Tibetan Wylie if present
+  let romanLine = (d.term_transliteration || '') + ' · ' + (d.term_tradition || '');
+  if (d.term_tibetan_roman && d.term_tibetan_roman.trim()) {
+    romanLine += ' · ' + d.term_tibetan_roman + ' (Tibetan)';
+  }
+  document.getElementById('termRoman').textContent = romanLine;
+  document.getElementById('termFirst').textContent = d.term_first_line || '';
+  document.getElementById('termBody').textContent = d.term_translation || '';
+
+  document.getElementById('sealLine').textContent = d.seal || '';
+
+  document.getElementById('figureName').textContent = d.figure_name || '';
+
+  // Build single tradition line: Tradition · Dates · verb of *Work*
+  const tradEl = document.getElementById('figureTradition');
+  let tradHTML = '';
+  let tradParts = [];
+  if (d.figure_tradition) tradParts.push(d.figure_tradition);
+  if (d.figure_dates) tradParts.push(d.figure_dates);
+  tradHTML = tradParts.join(' · ');
+  if (d.figure_key_verb && d.figure_key_work) {
+    tradHTML += ' · ' + d.figure_key_verb + ' <em>' + d.figure_key_work + '</em>';
+  }
+  tradEl.innerHTML = tradHTML;
+
+  // Hide separate key work element — now folded into tradition line
+  const keyEl = document.getElementById('figureKeyWork');
+  if (keyEl) keyEl.style.display = 'none';
+
+  document.getElementById('figureDesc').textContent = d.figure_description || '';
+
+  // Source title: italic Pali/Sanskrit name, then reference in uppercase
+  const sourceTitleEl = document.getElementById('sourceTitle');
+  if (d.source_text) {
+    let titleHTML = '<em>' + d.source_text + '</em>';
+    if (d.source_reference) {
+      titleHTML += ' <span class="source-ref-upper">· ' + d.source_reference + '</span>';
+    }
+    sourceTitleEl.innerHTML = titleHTML;
+  } else {
+    sourceTitleEl.textContent = '';
+  }
+  document.getElementById('sourcePassage').textContent = '\u201C' + (d.source_passage || '') + '\u201D';
+  document.getElementById('sourceTranslator').textContent = d.source_translation || '';
+
+  const img = selectImage(d.concept_keywords || '');
+  const artEl = document.getElementById('artImg');
+  artEl.src = img.url;
+  artEl.alt = img.title;
+  artEl.style.display = 'block';
+  artEl.onerror = function() { this.style.display = 'none'; };
+  document.getElementById('imgTitle').textContent =
+    img.title + ' · ' + img.artist + ' · ' + img.tradition;
+  document.getElementById('imgWhy').textContent = d.artwork_why || '';
+
+  const lines = (d.verse_text || '').split('\n').map(l => l.trim()).filter(Boolean);
+  document.getElementById('verseText').innerHTML = lines.join('<br>');
+  // Verse attribution — strip tradition from Buddha Śākyamuni
+  let verseAttr = d.verse_attribution || '';
+  if (verseAttr.includes('Buddha') && verseAttr.includes('Theravada')) {
+    verseAttr = verseAttr.replace(/[·\s]*Theravada[\s]*/g, '');
+  }
+  document.getElementById('verseAttr').textContent =
+    verseAttr + (d.verse_source ? ' · ' + d.verse_source : '');
+
+  document.getElementById('response').classList.add('visible');
+  document.getElementById('againRow').classList.add('visible');
+  document.getElementById('response').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function reset() {
+  document.getElementById('entry').value = '';
+  document.getElementById('response').classList.remove('visible');
+  document.getElementById('againRow').classList.remove('visible');
+  document.getElementById('echoBtn').disabled = false;
+  document.querySelector('.write-area').style.display = '';
+  document.querySelector('.echo-row').style.display = '';
+  const hint = document.getElementById('writeHint');
+  if (hint) hint.classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Hide hint when typing begins, restore when empty
+document.addEventListener('DOMContentLoaded', function() {
+  const entry = document.getElementById('entry');
+  const hint = document.getElementById('writeHint');
+  if (entry && hint) {
+    entry.addEventListener('input', function() {
+      if (entry.value.length > 0) {
+        hint.classList.add('hidden');
+      } else {
+        hint.classList.remove('hidden');
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
