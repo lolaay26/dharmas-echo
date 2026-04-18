@@ -930,9 +930,6 @@ async function submitEntry() {
       })
     });
 
-      })
-    });
-
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
     const clean = text.replace(/```json|```/g, '').trim();
@@ -1069,6 +1066,108 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+// ── Share card ──
+let lastResponseData = null;
+let lastEntryText = '';
+let lastImageUrl = '';
+let lastImageTitle = '';
+let lastImageArtist = '';
+let lastImageTradition = '';
+
+function populateShareCard() {
+  if (!lastResponseData) return;
+  const d = lastResponseData;
+
+  document.getElementById('scYouWrote').textContent = lastEntryText;
+
+  const openingRaw = d.opening || '';
+  document.getElementById('scOpening').innerHTML =
+    openingRaw.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+  document.getElementById('scScriptSa').textContent = d.term_sanskrit || '';
+  document.getElementById('scScriptSaRoman').textContent = d.term_transliteration || '';
+
+  if (d.term_tibetan && d.term_tibetan.trim()) {
+    document.getElementById('scScriptBo').textContent = d.term_tibetan;
+    document.getElementById('scScriptBoRoman').textContent = d.term_tibetan_roman || '';
+    document.getElementById('scTibGroup').style.display = 'block';
+  } else {
+    document.getElementById('scTibGroup').style.display = 'none';
+  }
+
+  document.getElementById('scTermFirst').textContent = d.term_first_line || '';
+  document.getElementById('scTermBody').textContent = d.term_translation || '';
+  document.getElementById('scSeal').textContent = d.seal || '';
+
+  const isBuddha = (d.figure_name || '').includes('Buddha Śākyamuni');
+  document.getElementById('scFigureName').textContent = d.figure_name || '';
+
+  const srcRef = document.getElementById('scSourceRef');
+  const refText = d.source_text || '';
+  const refNum = d.source_reference || '';
+  srcRef.innerHTML = '<em>' + refText + '</em>' + (refNum ? ' · ' + refNum : '');
+
+  document.getElementById('scSourcePassage').textContent =
+    '\u201C' + (d.source_passage || '') + '\u201D';
+  document.getElementById('scSourceTrans').textContent = d.source_translation || '';
+
+  const gloss = document.getElementById('scGloss');
+  if (isBuddha && d.figure_description) {
+    let desc = d.figure_description.replace(/^Buddha Śākyamuni\s+/, '');
+    desc = desc.charAt(0).toLowerCase() + desc.slice(1);
+    gloss.textContent = '(' + desc.replace(/\.$/, '') + ')';
+    gloss.style.display = 'block';
+  } else {
+    gloss.style.display = 'none';
+  }
+
+  const scImg = document.getElementById('scImg');
+  if (lastImageUrl) {
+    scImg.src = lastImageUrl;
+    scImg.style.display = 'block';
+  } else {
+    scImg.style.display = 'none';
+  }
+  document.getElementById('scImgTitle').textContent =
+    lastImageTitle + ' · ' + lastImageArtist + ' · ' + lastImageTradition;
+  document.getElementById('scImgWhy').textContent = d.artwork_why || '';
+}
+
+async function saveCard() {
+  const toast = document.getElementById('toast');
+  toast.textContent = 'Rendering...';
+  toast.classList.add('visible');
+
+  try {
+    const container = document.getElementById('shareCardContainer');
+    container.style.top = '0';
+    container.style.left = '-10000px';
+
+    const card = document.getElementById('shareCard');
+    const canvas = await html2canvas(card, {
+      backgroundColor: null,
+      scale: 2,
+      useCORS: true,
+      allowTaint: false,
+      logging: false
+    });
+
+    container.style.top = '-10000px';
+
+    const link = document.createElement('a');
+    link.download = 'dharmas-echo-' + Date.now() + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    toast.textContent = 'Saved';
+    setTimeout(() => toast.classList.remove('visible'), 2000);
+  } catch (e) {
+    console.error('Save failed:', e);
+    toast.textContent = 'Save failed';
+    setTimeout(() => toast.classList.remove('visible'), 2500);
+  }
+}
 </script>
 
 <div class="save-row" id="saveRow">
