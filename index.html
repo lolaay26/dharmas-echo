@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dharma's Echo</title>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif+Devanagari:wght@300;400;500&family=Jomolhari&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -421,6 +422,244 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 /* Error */
 .error { display: none; padding: 1rem 3rem; color: #904040; font-style: italic; font-size: 0.9rem; }
 .error.visible { display: block; }
+
+/* ── Save as card button ── */
+.save-row {
+  padding: 1rem 3rem 0;
+  display: none;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+.save-row.visible { display: flex; }
+.save-btn {
+  background: none;
+  border: 1px solid var(--cream-border);
+  padding: 0.5rem 1.2rem;
+  font-family: sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.save-btn:hover { background: var(--cream); color: var(--text); }
+
+/* ── Share card (off-screen for rendering) ── */
+.share-card-container {
+  position: fixed;
+  top: -10000px;
+  left: 0;
+  width: 560px;
+  pointer-events: none;
+  z-index: -1;
+}
+.share-card {
+  width: 560px;
+  padding: 2.2rem;
+  font-family: 'EB Garamond', Georgia, serif;
+  color: #1a2540;
+  background: radial-gradient(ellipse at 30% 20%, #fdf5de 0%, #f0e6c0 35%, #9aa8be 80%, #6a7e9a 100%);
+  box-shadow: inset 0 0 60px rgba(40, 55, 95, 0.14);
+  border-radius: 4px;
+}
+.sc-header { text-align: center; padding-bottom: 1.2rem; border-bottom: 1px solid rgba(110, 130, 170, 0.4); }
+.sc-header-name {
+  font-family: sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.38em;
+  color: #a82010;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.sc-header-sub {
+  font-family: sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c85810;
+}
+.sc-you-wrote { padding: 1rem 0; border-bottom: 1px solid rgba(110, 130, 170, 0.35); }
+.sc-label {
+  font-family: sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c85810;
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+}
+.sc-you-wrote-text {
+  font-size: 13px;
+  font-style: italic;
+  color: #2a3555;
+  line-height: 1.55;
+}
+.sc-opening {
+  padding: 1.2rem 0;
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: #1a2540;
+  border-bottom: 1px solid rgba(110, 130, 170, 0.35);
+}
+.sc-term-block { padding: 1.4rem 0 1.2rem; }
+.sc-term-scripts {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  margin-bottom: 1.1rem;
+  flex-wrap: wrap;
+}
+.sc-script-sa {
+  font-family: 'Noto Serif Devanagari', Georgia, serif;
+  font-size: 24px;
+  color: #1a2540;
+  line-height: 1.2;
+}
+.sc-script-bo {
+  font-family: 'Jomolhari', Georgia, serif;
+  font-size: 21px;
+  color: #1a2540;
+  line-height: 1.3;
+}
+.sc-script-roman {
+  font-family: 'EB Garamond', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: #c85810;
+  letter-spacing: 0.02em;
+  margin-top: 0.15rem;
+}
+.sc-term-first {
+  font-size: 14px;
+  color: #1a2540;
+  font-weight: 500;
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+}
+.sc-term-body {
+  font-size: 13px;
+  color: #3a4565;
+  line-height: 1.8;
+}
+.sc-seal {
+  padding: 0.9rem 0;
+  font-size: 13px;
+  font-style: italic;
+  color: #3a4565;
+  line-height: 1.75;
+  border-top: 1px solid rgba(110, 130, 170, 0.35);
+  border-bottom: 1px solid rgba(110, 130, 170, 0.35);
+}
+.sc-figure-source { padding: 1.2rem 0 1.4rem; }
+.sc-figure-name {
+  font-size: 15px;
+  color: #1a2540;
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+}
+.sc-source-ref {
+  font-family: sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: #a82010;
+  margin-bottom: 0.6rem;
+  font-weight: 700;
+}
+.sc-source-ref em {
+  font-family: 'EB Garamond', serif;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 13px;
+  font-style: italic;
+}
+.sc-source-box {
+  background: rgba(253, 240, 205, 0.5);
+  padding: 0.9rem 1.1rem;
+  border-left: 2px solid #a82010;
+  border-radius: 2px;
+}
+.sc-source-passage {
+  font-size: 13px;
+  font-style: italic;
+  color: #1a2540;
+  line-height: 1.75;
+  margin-bottom: 0.4rem;
+}
+.sc-source-trans {
+  font-family: sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #3a4565;
+}
+.sc-gloss {
+  padding: 0.7rem 0.3rem 0;
+  font-size: 11.5px;
+  font-style: italic;
+  color: #5a6580;
+  line-height: 1.7;
+}
+.sc-image-block {
+  background: rgba(253, 240, 205, 0.4);
+  padding: 1rem;
+  margin: 0.5rem 0 1.2rem;
+  text-align: center;
+  border-radius: 2px;
+}
+.sc-image-block img {
+  max-width: 100%;
+  max-height: 340px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 0.9rem;
+}
+.sc-image-title {
+  font-family: sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #a82010;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.sc-image-why {
+  font-size: 12.5px;
+  color: #3a4565;
+  font-style: italic;
+  line-height: 1.7;
+}
+.sc-footer {
+  text-align: center;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(110, 130, 170, 0.35);
+  font-family: sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #c85810;
+}
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: #f0e6c8;
+  padding: 0.7rem 1.4rem;
+  font-family: sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 1000;
+}
+.toast.visible { opacity: 1; }
 </style>
 </head>
 <body>
@@ -662,6 +901,7 @@ async function submitEntry() {
   if (!API_KEY) { alert('Please enter your Anthropic API key first.'); return; }
   const entry = document.getElementById('entry').value.trim();
   if (!entry) return;
+  lastEntryText = entry;
 
   const btn = document.getElementById('echoBtn');
   btn.disabled = true;
@@ -690,6 +930,9 @@ async function submitEntry() {
       })
     });
 
+      })
+    });
+
     const data = await res.json();
     const text = data.content.map(b => b.text || '').join('');
     const clean = text.replace(/```json|```/g, '').trim();
@@ -708,6 +951,7 @@ async function submitEntry() {
 
 function render(d) {
   document.getElementById('loading').classList.remove('visible');
+  lastResponseData = d;
 
   // Render opening — italicize text titles wrapped in *...*
   const openingEl = document.getElementById('opening');
@@ -768,6 +1012,10 @@ function render(d) {
   document.getElementById('sourceTranslator').textContent = d.source_translation || '';
 
   const img = selectImage(d.concept_keywords || '');
+  lastImageUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(img.url.replace(/^https?:\/\//, ''));
+  lastImageTitle = img.title;
+  lastImageArtist = img.artist;
+  lastImageTradition = img.tradition;
   const artEl = document.getElementById('artImg');
   artEl.src = img.url;
   artEl.alt = img.title;
@@ -789,6 +1037,8 @@ function render(d) {
 
   document.getElementById('response').classList.add('visible');
   document.getElementById('againRow').classList.add('visible');
+  document.getElementById('saveRow').classList.add('visible');
+  populateShareCard();
   document.getElementById('response').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -796,6 +1046,7 @@ function reset() {
   document.getElementById('entry').value = '';
   document.getElementById('response').classList.remove('visible');
   document.getElementById('againRow').classList.remove('visible');
+  document.getElementById('saveRow').classList.remove('visible');
   document.getElementById('echoBtn').disabled = false;
   document.querySelector('.write-area').style.display = '';
   document.querySelector('.echo-row').style.display = '';
@@ -819,5 +1070,57 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+
+<div class="save-row" id="saveRow">
+  <button class="save-btn" onclick="saveCard()">Save as image ›</button>
+</div>
+
+<div class="share-card-container" id="shareCardContainer">
+  <div class="share-card" id="shareCard">
+    <div class="sc-header">
+      <div class="sc-header-name">DHARMA'S ECHO</div>
+      <div class="sc-header-sub">the dharma echoes back your moment</div>
+    </div>
+    <div class="sc-you-wrote">
+      <div class="sc-label">You wrote</div>
+      <div class="sc-you-wrote-text" id="scYouWrote"></div>
+    </div>
+    <div class="sc-opening" id="scOpening"></div>
+    <div class="sc-term-block">
+      <div class="sc-term-scripts">
+        <div>
+          <div class="sc-script-sa" id="scScriptSa"></div>
+          <div class="sc-script-roman" id="scScriptSaRoman"></div>
+        </div>
+        <div id="scTibGroup" style="display:none;">
+          <div class="sc-script-bo" id="scScriptBo"></div>
+          <div class="sc-script-roman" id="scScriptBoRoman"></div>
+        </div>
+      </div>
+      <div class="sc-term-first" id="scTermFirst"></div>
+      <div class="sc-term-body" id="scTermBody"></div>
+    </div>
+    <div class="sc-seal" id="scSeal"></div>
+    <div class="sc-figure-source">
+      <div class="sc-figure-name" id="scFigureName"></div>
+      <div class="sc-source-ref" id="scSourceRef"></div>
+      <div class="sc-source-box">
+        <div class="sc-source-passage" id="scSourcePassage"></div>
+        <div class="sc-source-trans" id="scSourceTrans"></div>
+      </div>
+      <div class="sc-gloss" id="scGloss"></div>
+    </div>
+    <div class="sc-image-block">
+      <img id="scImg" src="" alt="" crossorigin="anonymous">
+      <div class="sc-image-title" id="scImgTitle"></div>
+      <div class="sc-image-why" id="scImgWhy"></div>
+    </div>
+    <div class="sc-footer">dharmas-echo.vercel.app</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Saved</div>
+
 </body>
 </html>
+
