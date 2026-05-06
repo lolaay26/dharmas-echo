@@ -640,6 +640,103 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   color: #c85810;
 }
 
+
+.sc-verse {
+  padding: 1.2rem 0 1.4rem;
+  border-bottom: 1px solid rgba(110, 130, 170, 0.4);
+}
+.sc-verse-text {
+  font-size: 14px;
+  font-style: italic;
+  color: #1a2540;
+  line-height: 2;
+  margin-bottom: 0.5rem;
+}
+.sc-verse-attr {
+  font-family: sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #c85810;
+  font-weight: 600;
+}
+.sc-verse-attr em {
+  font-family: 'EB Garamond', serif;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* Format selector */
+.format-select {
+  display: inline-flex;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+.format-btn {
+  background: none;
+  border: 1px solid var(--cream-border);
+  padding: 0.4rem 0.8rem;
+  font-family: sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.format-btn.active { background: var(--text); color: #f0e6c8; border-color: var(--text); }
+.format-btn:hover:not(.active) { background: var(--cream); }
+
+/* Format-specific share card sizes */
+.share-card.format-default { width: 560px; }
+.share-card.format-square { width: 1080px; padding: 4rem; }
+.share-card.format-square .sc-script-sa { font-size: 38px; }
+.share-card.format-square .sc-script-bo { font-size: 32px; }
+.share-card.format-square .sc-script-roman { font-size: 22px; }
+.share-card.format-square .sc-header-name { font-size: 18px; }
+.share-card.format-square .sc-header-sub { font-size: 13px; }
+.share-card.format-square .sc-you-wrote-text,
+.share-card.format-square .sc-opening,
+.share-card.format-square .sc-term-first,
+.share-card.format-square .sc-term-body,
+.share-card.format-square .sc-seal,
+.share-card.format-square .sc-figure-name,
+.share-card.format-square .sc-source-passage,
+.share-card.format-square .sc-verse-text { font-size: 22px; }
+.share-card.format-square .sc-label,
+.share-card.format-square .sc-source-ref,
+.share-card.format-square .sc-source-trans,
+.share-card.format-square .sc-image-title,
+.share-card.format-square .sc-image-why,
+.share-card.format-square .sc-verse-attr,
+.share-card.format-square .sc-gloss,
+.share-card.format-square .sc-footer { font-size: 16px; }
+
+.share-card.format-story { width: 1080px; padding: 4rem 3rem; min-height: 1920px; }
+.share-card.format-story .sc-script-sa { font-size: 42px; }
+.share-card.format-story .sc-script-bo { font-size: 36px; }
+.share-card.format-story .sc-script-roman { font-size: 24px; }
+.share-card.format-story .sc-header-name { font-size: 20px; }
+.share-card.format-story .sc-header-sub { font-size: 14px; }
+.share-card.format-story .sc-you-wrote-text,
+.share-card.format-story .sc-opening,
+.share-card.format-story .sc-term-first,
+.share-card.format-story .sc-term-body,
+.share-card.format-story .sc-seal,
+.share-card.format-story .sc-figure-name,
+.share-card.format-story .sc-source-passage,
+.share-card.format-story .sc-verse-text { font-size: 24px; }
+.share-card.format-story .sc-label,
+.share-card.format-story .sc-source-ref,
+.share-card.format-story .sc-source-trans,
+.share-card.format-story .sc-image-title,
+.share-card.format-story .sc-image-why,
+.share-card.format-story .sc-verse-attr,
+.share-card.format-story .sc-gloss,
+.share-card.format-story .sc-footer { font-size: 18px; }
+
 /* ── Toast ── */
 .toast {
   position: fixed;
@@ -1132,6 +1229,33 @@ function populateShareCard() {
   document.getElementById('scImgTitle').textContent =
     lastImageTitle + ' · ' + lastImageArtist + ' · ' + lastImageTradition;
   document.getElementById('scImgWhy').textContent = d.artwork_why || '';
+
+  // Verse
+  const verseBlock = document.getElementById('scVerseBlock');
+  const verseLines = (d.verse_text || '').split('\n').map(l => l.trim()).filter(Boolean);
+  if (verseLines.length > 0) {
+    document.getElementById('scVerseText').innerHTML = verseLines.join('<br>');
+    let attr = d.verse_attribution || '';
+    if (attr.includes('Buddha') && attr.includes('Theravada')) {
+      attr = attr.replace(/[·\s]*Theravada[\s]*/g, '');
+    }
+    const attrFull = attr + (d.verse_source ? ' · <em>' + d.verse_source + '</em>' : '');
+    document.getElementById('scVerseAttr').innerHTML = attrFull;
+    verseBlock.style.display = 'block';
+  } else {
+    verseBlock.style.display = 'none';
+  }
+}
+
+let currentFormat = 'default';
+function setFormat(format) {
+  currentFormat = format;
+  const card = document.getElementById('shareCard');
+  card.classList.remove('format-default', 'format-square', 'format-story');
+  card.classList.add('format-' + format);
+  document.querySelectorAll('.format-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.format === format);
+  });
 }
 
 async function saveCard() {
@@ -1240,10 +1364,15 @@ async function shareCard() {
 <div class="save-row" id="saveRow">
   <button class="save-btn" onclick="saveCard()">Save ›</button>
   <button class="save-btn" onclick="shareCard()">Share ›</button>
+  <div class="format-select">
+    <button class="format-btn active" data-format="default" onclick="setFormat('default')">Card</button>
+    <button class="format-btn" data-format="square" onclick="setFormat('square')">Square</button>
+    <button class="format-btn" data-format="story" onclick="setFormat('story')">Story</button>
+  </div>
 </div>
 
 <div class="share-card-container" id="shareCardContainer">
-  <div class="share-card" id="shareCard">
+  <div class="share-card format-default" id="shareCard">
     <div class="sc-header">
       <div class="sc-header-name">DHARMA'S ECHO</div>
       <div class="sc-header-sub">the dharma echoes back your moment</div>
@@ -1276,6 +1405,10 @@ async function shareCard() {
         <div class="sc-source-trans" id="scSourceTrans"></div>
       </div>
       <div class="sc-gloss" id="scGloss"></div>
+    </div>
+    <div class="sc-verse" id="scVerseBlock">
+      <div class="sc-verse-text" id="scVerseText"></div>
+      <div class="sc-verse-attr" id="scVerseAttr"></div>
     </div>
     <div class="sc-image-block">
       <img id="scImg" src="" alt="" crossorigin="anonymous">
