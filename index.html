@@ -884,24 +884,28 @@ function showDebug(lines, result) {
 async function generateImageCaption(d, actualImageTitle) {
   const captionPrompt = `Write one sentence in this exact pattern:
 
-[Visible figure or detail in the image] [verb] [the specific thing this person wrote].
-
-The opening line of their response was: "${d.opening}"
-Notice how it names the figure and what they spoke to. Match that directness.
+[A specific visible feature of the image — a posture, gesture, expression, color, or element you can name] echoes [5-9 word distillation of the underlying truth in their entry].
 
 Inputs:
+- Image title: "${actualImageTitle}"
 - They wrote: "${lastEntryText}"
-- Image: "${actualImageTitle}"
 
-Verbs to use: meets / answers / holds / reaches / sees / opens / carries.
+Rules:
+1. The first half must be a SPECIFIC visible feature, not the whole image name. Examples of features: "the Buddha's seated stillness", "Tara's stepping foot", "Milarepa's hand cupped to his ear", "the radiating light", "the calm gaze", "the wheel at the center". Look at the image title and choose what is most likely visible and most relevant.
+2. The verb is "echoes".
+3. The second half names the underlying truth in the entry — what it's really about — in 5-9 words. Distilled, not paraphrased.
+4. The two halves must genuinely meet. The visible feature must actually relate to the truth named. Do not force a connection that is not there. If the image's only visible feature you can name doesn't echo the entry, choose a different feature.
+5. Do not begin with "Tibetan", "This", "The image", "Buddhist".
+6. 12-18 words total.
 
-Examples (each names something visible, then a verb, then the person's words):
-- "Milarepa in his cave meets the longing for solitude you wrote about."
-- "The Buddha's teaching gesture answers your question about whether to begin."
-- "Padmasambhava's gaze holds the trust your heart is reaching for."
-- "Samantabhadra's open expanse reaches the freedom you feel in the sky."
+Examples of genuine echoes (notice each visible feature actually meets each truth):
+- "The wheel at the center of the painting echoes the spinning that mistakes motion for arrival."
+- "Tara's stepping foot echoes the fear that needs no answer to dissolve."
+- "The Buddha's seated stillness echoes the rest beneath endless pursuit."
+- "Milarepa's cupped hand echoes the listening that quiets the wandering mind."
+- "Padmasambhava's steady gaze echoes the longing to be truly seen by the teacher."
 
-Now write one sentence for these inputs. Same pattern. 12–18 words. Address the person with "you" or "your". No quotes. No preamble.`;
+Now write one sentence for these inputs. No quotes. No preamble.`;
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
