@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dharma's Echo</title>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif+Devanagari:wght@300;400;500&family=Jomolhari&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -422,341 +421,6 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 /* Error */
 .error { display: none; padding: 1rem 3rem; color: #904040; font-style: italic; font-size: 0.9rem; }
 .error.visible { display: block; }
-
-/* ── Save as card button ── */
-.save-row {
-  padding: 1rem 3rem 0;
-  display: none;
-  justify-content: flex-start;
-  gap: 1rem;
-}
-.save-row.visible { display: flex; }
-.save-btn {
-  background: none;
-  border: 1px solid var(--cream-border);
-  padding: 0.5rem 1.2rem;
-  font-family: sans-serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gold-dark);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.save-btn:hover { background: var(--cream); color: var(--text); }
-
-/* ── Share card (off-screen for rendering) ── */
-.share-card-container {
-  position: fixed;
-  top: -10000px;
-  left: 0;
-  width: 560px;
-  pointer-events: none;
-  z-index: -1;
-}
-.share-card {
-  width: 560px;
-  padding: 2.2rem;
-  font-family: 'EB Garamond', Georgia, serif;
-  color: #1a2540;
-  background: radial-gradient(ellipse at 30% 20%, #fdf5de 0%, #f0e6c0 35%, #9aa8be 80%, #6a7e9a 100%);
-  box-shadow: inset 0 0 60px rgba(40, 55, 95, 0.14);
-  border-radius: 4px;
-}
-.sc-header { text-align: center; padding-bottom: 1.2rem; border-bottom: 1px solid rgba(110, 130, 170, 0.4); }
-.sc-header-name {
-  font-family: sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.38em;
-  color: #a82010;
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-}
-.sc-header-sub {
-  font-family: sans-serif;
-  font-size: 8.5px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #c85810;
-}
-.sc-you-wrote { padding: 1rem 0; border-bottom: 1px solid rgba(110, 130, 170, 0.35); }
-.sc-label {
-  font-family: sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #c85810;
-  margin-bottom: 0.35rem;
-  font-weight: 700;
-}
-.sc-you-wrote-text {
-  font-size: 13px;
-  font-style: italic;
-  color: #2a3555;
-  line-height: 1.55;
-}
-.sc-opening {
-  padding: 1.2rem 0;
-  font-size: 14.5px;
-  line-height: 1.75;
-  color: #1a2540;
-  border-bottom: 1px solid rgba(110, 130, 170, 0.35);
-}
-.sc-term-block { padding: 1.4rem 0 1.2rem; }
-.sc-term-scripts {
-  display: flex;
-  gap: 2.5rem;
-  align-items: flex-start;
-  margin-bottom: 1.1rem;
-  flex-wrap: wrap;
-}
-.sc-script-sa {
-  font-family: 'Noto Serif Devanagari', Georgia, serif;
-  font-size: 24px;
-  color: #1a2540;
-  line-height: 1.2;
-}
-.sc-script-bo {
-  font-family: 'Jomolhari', Georgia, serif;
-  font-size: 21px;
-  color: #1a2540;
-  line-height: 1.3;
-}
-.sc-script-roman {
-  font-family: 'EB Garamond', serif;
-  font-size: 14px;
-  font-style: italic;
-  color: #c85810;
-  letter-spacing: 0.02em;
-  margin-top: 0.15rem;
-}
-.sc-term-first {
-  font-size: 14px;
-  color: #1a2540;
-  font-weight: 500;
-  line-height: 1.7;
-  margin-bottom: 0.5rem;
-}
-.sc-term-body {
-  font-size: 13px;
-  color: #3a4565;
-  line-height: 1.8;
-}
-.sc-seal {
-  padding: 0.9rem 0;
-  font-size: 13px;
-  font-style: italic;
-  color: #3a4565;
-  line-height: 1.75;
-  border-top: 1px solid rgba(110, 130, 170, 0.35);
-  border-bottom: 1px solid rgba(110, 130, 170, 0.35);
-}
-.sc-figure-source { padding: 1.2rem 0 1.4rem; }
-.sc-figure-name {
-  font-size: 15px;
-  color: #1a2540;
-  font-weight: 500;
-  margin-bottom: 0.6rem;
-}
-.sc-source-ref {
-  font-family: sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  color: #a82010;
-  margin-bottom: 0.6rem;
-  font-weight: 700;
-}
-.sc-source-ref em {
-  font-family: 'EB Garamond', serif;
-  text-transform: none;
-  letter-spacing: 0.02em;
-  font-size: 13px;
-  font-style: italic;
-}
-.sc-source-box {
-  background: rgba(253, 240, 205, 0.5);
-  padding: 0.9rem 1.1rem;
-  border-left: 2px solid #a82010;
-  border-radius: 2px;
-}
-.sc-source-passage {
-  font-size: 13px;
-  font-style: italic;
-  color: #1a2540;
-  line-height: 1.75;
-  margin-bottom: 0.4rem;
-}
-.sc-source-trans {
-  font-family: sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #3a4565;
-}
-.sc-gloss {
-  padding: 0.7rem 0.3rem 0;
-  font-size: 11.5px;
-  font-style: italic;
-  color: #5a6580;
-  line-height: 1.7;
-}
-.sc-image-block {
-  background: rgba(253, 240, 205, 0.4);
-  padding: 1rem;
-  margin: 0.5rem 0 1.2rem;
-  text-align: center;
-  border-radius: 2px;
-}
-.sc-image-block img {
-  max-width: 100%;
-  max-height: 340px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto 0.9rem;
-}
-.sc-image-title {
-  font-family: sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #a82010;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-.sc-image-why {
-  font-size: 12.5px;
-  color: #3a4565;
-  font-style: italic;
-  line-height: 1.7;
-}
-.sc-footer {
-  text-align: center;
-  padding-top: 1.2rem;
-  border-top: 1px solid rgba(110, 130, 170, 0.35);
-  font-family: sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #c85810;
-}
-
-
-.sc-verse {
-  padding: 1.2rem 0 1.4rem;
-  border-bottom: 1px solid rgba(110, 130, 170, 0.4);
-}
-.sc-verse-text {
-  font-size: 14px;
-  font-style: italic;
-  color: #1a2540;
-  line-height: 2;
-  margin-bottom: 0.5rem;
-}
-.sc-verse-attr {
-  font-family: sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #c85810;
-  font-weight: 600;
-}
-.sc-verse-attr em {
-  font-family: 'EB Garamond', serif;
-  text-transform: none;
-  letter-spacing: 0.02em;
-  font-size: 11px;
-  font-style: italic;
-}
-
-/* Format selector */
-.format-select {
-  display: inline-flex;
-  gap: 0.5rem;
-  margin-left: 0.5rem;
-}
-.format-btn {
-  background: none;
-  border: 1px solid var(--cream-border);
-  padding: 0.4rem 0.8rem;
-  font-family: sans-serif;
-  font-size: 0.55rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold-dark);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.format-btn.active { background: var(--text); color: #f0e6c8; border-color: var(--text); }
-.format-btn:hover:not(.active) { background: var(--cream); }
-
-/* Format-specific share card sizes */
-.share-card.format-default { width: 560px; }
-.share-card.format-square { width: 1080px; padding: 4rem; }
-.share-card.format-square .sc-script-sa { font-size: 38px; }
-.share-card.format-square .sc-script-bo { font-size: 32px; }
-.share-card.format-square .sc-script-roman { font-size: 22px; }
-.share-card.format-square .sc-header-name { font-size: 18px; }
-.share-card.format-square .sc-header-sub { font-size: 13px; }
-.share-card.format-square .sc-you-wrote-text,
-.share-card.format-square .sc-opening,
-.share-card.format-square .sc-term-first,
-.share-card.format-square .sc-term-body,
-.share-card.format-square .sc-seal,
-.share-card.format-square .sc-figure-name,
-.share-card.format-square .sc-source-passage,
-.share-card.format-square .sc-verse-text { font-size: 22px; }
-.share-card.format-square .sc-label,
-.share-card.format-square .sc-source-ref,
-.share-card.format-square .sc-source-trans,
-.share-card.format-square .sc-image-title,
-.share-card.format-square .sc-image-why,
-.share-card.format-square .sc-verse-attr,
-.share-card.format-square .sc-gloss,
-.share-card.format-square .sc-footer { font-size: 16px; }
-
-.share-card.format-story { width: 1080px; padding: 4rem 3rem; min-height: 1920px; }
-.share-card.format-story .sc-script-sa { font-size: 42px; }
-.share-card.format-story .sc-script-bo { font-size: 36px; }
-.share-card.format-story .sc-script-roman { font-size: 24px; }
-.share-card.format-story .sc-header-name { font-size: 20px; }
-.share-card.format-story .sc-header-sub { font-size: 14px; }
-.share-card.format-story .sc-you-wrote-text,
-.share-card.format-story .sc-opening,
-.share-card.format-story .sc-term-first,
-.share-card.format-story .sc-term-body,
-.share-card.format-story .sc-seal,
-.share-card.format-story .sc-figure-name,
-.share-card.format-story .sc-source-passage,
-.share-card.format-story .sc-verse-text { font-size: 24px; }
-.share-card.format-story .sc-label,
-.share-card.format-story .sc-source-ref,
-.share-card.format-story .sc-source-trans,
-.share-card.format-story .sc-image-title,
-.share-card.format-story .sc-image-why,
-.share-card.format-story .sc-verse-attr,
-.share-card.format-story .sc-gloss,
-.share-card.format-story .sc-footer { font-size: 18px; }
-
-/* ── Toast ── */
-.toast {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--text);
-  color: #f0e6c8;
-  padding: 0.7rem 1.4rem;
-  font-family: sans-serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  border-radius: 2px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-  z-index: 1000;
-}
-.toast.visible { opacity: 1; }
 </style>
 </head>
 <body>
@@ -847,21 +511,27 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 
 <script>
 const IMAGES = [
-  { url:"https://upload.wikimedia.org/wikipedia/commons/1/12/Milarepa_thangka.JPG", title:"Milarepa", artist:"Tibetan, 17th century", tradition:"Kagyu, Tibetan Buddhist", tags:["milarepa","practice","renunciation","liberation","impermanence","anicca","mahamudra","solitude","mountain","cave","kagyu"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/f/f2/Milarepa_%281040-1123%29_LACMA_M.82.165.2.jpg", title:"Milarepa, LACMA", artist:"Tibetan, 15th–16th century", tradition:"Kagyu, Tibetan Buddhist", tags:["milarepa","practice","kagyu","mountain","songs","mahamudra"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/a/ad/Green_Tara_Thangka.jpg", title:"Green Tārā Thangka", artist:"Tibetan, 18th century", tradition:"Tibetan Buddhist", tags:["compassion","fear","protection","bodhicitta","liberation","tara","swift"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/f/ff/Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg", title:"Buddha, First Sermon, Sarnath", artist:"Gupta period, 5th century CE", tradition:"Indian Buddhist", tags:["dukkha","four noble truths","path","teaching","dharma","suffering","first sermon","buddha","pali"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/e/e8/Chakrasamvara_-_Google_Art_Project.jpg", title:"Cakrasaṃvara Thangka", artist:"Tibetan, 14th century", tradition:"Tibetan Buddhist", tags:["tantra","vajrayana","union","emptiness","wisdom","bliss"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/9/91/Paramasukha_Cakrasamvara_from_Central_Tibet_circa_1400%2C_distemper_on_cloth.jpg", title:"Paramasukha Cakrasaṃvara", artist:"Central Tibet, circa 1400", tradition:"Tibetan Buddhist", tags:["tantra","vajrayana","bliss","emptiness"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/4/44/Amitayus%2C_the_Buddha_of_Eternal_Life_ca_1625_LACMA.jpg", title:"Amitāyus, Buddha of Eternal Life", artist:"Tibetan, circa 1625", tradition:"Tibetan Buddhist", tags:["nirvana","pure land","beyond extremes","fourth seal","liberation","death","impermanence","amitabha"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/a/a1/The_Dhyani_Buddha_Akshobhya%2C_Tibetan_thangka%2C_late_13th_century%2C_Honolulu_Academy_of_Arts.jpg", title:"Akṣobhya Buddha", artist:"Tibetan, late 13th century", tradition:"Tibetan Buddhist", tags:["mirror wisdom","akshobhya","stillness","unshakeable","second seal"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/4/44/%27Amitabha_in_Sukhavati_Paradise%27%2C_Tibetan%2C_circa_1700%2C_San_Antonio_Museum_of_Art.jpg", title:"Amitābha in Sukhāvatī", artist:"Tibetan, circa 1700", tradition:"Tibetan Buddhist", tags:["amitabha","pure land","nirvana","fourth seal","liberation"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/b/b2/Arhat_Bakula_17h_century%2C_khienri_style%2C_Rubin_coll..jpg", title:"Arhat Bakula", artist:"Tibetan, 17th century", tradition:"Tibetan Buddhist", tags:["arhat","liberation","pali","theravada","solitude"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/f/f8/The_Fifth_Dalai_Lama%27s_Descent_from_the_Pure_Lands_-_Google_Art_Project.jpg", title:"Fifth Dalai Lama's Descent from the Pure Lands", artist:"Tibetan, 17th century", tradition:"Gelug, Tibetan Buddhist", tags:["compassion","bodhicitta","return","rebirth"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/6/62/The_Life_of_Milarepa_%281040-1123%29_LACMA_M.81.90.2_%281_of_4%29.jpg", title:"The Life of Milarepa", artist:"Western Tibet, 15th century", tradition:"Kagyu, Tibetan Buddhist", tags:["milarepa","practice","mountain","cave","songs","renunciation","liberation"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/0/06/Arhat_Dharmatala%2C_Eastern_Tibet%2C_2nd_half_of_16th_century%2C_Boston_MFA.jpg", title:"Arhat Dharmatāla", artist:"Eastern Tibet, 16th century", tradition:"Tibetan Buddhist", tags:["arhat","sutra","teaching","wisdom"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/5/54/Maitreya%2C_15th_century%2C_Boston_MFA.jpg", title:"Maitreya Buddha", artist:"Tibetan, 15th century", tradition:"Tibetan Buddhist", tags:["maitreya","future buddha","love","compassion","bodhicitta"] },
-  { url:"https://upload.wikimedia.org/wikipedia/commons/c/ca/Old_Green_Tara.JPG", title:"Green Tārā (detail)", artist:"Tibetan, early period", tradition:"Tibetan Buddhist", tags:["compassion","fear","protection","tara","swift","liberation"] }
+  { url: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg", title: "Buddha, First Sermon, Sarnath", artist: "Gupta period, 5th century CE", tradition: "Indian Buddhist", tags: ["buddha", "first sermon", "dharma", "four noble truths", "wheel of dharma", "teaching", "path", "sarnath", "gupta", "pali", "dukkha"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Buddha_Shakyamuni_and_scenes_from_his_lives_18th_century_Victoria_%26_Albert_Museum.jpg", title: "Buddha Śākyamuni and Scenes from His Lives", artist: "Tibetan, 18th century", tradition: "Tibetan Buddhist", tags: ["jataka", "previous lives", "rebirth", "biography", "narrative", "shakyamuni", "compassion", "bodhisattva path"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/5/50/Shakyamuni_Buddha_with_Scenes_of_His_Former_Lives._17th_century%2C_British_Museum.jpg", title: "Śākyamuni Buddha with Scenes of His Former Lives", artist: "Tibetan, 17th century", tradition: "Tibetan Buddhist", tags: ["jataka", "previous lives", "rebirth", "biography", "narrative", "shakyamuni", "bodhisattva path"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/f/fe/Seated_thousand-armed_boddhisattva_Avalokitshvara_%28Guanyin%29.jpg", title: "Thousand-armed Avalokiteśvara (Guanyin)", artist: "East Asian Buddhist sculpture", tradition: "Mahayana Buddhist", tags: ["avalokiteshvara", "chenrezig", "guanyin", "compassion", "karuna", "bodhicitta", "thousand arms", "infinite reach", "interdependence"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/2/20/1000_armed_Avalokiteshvara.jpg", title: "Thousand-armed Avalokiteśvara", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["avalokiteshvara", "chenrezig", "compassion", "karuna", "bodhicitta", "thousand arms", "all-seeing"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Tara_thangka.jpg", title: "Tārā Thangka", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["tara", "compassion", "fear", "protection", "swift", "feminine", "bodhicitta"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Green_Tara_%2834000421075%29.jpg", title: "Green Tārā", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["green tara", "tara", "swift action", "compassion", "fear", "obstacles", "protection", "feminine"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/d/d3/Anonymous_-_Painted_Banner_%28Thangka%29_of_Green_Tara_Surrounded_by_Twenty_Manifestations_-_1986.1314_-_Art_Institute_of_Chicago.jpg", title: "Green Tārā with Twenty Manifestations", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["tara", "twenty taras", "many forms", "compassion", "fear", "protection", "swift", "feminine"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/9/9d/White_Tara%2C_Tibet%2C_1644-1911_AD_-_Sichuan_Provincial_Museum_-_Chengdu%2C_China_-_DSC04498.jpg", title: "White Tārā", artist: "Tibetan, Qing period", tradition: "Tibetan Buddhist", tags: ["white tara", "long life", "healing", "longevity", "stillness", "feminine", "compassion"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/e/eb/Padmasambhava_with_Rainbow_Body_-_19th_century_Tibetan_thangka.jpg", title: "Padmasambhava with Rainbow Body", artist: "Tibetan, 19th century", tradition: "Nyingma, Tibetan Buddhist", tags: ["padmasambhava", "guru rinpoche", "rainbow body", "nyingma", "dzogchen", "tantra", "transmission", "guru", "lineage", "luminous"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/f/f2/Painting_of_Padmasambhava%2C_from_Bhutan%2C_ca.1692%E2%80%9393.jpg", title: "Padmasambhava (Bhutanese)", artist: "Bhutanese, c. 1692–93", tradition: "Nyingma, Tibetan Buddhist", tags: ["padmasambhava", "guru rinpoche", "nyingma", "tantra", "transmission", "guru", "lineage"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Jigme_Lingpa.jpg", title: "Jigme Lingpa", artist: "Tibetan, 18th century", tradition: "Nyingma, Tibetan Buddhist", tags: ["jigme lingpa", "nyingma", "longchen nyingthig", "heart essence", "terma", "treasure revealer", "vast expanse", "dzogchen", "nature of mind"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Gesar_of_Ling_riding_a_reindeer._Distemper_painting._Wellcome_L0040370.jpg", title: "Gesar of Ling", artist: "Tibetan", tradition: "Tibetan Buddhist", tags: ["gesar", "warrior", "courage", "fearlessness", "obstacles", "awakened activity", "bodhicitta in action"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Il_fullxfull2467910941_t2g5-sw_800x.jpg", title: "Mañjuśrī", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["manjushri", "wisdom", "prajna", "discriminating wisdom", "sword of wisdom", "third seal", "anatta", "emptiness", "insight", "cuts through delusion"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/4/48/Nepal_Thangka_with_Prajnaparamita.jpg", title: "Prajñāpāramitā", artist: "Nepalese thangka", tradition: "Mahayana Buddhist", tags: ["prajnaparamita", "perfection of wisdom", "emptiness", "sunyata", "third seal", "anatta", "heart sutra", "diamond sutra", "feminine wisdom", "mother of buddhas"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Sarasvati_thangka.jpg", title: "Sarasvatī Thangka", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["sarasvati", "speech", "learning", "music", "feminine", "knowledge", "study", "scholarship"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Vajrasattva_Thangka.png", title: "Vajrasattva", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["vajrasattva", "purification", "confession", "regret", "obscurations", "primordial purity", "ngondro", "preliminary practice"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/f/f7/Clevelandart_1982.50.jpg", title: "Vajravārāhī", artist: "Tibetan, 13th–14th century", tradition: "Tibetan Buddhist", tags: ["vajravarahi", "dakini", "feminine principle", "wisdom dakini", "tantra", "vajrayana", "non-dual wisdom", "fierce wisdom", "yidam"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/7/70/Buddha_Amitabha_in_His_Pure_Land_of_Suvakti.JPG", title: "Buddha Amitābha in His Pure Land", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["amitabha", "sukhavati", "pure land", "fourth seal", "nirvana", "infinite light", "death", "liberation", "devotion", "rebirth"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/0/02/Vajrapani_Bodhisattva.jpg", title: "Vajrapāṇi Bodhisattva", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["vajrapani", "power", "fierce compassion", "obstacles", "protection", "wrathful", "energy of awakening"] },
+  { url: "https://upload.wikimedia.org/wikipedia/commons/7/76/Bhutanese_thanka_of_Mt._Meru_and_the_Buddhist_Universe.jpg", title: "Mt. Meru and the Buddhist Universe", artist: "Bhutanese thangka", tradition: "Tibetan Buddhist", tags: ["mount meru", "cosmology", "buddhist universe", "samsara", "six realms", "wheel of life", "conditioned existence", "rebirth", "axis mundi"] },
 ];
 
 function selectImage(keywords) {
@@ -877,6 +547,7 @@ function selectImage(keywords) {
 }
 
 let API_KEY = '';
+let lastEntryText = '';
 function saveKey() {
   const k = document.getElementById('keyInput').value.trim();
   if (!k) return;
@@ -907,7 +578,7 @@ term_tibetan_roman: Wylie transliteration of the Tibetan term if term_tibetan is
 term_transliteration: Full romanized form of the PRIMARY term (Sanskrit or Pali) with diacritics.
 term_tradition: Pali / Sanskrit / Tibetan / Sanskrit and Tibetan — only list traditions where the term genuinely exists with that meaning.
 term_first_line: One sentence. Not the flat English word — the hook that opens the real meaning.
-term_translation: Two parts. First: one sentence of philosophical precision — what the tradition actually means by this term, where it appears, what it identifies or names. No metaphor yet. Second: one short poetic line that earns its place — beginning with "Like" — a simile that illuminates the concept without interpreting the entry. In the spirit of Thrinley Norbu Rinpoche's writing: direct, simple, the image lands without explanation. The simile serves the term, not the person who wrote. Example: "Tṛṣṇā is the craving identified in the second noble truth as the origin of dukkha — the compulsive grasping that perpetuates the cycle of becoming. Like consciousness projecting a distant shore while standing on solid ground." If the Tibetan term carries a meaningfully different nuance, one additional sentence may note this.
+term_translation: TWO SENTENCES MAXIMUM. UNDER 40 WORDS TOTAL. First sentence: philosophical precision — what the tradition actually means by this term. No metaphor. Second sentence: one image beginning with "Like" — Thrinley Norbu register. Direct, simple, the image lands without explanation. The simile serves the term, not the person who wrote. Do not explain, do not elaborate, do not add context. If a third sentence feels needed, the first two are wrong. Example: "Tṛṣṇā is the thirst identified in the second noble truth as the root of dukkha. Like consciousness projecting a distant shore while standing on solid ground." Do NOT add a third sentence about Tibetan nuance — if the Tibetan differs, that goes in term_first_line, not here.
 
 THE SEAL — conversational, one sentence, in italic register:
 
@@ -929,6 +600,7 @@ THE FIGURE — always named. Strict source hierarchy:
      · Dudjom Rinpoche: for tantric view, the nature of perception, the purity of phenomena.
      · Chogyur Lingpa: for terma and Rimé territory.
      · Yeshe Tsogyal: for the feminine principle, the dakini, the ground of experience.
+   — The Khyentse lineage (Jamyang Khyentse Wangpo 1820–1892, Jamgön Kongtrül Lodrö Thayé 1813–1899, Jamyang Khyentse Chökyi Lodrö 1893–1959) is NEVER prominent by default. Reach for them ONLY when the entry sits squarely in their specific territory: the Rimé non-sectarian synthesis, terma revelation, the encyclopedic integration of view across schools, or extraordinary guru devotion in the Rimé register. If the entry could be answered well by Longchenpa, Patrul Rinpoche, or Jigme Lingpa, choose them instead. The Khyentse lineage appears through precision of fit, never through rotation.
    — Sakya second: Sakya Pandita, Gorampa — for precise philosophical and Lamdre territory
    — Kagyu third — ONLY when the concept is specifically and precisely Mahamudra territory, or the entry is unmistakably in the Kagyu stream (mountain solitude, the dohas, the songs of realization). Do not default to Milarepa. Milarepa is one figure among many — reach for Longchenpa, Patrul Rinpoche, or Jigme Lingpa first unless the Kagyu match is exact.
      · Milarepa: his domain is the songs (Mila Grubum), mountain retreat, the direct path through hardship, Mahamudra realization through practice. Not a default.
@@ -958,7 +630,20 @@ THE SOURCE — strict hierarchy:
 
 Passage: under 40 words, verified and precise. From Pali Canon, use Bhikkhu Bodhi or Bhikkhu Sujato translation and name them. From copyrighted translations (Padmakara, Shambhala, others), paraphrase carefully and name translator, publisher, chapter. For the translator credit always prefix with "Trans." Never invent a quote. If uncertain about the exact passage, choose one you are certain of rather than approximating.
 
-THE IMAGE — one sentence about the quality this territory shares with art from this tradition. Do not reference a specific image by name.
+THE IMAGE — one part:
+
+image_subject: The single most precise visual subject for this entry. Either the figure itself (if a painting tradition for them exists — Padmasambhava, Milarepa, Tara, Avalokiteśvara, Mañjuśrī, Buddha Śākyamuni, Amitābha, Maitreya, Vajrasattva, Samantabhadra, Cakrasaṃvara, Yeshe Tsogyal) or — if the figure is a treatise author with no painting tradition — the deity, lineage holder, or visual subject that most precisely embodies the same territory. Examples:
+  · Patrul Rinpoche → Padmasambhava (the Longchen Nyingthig lineage he transmitted)
+  · Longchenpa → Samantabhadra (Dzogchen's primordial buddha) OR Padmasambhava (the lineage holder)
+  · Jigme Lingpa → Padmasambhava (the source of his terma)
+  · Mipham Rinpoche → Mañjuśrī (he was considered an emanation)
+  · Shantideva → Avalokiteśvara (his tutelary deity; the embodiment of bodhicitta)
+  · Nagarjuna → Mañjuśrī (his deity) OR Prajñāpāramitā (the perfection of wisdom he expounded)
+  · Atisha → Tara (his tutelary deity)
+  · Milarepa → Milarepa (paintings exist)
+Use the figure's name itself as image_subject if a painting tradition exists. Use a precise alternate only if no paintings of the figure exist on Wikimedia Commons. Always one short noun phrase, never a description.
+
+(The caption that connects the image to the entry will be generated separately, after the actual image is selected.)
 
 THE VERSE — real verified verse only. Never invented. Lines separated by \\n. Not italic.
 
@@ -988,7 +673,7 @@ Return ONLY valid JSON, no markdown, no backticks, no preamble:
   "source_translation": "Trans. [Name] · [Publisher]",
   "source_passage": "Passage under 40 words. Paraphrased carefully if copyrighted.",
   "concept_keywords": "6–8 keywords from: dukkha, samsara, anicca, anatta, sunyata, bodhicitta, compassion, impermanence, emptiness, nirvana, rigpa, clinging, self, interdependence, liberation, wisdom, suffering, practice, renunciation, purification, natural state, four noble truths, beyond extremes, mahamudra, dzogchen, path, teaching, dharma, first sermon, buddha, viveka, solitude, mountain, madhyamaka, second seal, third seal, fourth seal, pali",
-  "artwork_why": "One sentence about the quality this territory shares with art from this tradition.",
+  "image_subject": "Single noun phrase — the figure's name if a painting tradition exists, else a precise visual alternate (deity, lineage holder, or subject embodying the same territory). See THE IMAGE instructions.",
   "verse_text": "3–5 lines. Real verified verse only. Lines separated by \\n.",
   "verse_attribution": "Name · tradition · century — omit tradition entirely if the speaker is Buddha Śākyamuni",
   "verse_source": "Title of text"
@@ -1006,6 +691,10 @@ async function submitEntry() {
   document.getElementById('response').classList.remove('visible');
   document.getElementById('error').classList.remove('visible');
   document.getElementById('againRow').classList.remove('visible');
+  // Reset visibility of image block in case last response hid it
+  const imgBlock = document.querySelector('.image-block');
+  if (imgBlock) imgBlock.style.display = '';
+  document.querySelectorAll('.divider').forEach(d => d.style.display = '');
   document.getElementById('youWroteText').textContent = entry;
   document.querySelector('.write-area').style.display = 'none';
   document.querySelector('.echo-row').style.display = 'none';
@@ -1045,7 +734,6 @@ async function submitEntry() {
 
 function render(d) {
   document.getElementById('loading').classList.remove('visible');
-  lastResponseData = d;
 
   // Render opening — italicize text titles wrapped in *...*
   const openingEl = document.getElementById('opening');
@@ -1105,19 +793,11 @@ function render(d) {
   document.getElementById('sourcePassage').textContent = '\u201C' + (d.source_passage || '') + '\u201D';
   document.getElementById('sourceTranslator').textContent = d.source_translation || '';
 
-  const img = selectImage(d.concept_keywords || '');
-  lastImageUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(img.url.replace(/^https?:\/\//, ''));
-  lastImageTitle = img.title;
-  lastImageArtist = img.artist;
-  lastImageTradition = img.tradition;
-  const artEl = document.getElementById('artImg');
-  artEl.src = img.url;
-  artEl.alt = img.title;
-  artEl.style.display = 'block';
-  artEl.onerror = function() { this.style.display = 'none'; };
-  document.getElementById('imgTitle').textContent =
-    img.title + ' · ' + img.artist + ' · ' + img.tradition;
-  document.getElementById('imgWhy').textContent = d.artwork_why || '';
+  // Image: async Wikimedia search with image_subject fallback
+  loadImage(d).catch(e => {
+    console.error('Image load failed:', e);
+    hideImageBlock();
+  });
 
   const lines = (d.verse_text || '').split('\n').map(l => l.trim()).filter(Boolean);
   document.getElementById('verseText').innerHTML = lines.join('<br>');
@@ -1131,16 +811,223 @@ function render(d) {
 
   document.getElementById('response').classList.add('visible');
   document.getElementById('againRow').classList.add('visible');
-  document.getElementById('saveRow').classList.add('visible');
-  populateShareCard();
   document.getElementById('response').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Image loading: Wikimedia first, then second Claude call for caption ──
+async function loadImage(d) {
+  const figureName = d.figure_name || '';
+  const imageSubject = d.image_subject || figureName;
+
+  // Debug panel
+  const debugLines = [];
+  debugLines.push('figure_name: ' + figureName);
+  debugLines.push('image_subject: ' + imageSubject);
+
+  // Try figure_name first (in case it has paintings even though image_subject differs)
+  let result = await searchWikimediaForFigure(figureName, debugLines);
+
+  // If no result and image_subject is different, try it
+  if (!result && imageSubject && imageSubject.toLowerCase() !== figureName.toLowerCase()) {
+    debugLines.push('--- trying image_subject ---');
+    result = await searchWikimediaForFigure(imageSubject, debugLines);
+  }
+
+  // Show debug
+  showDebug(debugLines, result);
+
+  if (!result) {
+    hideImageBlock();
+    return;
+  }
+
+  // Render the image first — caption arrives second
+  const artEl = document.getElementById('artImg');
+  artEl.src = result.url;
+  artEl.alt = result.title;
+  artEl.style.display = 'block';
+  artEl.onerror = function() { hideImageBlock(); };
+  document.getElementById('imgTitle').textContent = result.cleanTitle;
+
+  // Show "Loading..." state for caption while it generates
+  document.getElementById('imgWhy').textContent = '';
+
+  // Now make a second call to Claude to get a caption that fits THIS image
+  try {
+    const caption = await generateImageCaption(d, result.cleanTitle);
+    if (caption) {
+      document.getElementById('imgWhy').textContent = caption;
+    }
+  } catch (e) {
+    console.error('Caption generation failed:', e);
+  }
+}
+
+function showDebug(lines, result) {
+  let panel = document.getElementById('debugPanel');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'debugPanel';
+    panel.style.cssText = 'margin: 1rem 3rem; padding: 0.8rem 1rem; background: #fff8e0; border: 1px dashed #c8a030; font-family: monospace; font-size: 0.7rem; line-height: 1.6; color: #4a3a18; white-space: pre-wrap; word-break: break-all;';
+    document.querySelector('.response').appendChild(panel);
+  }
+  let txt = '── DEBUG (delete this section once images are working) ──\n';
+  txt += lines.join('\n');
+  if (result) {
+    txt += '\n\n→ CHOSEN: ' + result.title;
+  } else {
+    txt += '\n\n→ NO IMAGE FOUND';
+  }
+  panel.textContent = txt;
+}
+
+async function generateImageCaption(d, actualImageTitle) {
+  const captionPrompt = `Write one sentence in this exact pattern:
+
+[Visible figure or detail in the image] [verb] [the specific thing this person wrote].
+
+The opening line of their response was: "${d.opening}"
+Notice how it names the figure and what they spoke to. Match that directness.
+
+Inputs:
+- They wrote: "${lastEntryText}"
+- Image: "${actualImageTitle}"
+
+Verbs to use: meets / answers / holds / reaches / sees / opens / carries.
+
+Examples (each names something visible, then a verb, then the person's words):
+- "Milarepa in his cave meets the longing for solitude you wrote about."
+- "The Buddha's teaching gesture answers your question about whether to begin."
+- "Padmasambhava's gaze holds the trust your heart is reaching for."
+- "Samantabhadra's open expanse reaches the freedom you feel in the sky."
+
+Now write one sentence for these inputs. Same pattern. 12–18 words. Address the person with "you" or "your". No quotes. No preamble.`;
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 150,
+      temperature: 0.3,
+      messages: [{ role: 'user', content: captionPrompt }]
+    })
+  });
+
+  if (!res.ok) return null;
+  const data = await res.json();
+  const text = data.content.map(b => b.text || '').join('').trim();
+  // Strip any quotes the model might have added despite instructions
+  return text.replace(/^["'`]+|["'`]+$/g, '');
+}
+
+function hideImageBlock() {
+  // Hide the entire image block when no image is available
+  const imgBlock = document.querySelector('.image-block');
+  if (imgBlock) imgBlock.style.display = 'none';
+  // Also hide the divider before it so we don't have a floating ornament
+  const dividers = document.querySelectorAll('.divider');
+  if (dividers.length > 0) dividers[dividers.length - 1].style.display = 'none';
+}
+
+async function searchWikimediaForFigure(figure, debugLines) {
+  if (!figure) {
+    if (debugLines) debugLines.push('  search: empty figure, skip');
+    return null;
+  }
+  // Strip honorifics that confuse search
+  const cleaned = figure.replace(/Rinpoche|Lama|Bhante/g, '').trim();
+  const query = cleaned + ' thangka';
+  if (debugLines) debugLines.push('  search: "' + query + '"');
+  const url = 'https://commons.wikimedia.org/w/api.php?' +
+    'action=query&format=json&origin=*' +
+    '&generator=search&gsrnamespace=6' +
+    '&gsrsearch=' + encodeURIComponent(query) +
+    '&gsrlimit=12' +
+    '&prop=imageinfo&iiprop=url|size|mediatype&iiurlwidth=600';
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) {
+      if (debugLines) debugLines.push('  HTTP ' + res.status);
+      return null;
+    }
+    const data = await res.json();
+    if (!data.query || !data.query.pages) {
+      if (debugLines) debugLines.push('  no pages in response');
+      return null;
+    }
+
+    const allResults = Object.values(data.query.pages);
+    if (debugLines) {
+      debugLines.push('  raw results: ' + allResults.length);
+      allResults.slice(0, 5).forEach(p => debugLines.push('    - ' + p.title));
+    }
+
+    const candidates = allResults
+      .filter(p => p.imageinfo && p.imageinfo[0])
+      .filter(p => p.imageinfo[0].mediatype === 'BITMAP')
+      .filter(p => p.imageinfo[0].size > 50000)
+      .filter(p => {
+        // Title MUST contain the figure name AND look like an artwork
+        const t = p.title.toLowerCase();
+        const figLower = cleaned.toLowerCase();
+        // Allow partial match — e.g. "Sakyamuni" matches "Buddha Sakyamuni"
+        const figureWords = figLower.split(/\s+/).filter(w => w.length > 3);
+        const hasFigure = figureWords.some(w => t.includes(w));
+        const isArtwork = /thangka|thanka|painting|tibetan|nepali/i.test(t);
+        // Both required — figure name AND artwork indicator
+        return hasFigure && isArtwork;
+      });
+
+    if (debugLines) debugLines.push('  after filter: ' + candidates.length);
+
+    if (candidates.length === 0) return null;
+
+    // Prefer ones that contain the figure name AND "thangka"/"thanka" in title
+    const figLower = cleaned.toLowerCase();
+    candidates.sort((a, b) => {
+      const ta = a.title.toLowerCase();
+      const tb = b.title.toLowerCase();
+      const aHasFig = ta.includes(figLower) ? 1 : 0;
+      const bHasFig = tb.includes(figLower) ? 1 : 0;
+      const aIsArt = /thangka|thanka|painting/i.test(ta) ? 1 : 0;
+      const bIsArt = /thangka|thanka|painting/i.test(tb) ? 1 : 0;
+      return (bHasFig + bIsArt) - (aHasFig + aIsArt);
+    });
+
+    const chosen = candidates[0];
+    const cleanTitle = chosen.title
+      .replace(/^File:/, '')
+      .replace(/_/g, ' ')
+      .replace(/\.[a-z]+$/i, '');
+
+    return {
+      url: chosen.imageinfo[0].thumburl || chosen.imageinfo[0].url,
+      fullUrl: chosen.imageinfo[0].url,
+      title: chosen.title,
+      cleanTitle: cleanTitle
+    };
+  } catch (e) {
+    if (debugLines) debugLines.push('  error: ' + e.message);
+    console.error('Wikimedia search error:', e);
+    return null;
+  }
 }
 
 function reset() {
   document.getElementById('entry').value = '';
   document.getElementById('response').classList.remove('visible');
   document.getElementById('againRow').classList.remove('visible');
-  document.getElementById('saveRow').classList.remove('visible');
+  // Un-hide image block + dividers in case they were hidden last response
+  const imgBlock = document.querySelector('.image-block');
+  if (imgBlock) imgBlock.style.display = '';
+  document.querySelectorAll('.divider').forEach(d => d.style.display = '');
   document.getElementById('echoBtn').disabled = false;
   document.querySelector('.write-area').style.display = '';
   document.querySelector('.echo-row').style.display = '';
@@ -1163,263 +1050,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
-
-// ── Share card ──
-let lastResponseData = null;
-let lastEntryText = '';
-let lastImageUrl = '';
-let lastImageTitle = '';
-let lastImageArtist = '';
-let lastImageTradition = '';
-
-function populateShareCard() {
-  if (!lastResponseData) return;
-  const d = lastResponseData;
-
-  document.getElementById('scYouWrote').textContent = lastEntryText;
-
-  const openingRaw = d.opening || '';
-  document.getElementById('scOpening').innerHTML =
-    openingRaw.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-
-  document.getElementById('scScriptSa').textContent = d.term_sanskrit || '';
-  document.getElementById('scScriptSaRoman').textContent = d.term_transliteration || '';
-
-  if (d.term_tibetan && d.term_tibetan.trim()) {
-    document.getElementById('scScriptBo').textContent = d.term_tibetan;
-    document.getElementById('scScriptBoRoman').textContent = d.term_tibetan_roman || '';
-    document.getElementById('scTibGroup').style.display = 'block';
-  } else {
-    document.getElementById('scTibGroup').style.display = 'none';
-  }
-
-  document.getElementById('scTermFirst').textContent = d.term_first_line || '';
-  document.getElementById('scTermBody').textContent = d.term_translation || '';
-  document.getElementById('scSeal').textContent = d.seal || '';
-
-  const isBuddha = (d.figure_name || '').includes('Buddha Śākyamuni');
-  document.getElementById('scFigureName').textContent = d.figure_name || '';
-
-  const srcRef = document.getElementById('scSourceRef');
-  const refText = d.source_text || '';
-  const refNum = d.source_reference || '';
-  srcRef.innerHTML = '<em>' + refText + '</em>' + (refNum ? ' · ' + refNum : '');
-
-  document.getElementById('scSourcePassage').textContent =
-    '\u201C' + (d.source_passage || '') + '\u201D';
-  document.getElementById('scSourceTrans').textContent = d.source_translation || '';
-
-  const gloss = document.getElementById('scGloss');
-  if (isBuddha && d.figure_description) {
-    let desc = d.figure_description.replace(/^Buddha Śākyamuni\s+/, '');
-    desc = desc.charAt(0).toLowerCase() + desc.slice(1);
-    gloss.textContent = '(' + desc.replace(/\.$/, '') + ')';
-    gloss.style.display = 'block';
-  } else {
-    gloss.style.display = 'none';
-  }
-
-  const scImg = document.getElementById('scImg');
-  if (lastImageUrl) {
-    scImg.src = lastImageUrl;
-    scImg.style.display = 'block';
-  } else {
-    scImg.style.display = 'none';
-  }
-  document.getElementById('scImgTitle').textContent =
-    lastImageTitle + ' · ' + lastImageArtist + ' · ' + lastImageTradition;
-  document.getElementById('scImgWhy').textContent = d.artwork_why || '';
-
-  // Verse
-  const verseBlock = document.getElementById('scVerseBlock');
-  const verseLines = (d.verse_text || '').split('\n').map(l => l.trim()).filter(Boolean);
-  if (verseLines.length > 0) {
-    document.getElementById('scVerseText').innerHTML = verseLines.join('<br>');
-    let attr = d.verse_attribution || '';
-    if (attr.includes('Buddha') && attr.includes('Theravada')) {
-      attr = attr.replace(/[·\s]*Theravada[\s]*/g, '');
-    }
-    const attrFull = attr + (d.verse_source ? ' · <em>' + d.verse_source + '</em>' : '');
-    document.getElementById('scVerseAttr').innerHTML = attrFull;
-    verseBlock.style.display = 'block';
-  } else {
-    verseBlock.style.display = 'none';
-  }
-}
-
-let currentFormat = 'default';
-function setFormat(format) {
-  currentFormat = format;
-  const card = document.getElementById('shareCard');
-  card.classList.remove('format-default', 'format-square', 'format-story');
-  card.classList.add('format-' + format);
-  document.querySelectorAll('.format-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.format === format);
-  });
-}
-
-async function saveCard() {
-  const toast = document.getElementById('toast');
-  toast.textContent = 'Rendering...';
-  toast.classList.add('visible');
-
-  try {
-    const container = document.getElementById('shareCardContainer');
-    container.style.top = '0';
-    container.style.left = '-10000px';
-
-    const card = document.getElementById('shareCard');
-    const canvas = await html2canvas(card, {
-      backgroundColor: null,
-      scale: 2,
-      useCORS: true,
-      allowTaint: false,
-      logging: false
-    });
-
-    container.style.top = '-10000px';
-
-    const link = document.createElement('a');
-    link.download = 'dharmas-echo-' + Date.now() + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-
-    toast.textContent = 'Saved';
-    setTimeout(() => toast.classList.remove('visible'), 2000);
-  } catch (e) {
-    console.error('Save failed:', e);
-    toast.textContent = 'Save failed';
-    setTimeout(() => toast.classList.remove('visible'), 2500);
-  }
-}
-
-async function shareCard() {
-  const toast = document.getElementById('toast');
-  toast.textContent = 'Preparing...';
-  toast.classList.add('visible');
-
-  try {
-    const container = document.getElementById('shareCardContainer');
-    container.style.top = '0';
-    container.style.left = '-10000px';
-
-    const card = document.getElementById('shareCard');
-    const canvas = await html2canvas(card, {
-      backgroundColor: null,
-      scale: 2,
-      useCORS: true,
-      allowTaint: false,
-      logging: false
-    });
-
-    container.style.top = '-10000px';
-
-    // Convert canvas to blob
-    canvas.toBlob(async (blob) => {
-      if (!blob) { throw new Error('Blob failed'); }
-      const file = new File([blob], 'dharmas-echo.png', { type: 'image/png' });
-
-      // Try Web Share API (mobile/modern browsers)
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({
-            files: [file],
-            title: "Dharma's Echo",
-            text: 'From Dharma\u0027s Echo — dharmas-echo.vercel.app'
-          });
-          toast.textContent = 'Shared';
-          setTimeout(() => toast.classList.remove('visible'), 2000);
-          return;
-        } catch (err) {
-          if (err.name === 'AbortError') {
-            toast.classList.remove('visible');
-            return;
-          }
-        }
-      }
-
-      // Fallback — copy to clipboard
-      try {
-        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-        toast.textContent = 'Copied to clipboard';
-        setTimeout(() => toast.classList.remove('visible'), 2500);
-      } catch (err) {
-        // Final fallback — download
-        const link = document.createElement('a');
-        link.download = 'dharmas-echo-' + Date.now() + '.png';
-        link.href = URL.createObjectURL(blob);
-        link.click();
-        toast.textContent = 'Downloaded';
-        setTimeout(() => toast.classList.remove('visible'), 2000);
-      }
-    }, 'image/png');
-  } catch (e) {
-    console.error('Share failed:', e);
-    toast.textContent = 'Share failed';
-    setTimeout(() => toast.classList.remove('visible'), 2500);
-  }
-}
 </script>
-
-<div class="save-row" id="saveRow">
-  <button class="save-btn" onclick="saveCard()">Save ›</button>
-  <button class="save-btn" onclick="shareCard()">Share ›</button>
-  <div class="format-select">
-    <button class="format-btn active" data-format="default" onclick="setFormat('default')">Card</button>
-    <button class="format-btn" data-format="square" onclick="setFormat('square')">Square</button>
-    <button class="format-btn" data-format="story" onclick="setFormat('story')">Story</button>
-  </div>
-</div>
-
-<div class="share-card-container" id="shareCardContainer">
-  <div class="share-card format-default" id="shareCard">
-    <div class="sc-header">
-      <div class="sc-header-name">DHARMA'S ECHO</div>
-      <div class="sc-header-sub">the dharma echoes back your moment</div>
-    </div>
-    <div class="sc-you-wrote">
-      <div class="sc-label">You wrote</div>
-      <div class="sc-you-wrote-text" id="scYouWrote"></div>
-    </div>
-    <div class="sc-opening" id="scOpening"></div>
-    <div class="sc-term-block">
-      <div class="sc-term-scripts">
-        <div>
-          <div class="sc-script-sa" id="scScriptSa"></div>
-          <div class="sc-script-roman" id="scScriptSaRoman"></div>
-        </div>
-        <div id="scTibGroup" style="display:none;">
-          <div class="sc-script-bo" id="scScriptBo"></div>
-          <div class="sc-script-roman" id="scScriptBoRoman"></div>
-        </div>
-      </div>
-      <div class="sc-term-first" id="scTermFirst"></div>
-      <div class="sc-term-body" id="scTermBody"></div>
-    </div>
-    <div class="sc-seal" id="scSeal"></div>
-    <div class="sc-figure-source">
-      <div class="sc-figure-name" id="scFigureName"></div>
-      <div class="sc-source-ref" id="scSourceRef"></div>
-      <div class="sc-source-box">
-        <div class="sc-source-passage" id="scSourcePassage"></div>
-        <div class="sc-source-trans" id="scSourceTrans"></div>
-      </div>
-      <div class="sc-gloss" id="scGloss"></div>
-    </div>
-    <div class="sc-verse" id="scVerseBlock">
-      <div class="sc-verse-text" id="scVerseText"></div>
-      <div class="sc-verse-attr" id="scVerseAttr"></div>
-    </div>
-    <div class="sc-image-block">
-      <img id="scImg" src="" alt="" crossorigin="anonymous">
-      <div class="sc-image-title" id="scImgTitle"></div>
-      <div class="sc-image-why" id="scImgWhy"></div>
-    </div>
-    <div class="sc-footer">dharmas-echo.vercel.app</div>
-  </div>
-</div>
-
-<div class="toast" id="toast">Saved</div>
-
 </body>
 </html>
