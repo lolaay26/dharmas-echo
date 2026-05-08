@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dharma's Echo</title>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif+Devanagari:wght@300;400;500&family=Jomolhari&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -421,6 +422,130 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 /* Error */
 .error { display: none; padding: 1rem 3rem; color: #904040; font-style: italic; font-size: 0.9rem; }
 .error.visible { display: block; }
+/* ── Save / Share row ── */
+.save-row {
+  padding: 1rem 3rem 0;
+  display: none;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.save-row.visible { display: flex; }
+.save-btn {
+  background: none;
+  border: 1px solid var(--cream-border);
+  padding: 0.5rem 1.2rem;
+  font-family: sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.save-btn:hover { background: var(--cream); color: var(--text); }
+
+.format-select {
+  display: inline-flex;
+  gap: 0.4rem;
+  margin-left: 0.5rem;
+}
+.format-btn {
+  background: none;
+  border: 1px solid var(--cream-border);
+  padding: 0.4rem 0.8rem;
+  font-family: sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  cursor: pointer;
+}
+.format-btn.active { background: var(--text); color: #f0e6c8; border-color: var(--text); }
+.format-btn:hover:not(.active) { background: var(--cream); }
+
+/* Off-screen container for rendering */
+.share-card-container {
+  position: fixed;
+  top: -10000px;
+  left: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+.share-card {
+  padding: 2.2rem;
+  font-family: 'EB Garamond', Georgia, serif;
+  color: #1a2540;
+  background: radial-gradient(ellipse at 30% 20%, #fdf5de 0%, #f0e6c0 35%, #9aa8be 80%, #6a7e9a 100%);
+  box-shadow: inset 0 0 60px rgba(40, 55, 95, 0.14);
+}
+.share-card.format-default { width: 560px; }
+.share-card.format-square { width: 1080px; padding: 4rem; }
+.share-card.format-story { width: 1080px; padding: 4rem 3rem; }
+
+.sc-header { text-align: center; padding-bottom: 1.2rem; border-bottom: 1px solid rgba(110, 130, 170, 0.4); }
+.sc-header-name { font-family: sans-serif; font-size: 11px; letter-spacing: 0.38em; color: #a82010; font-weight: 600; margin-bottom: 0.4rem; }
+.sc-header-sub { font-family: sans-serif; font-size: 8.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #c85810; }
+.share-card.format-square .sc-header-name { font-size: 18px; }
+.share-card.format-square .sc-header-sub { font-size: 13px; }
+.share-card.format-story .sc-header-name { font-size: 20px; }
+.share-card.format-story .sc-header-sub { font-size: 14px; }
+
+.sc-you-wrote { padding: 1rem 0; border-bottom: 1px solid rgba(110, 130, 170, 0.35); }
+.sc-label { font-family: sans-serif; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: #c85810; margin-bottom: 0.35rem; font-weight: 700; }
+.sc-you-wrote-text { font-size: 13px; font-style: italic; color: #2a3555; line-height: 1.55; }
+.sc-opening { padding: 1.2rem 0; font-size: 14.5px; line-height: 1.75; color: #1a2540; border-bottom: 1px solid rgba(110, 130, 170, 0.35); }
+
+.sc-term-block { padding: 1.4rem 0 1.2rem; }
+.sc-term-scripts { display: flex; gap: 2.5rem; align-items: flex-start; margin-bottom: 1.1rem; flex-wrap: wrap; }
+.sc-script-sa { font-family: 'Noto Serif Devanagari', Georgia, serif; font-size: 24px; color: #1a2540; line-height: 1.2; }
+.sc-script-bo { font-family: 'Jomolhari', Georgia, serif; font-size: 21px; color: #1a2540; line-height: 1.3; }
+.sc-script-roman { font-family: 'EB Garamond', serif; font-size: 14px; font-style: italic; color: #c85810; letter-spacing: 0.02em; margin-top: 0.15rem; }
+.sc-term-first { font-size: 14px; color: #1a2540; font-weight: 500; line-height: 1.7; margin-bottom: 0.5rem; }
+.sc-term-body { font-size: 13px; color: #3a4565; line-height: 1.8; }
+
+.sc-seal { padding: 0.9rem 0; font-size: 13px; font-style: italic; color: #3a4565; line-height: 1.75; border-top: 1px solid rgba(110, 130, 170, 0.35); border-bottom: 1px solid rgba(110, 130, 170, 0.35); }
+
+.sc-figure-source { padding: 1.2rem 0 1.4rem; }
+.sc-figure-name { font-size: 15px; color: #1a2540; font-weight: 500; margin-bottom: 0.6rem; }
+.sc-source-ref { font-family: sans-serif; font-size: 10px; letter-spacing: 0.16em; color: #a82010; margin-bottom: 0.6rem; font-weight: 700; }
+.sc-source-ref em { font-family: 'EB Garamond', serif; text-transform: none; letter-spacing: 0.02em; font-size: 13px; font-style: italic; }
+.sc-source-box { background: rgba(253, 240, 205, 0.5); padding: 0.9rem 1.1rem; border-left: 2px solid #a82010; border-radius: 2px; }
+.sc-source-passage { font-size: 13px; font-style: italic; color: #1a2540; line-height: 1.75; margin-bottom: 0.4rem; }
+.sc-source-trans { font-family: sans-serif; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #3a4565; }
+.sc-gloss { padding: 0.7rem 0.3rem 0; font-size: 11.5px; font-style: italic; color: #5a6580; line-height: 1.7; }
+
+.sc-verse { padding: 1.2rem 0 1.4rem; border-bottom: 1px solid rgba(110, 130, 170, 0.4); }
+.sc-verse-text { font-size: 14px; font-style: italic; color: #1a2540; line-height: 2; margin-bottom: 0.5rem; }
+.sc-verse-attr { font-family: sans-serif; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #c85810; font-weight: 600; }
+.sc-verse-attr em { font-family: 'EB Garamond', serif; text-transform: none; letter-spacing: 0.02em; font-size: 11px; font-style: italic; }
+
+.sc-image-block { background: rgba(253, 240, 205, 0.4); padding: 1rem; margin: 0.5rem 0 1.2rem; text-align: center; border-radius: 2px; }
+.sc-image-block img { max-width: 100%; max-height: 340px; object-fit: contain; display: block; margin: 0 auto 0.9rem; }
+.sc-image-title { font-family: sans-serif; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #a82010; font-weight: 700; margin-bottom: 0.5rem; }
+.sc-image-why { font-size: 12.5px; color: #3a4565; font-style: italic; line-height: 1.7; }
+.sc-footer { text-align: center; padding-top: 1.2rem; border-top: 1px solid rgba(110, 130, 170, 0.35); font-family: sans-serif; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: #c85810; }
+
+.share-card.format-square .sc-script-sa { font-size: 38px; }
+.share-card.format-square .sc-script-bo { font-size: 32px; }
+.share-card.format-square .sc-script-roman, .share-card.format-square .sc-you-wrote-text, .share-card.format-square .sc-opening, .share-card.format-square .sc-term-first, .share-card.format-square .sc-term-body, .share-card.format-square .sc-seal, .share-card.format-square .sc-figure-name, .share-card.format-square .sc-source-passage, .share-card.format-square .sc-verse-text { font-size: 22px; }
+.share-card.format-square .sc-label, .share-card.format-square .sc-source-ref, .share-card.format-square .sc-source-trans, .share-card.format-square .sc-image-title, .share-card.format-square .sc-image-why, .share-card.format-square .sc-verse-attr, .share-card.format-square .sc-gloss, .share-card.format-square .sc-footer { font-size: 16px; }
+
+.share-card.format-story .sc-script-sa { font-size: 42px; }
+.share-card.format-story .sc-script-bo { font-size: 36px; }
+.share-card.format-story .sc-script-roman, .share-card.format-story .sc-you-wrote-text, .share-card.format-story .sc-opening, .share-card.format-story .sc-term-first, .share-card.format-story .sc-term-body, .share-card.format-story .sc-seal, .share-card.format-story .sc-figure-name, .share-card.format-story .sc-source-passage, .share-card.format-story .sc-verse-text { font-size: 24px; }
+.share-card.format-story .sc-label, .share-card.format-story .sc-source-ref, .share-card.format-story .sc-source-trans, .share-card.format-story .sc-image-title, .share-card.format-story .sc-image-why, .share-card.format-story .sc-verse-attr, .share-card.format-story .sc-gloss, .share-card.format-story .sc-footer { font-size: 18px; }
+
+.toast {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: #f0e6c8;
+  padding: 0.7rem 1.4rem;
+  font-family: sans-serif; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  border-radius: 2px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000;
+}
+.toast.visible { opacity: 1; }
+
 </style>
 </head>
 <body>
@@ -691,6 +816,8 @@ async function submitEntry() {
   document.getElementById('response').classList.remove('visible');
   document.getElementById('error').classList.remove('visible');
   document.getElementById('againRow').classList.remove('visible');
+  const saveRowSubmit = document.getElementById('saveRow');
+  if (saveRowSubmit) saveRowSubmit.classList.remove('visible');
   // Reset visibility of image block in case last response hid it
   const imgBlock = document.querySelector('.image-block');
   if (imgBlock) imgBlock.style.display = '';
@@ -811,6 +938,8 @@ function render(d) {
 
   document.getElementById('response').classList.add('visible');
   document.getElementById('againRow').classList.add('visible');
+  document.getElementById('saveRow').classList.add('visible');
+  populateShareCard(d);
   document.getElementById('response').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -946,13 +1075,16 @@ async function searchWikimediaForFigure(figure, debugLines) {
   }
   // Strip honorifics that confuse search
   const cleaned = figure.replace(/Rinpoche|Lama|Bhante/g, '').trim();
+  // Strip diacritics for filter matching (Śākyamuni → Sakyamuni)
+  const stripDiacritics = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const cleanedNoDiacritics = stripDiacritics(cleaned);
   const query = cleaned + ' thangka';
   if (debugLines) debugLines.push('  search: "' + query + '"');
   const url = 'https://commons.wikimedia.org/w/api.php?' +
     'action=query&format=json&origin=*' +
     '&generator=search&gsrnamespace=6' +
     '&gsrsearch=' + encodeURIComponent(query) +
-    '&gsrlimit=12' +
+    '&gsrlimit=15' +
     '&prop=imageinfo&iiprop=url|size|mediatype&iiurlwidth=600';
 
   try {
@@ -978,34 +1110,38 @@ async function searchWikimediaForFigure(figure, debugLines) {
       .filter(p => p.imageinfo[0].mediatype === 'BITMAP')
       .filter(p => p.imageinfo[0].size > 50000)
       .filter(p => {
-        // Title MUST contain the figure name AND look like an artwork
-        const t = p.title.toLowerCase();
-        const figLower = cleaned.toLowerCase();
-        // Allow partial match — e.g. "Sakyamuni" matches "Buddha Sakyamuni"
-        const figureWords = figLower.split(/\s+/).filter(w => w.length > 3);
+        const t = stripDiacritics(p.title);
+        const figureWords = cleanedNoDiacritics.split(/\s+/).filter(w => w.length > 3);
         const hasFigure = figureWords.some(w => t.includes(w));
-        const isArtwork = /thangka|thanka|painting|tibetan|nepali/i.test(t);
-        // Both required — figure name AND artwork indicator
-        return hasFigure && isArtwork;
+        // Strong artwork indicator (must be a real artwork, not a museum gallery shot)
+        const isStrongArtwork = /thangka|thanka|painting/i.test(t);
+        // Soft artwork indicator (may be a sculpture or other artwork)
+        const isSoftArtwork = /tibetan|nepali|nepal|bhutanese|sculpture/i.test(t);
+        // Pass if: strong artwork keyword OR (figure name AND any artwork keyword)
+        return isStrongArtwork || (hasFigure && isSoftArtwork);
       });
 
     if (debugLines) debugLines.push('  after filter: ' + candidates.length);
 
     if (candidates.length === 0) return null;
 
-    // Prefer ones that contain the figure name AND "thangka"/"thanka" in title
-    const figLower = cleaned.toLowerCase();
+    // Score and sort: figure name + artwork keyword in title gets top priority
     candidates.sort((a, b) => {
-      const ta = a.title.toLowerCase();
-      const tb = b.title.toLowerCase();
-      const aHasFig = ta.includes(figLower) ? 1 : 0;
-      const bHasFig = tb.includes(figLower) ? 1 : 0;
+      const ta = stripDiacritics(a.title);
+      const tb = stripDiacritics(b.title);
+      const aHasFig = ta.includes(cleanedNoDiacritics) ? 1 : 0;
+      const bHasFig = tb.includes(cleanedNoDiacritics) ? 1 : 0;
       const aIsArt = /thangka|thanka|painting/i.test(ta) ? 1 : 0;
       const bIsArt = /thangka|thanka|painting/i.test(tb) ? 1 : 0;
       return (bHasFig + bIsArt) - (aHasFig + aIsArt);
     });
 
-    const chosen = candidates[0];
+    // Pick randomly from top 5 (or however many we have) for variety
+    const topPool = candidates.slice(0, Math.min(5, candidates.length));
+    const chosen = topPool[Math.floor(Math.random() * topPool.length)];
+
+    if (debugLines) debugLines.push('  pool size: ' + topPool.length);
+
     const cleanTitle = chosen.title
       .replace(/^File:/, '')
       .replace(/_/g, ' ')
@@ -1024,10 +1160,212 @@ async function searchWikimediaForFigure(figure, debugLines) {
   }
 }
 
+// ── Share card population ──
+let lastShareData = null;
+let lastShareImageUrl = '';
+let lastShareImageTitle = '';
+let lastShareCaption = '';
+
+function populateShareCard(d) {
+  lastShareData = d;
+  document.getElementById('scYouWrote').textContent = lastEntryText;
+  const openingRaw = d.opening || '';
+  document.getElementById('scOpening').innerHTML = openingRaw.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+  document.getElementById('scScriptSa').textContent = d.term_sanskrit || '';
+  document.getElementById('scScriptSaRoman').textContent = d.term_transliteration || '';
+  if (d.term_tibetan && d.term_tibetan.trim()) {
+    document.getElementById('scScriptBo').textContent = d.term_tibetan;
+    document.getElementById('scScriptBoRoman').textContent = d.term_tibetan_roman || '';
+    document.getElementById('scTibGroup').style.display = 'block';
+  } else {
+    document.getElementById('scTibGroup').style.display = 'none';
+  }
+
+  document.getElementById('scTermFirst').textContent = d.term_first_line || '';
+  document.getElementById('scTermBody').textContent = d.term_translation || '';
+  document.getElementById('scSeal').textContent = d.seal || '';
+
+  const isBuddha = (d.figure_name || '').includes('Buddha Śākyamuni');
+  document.getElementById('scFigureName').textContent = d.figure_name || '';
+  const srcRef = document.getElementById('scSourceRef');
+  const refText = d.source_text || '';
+  const refNum = d.source_reference || '';
+  srcRef.innerHTML = '<em>' + refText + '</em>' + (refNum ? ' · ' + refNum : '');
+  document.getElementById('scSourcePassage').textContent = '\u201C' + (d.source_passage || '') + '\u201D';
+  document.getElementById('scSourceTrans').textContent = d.source_translation || '';
+
+  const gloss = document.getElementById('scGloss');
+  if (isBuddha && d.figure_description) {
+    let desc = d.figure_description.replace(/^Buddha Śākyamuni\s+/, '');
+    desc = desc.charAt(0).toLowerCase() + desc.slice(1);
+    gloss.textContent = '(' + desc.replace(/\.$/, '') + ')';
+    gloss.style.display = 'block';
+  } else {
+    gloss.style.display = 'none';
+  }
+
+  // Verse
+  const verseBlock = document.getElementById('scVerseBlock');
+  const verseLines = (d.verse_text || '').split('\n').map(l => l.trim()).filter(Boolean);
+  if (verseLines.length > 0) {
+    document.getElementById('scVerseText').innerHTML = verseLines.join('<br>');
+    let attr = d.verse_attribution || '';
+    if (attr.includes('Buddha') && attr.includes('Theravada')) {
+      attr = attr.replace(/[·\s]*Theravada[\s]*/g, '');
+    }
+    document.getElementById('scVerseAttr').innerHTML = attr + (d.verse_source ? ' · <em>' + d.verse_source + '</em>' : '');
+    verseBlock.style.display = 'block';
+  } else {
+    verseBlock.style.display = 'none';
+  }
+
+  // Image — populated separately when image loads
+  syncShareCardImage();
+}
+
+function syncShareCardImage() {
+  // Mirror current image into the share card
+  const artImg = document.getElementById('artImg');
+  const scImg = document.getElementById('scImg');
+  const scImageBlock = document.getElementById('scImageBlock');
+  if (!artImg || !scImg) return;
+
+  if (artImg.style.display === 'none' || !artImg.src) {
+    scImageBlock.style.display = 'none';
+    return;
+  }
+  scImageBlock.style.display = 'block';
+  scImg.src = artImg.src;
+  document.getElementById('scImgTitle').textContent = document.getElementById('imgTitle').textContent;
+  document.getElementById('scImgWhy').textContent = document.getElementById('imgWhy').textContent;
+}
+
+// Re-sync share card image whenever the page image updates
+const imgObserver = new MutationObserver(() => syncShareCardImage());
+window.addEventListener('DOMContentLoaded', () => {
+  const artImg = document.getElementById('artImg');
+  const imgWhy = document.getElementById('imgWhy');
+  if (artImg) imgObserver.observe(artImg, { attributes: true, attributeFilter: ['src', 'style'] });
+  if (imgWhy) imgObserver.observe(imgWhy, { childList: true, subtree: true, characterData: true });
+});
+
+let currentFormat = 'default';
+function setFormat(format) {
+  currentFormat = format;
+  const card = document.getElementById('shareCard');
+  card.classList.remove('format-default', 'format-square', 'format-story');
+  card.classList.add('format-' + format);
+  document.querySelectorAll('.format-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.format === format);
+  });
+}
+
+async function preloadShareImage() {
+  const img = document.getElementById('scImg');
+  if (!img.src || img.src.startsWith('data:')) return;
+  try {
+    const r = await fetch(img.src);
+    if (!r.ok) return;
+    const blob = await r.blob();
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    return new Promise((resolve) => {
+      const newImg = new Image();
+      newImg.onload = () => { img.src = dataUrl; setTimeout(resolve, 200); };
+      newImg.onerror = () => resolve();
+      newImg.src = dataUrl;
+    });
+  } catch (e) {
+    console.warn('Image preload failed:', e);
+  }
+}
+
+async function saveCard() {
+  const toast = document.getElementById('toast');
+  toast.textContent = 'Rendering...';
+  toast.classList.add('visible');
+  try {
+    const container = document.getElementById('shareCardContainer');
+    container.style.top = '0';
+    container.style.left = '-10000px';
+    await preloadShareImage();
+    const card = document.getElementById('shareCard');
+    const canvas = await html2canvas(card, {
+      backgroundColor: null, scale: 2, useCORS: true, allowTaint: false, logging: false
+    });
+    container.style.top = '-10000px';
+    const link = document.createElement('a');
+    link.download = 'dharmas-echo-' + Date.now() + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    toast.textContent = 'Saved';
+    setTimeout(() => toast.classList.remove('visible'), 2000);
+  } catch (e) {
+    console.error('Save failed:', e);
+    toast.textContent = 'Save failed';
+    setTimeout(() => toast.classList.remove('visible'), 2500);
+  }
+}
+
+async function shareCard() {
+  const toast = document.getElementById('toast');
+  toast.textContent = 'Preparing...';
+  toast.classList.add('visible');
+  try {
+    const container = document.getElementById('shareCardContainer');
+    container.style.top = '0';
+    container.style.left = '-10000px';
+    await preloadShareImage();
+    const card = document.getElementById('shareCard');
+    const canvas = await html2canvas(card, {
+      backgroundColor: null, scale: 2, useCORS: true, allowTaint: false, logging: false
+    });
+    container.style.top = '-10000px';
+
+    canvas.toBlob(async (blob) => {
+      if (!blob) { throw new Error('Blob failed'); }
+      const file = new File([blob], 'dharmas-echo.png', { type: 'image/png' });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: "Dharma's Echo", text: 'From Dharma\u2019s Echo — dharmas-echo.vercel.app' });
+          toast.textContent = 'Shared';
+          setTimeout(() => toast.classList.remove('visible'), 2000);
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') { toast.classList.remove('visible'); return; }
+        }
+      }
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        toast.textContent = 'Copied to clipboard';
+        setTimeout(() => toast.classList.remove('visible'), 2500);
+      } catch (err) {
+        const link = document.createElement('a');
+        link.download = 'dharmas-echo-' + Date.now() + '.png';
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        toast.textContent = 'Downloaded';
+        setTimeout(() => toast.classList.remove('visible'), 2000);
+      }
+    }, 'image/png');
+  } catch (e) {
+    console.error('Share failed:', e);
+    toast.textContent = 'Share failed';
+    setTimeout(() => toast.classList.remove('visible'), 2500);
+  }
+}
+
 function reset() {
   document.getElementById('entry').value = '';
   document.getElementById('response').classList.remove('visible');
   document.getElementById('againRow').classList.remove('visible');
+  const saveRowReset = document.getElementById('saveRow');
+  if (saveRowReset) saveRowReset.classList.remove('visible');
   // Un-hide image block + dividers in case they were hidden last response
   const imgBlock = document.querySelector('.image-block');
   if (imgBlock) imgBlock.style.display = '';
@@ -1055,5 +1393,65 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+<div class="save-row" id="saveRow">
+  <button class="save-btn" onclick="saveCard()">Save ›</button>
+  <button class="save-btn" onclick="shareCard()">Share ›</button>
+  <div class="format-select">
+    <button class="format-btn active" data-format="default" onclick="setFormat('default')">Card</button>
+    <button class="format-btn" data-format="square" onclick="setFormat('square')">Square</button>
+    <button class="format-btn" data-format="story" onclick="setFormat('story')">Story</button>
+  </div>
+</div>
+
+<div class="share-card-container" id="shareCardContainer">
+  <div class="share-card format-default" id="shareCard">
+    <div class="sc-header">
+      <div class="sc-header-name">DHARMA'S ECHO</div>
+      <div class="sc-header-sub">the dharma echoes back your moment</div>
+    </div>
+    <div class="sc-you-wrote">
+      <div class="sc-label">You wrote</div>
+      <div class="sc-you-wrote-text" id="scYouWrote"></div>
+    </div>
+    <div class="sc-opening" id="scOpening"></div>
+    <div class="sc-term-block">
+      <div class="sc-term-scripts">
+        <div>
+          <div class="sc-script-sa" id="scScriptSa"></div>
+          <div class="sc-script-roman" id="scScriptSaRoman"></div>
+        </div>
+        <div id="scTibGroup" style="display:none;">
+          <div class="sc-script-bo" id="scScriptBo"></div>
+          <div class="sc-script-roman" id="scScriptBoRoman"></div>
+        </div>
+      </div>
+      <div class="sc-term-first" id="scTermFirst"></div>
+      <div class="sc-term-body" id="scTermBody"></div>
+    </div>
+    <div class="sc-seal" id="scSeal"></div>
+    <div class="sc-figure-source">
+      <div class="sc-figure-name" id="scFigureName"></div>
+      <div class="sc-source-ref" id="scSourceRef"></div>
+      <div class="sc-source-box">
+        <div class="sc-source-passage" id="scSourcePassage"></div>
+        <div class="sc-source-trans" id="scSourceTrans"></div>
+      </div>
+      <div class="sc-gloss" id="scGloss"></div>
+    </div>
+    <div class="sc-verse" id="scVerseBlock">
+      <div class="sc-verse-text" id="scVerseText"></div>
+      <div class="sc-verse-attr" id="scVerseAttr"></div>
+    </div>
+    <div class="sc-image-block" id="scImageBlock">
+      <img id="scImg" src="" alt="" crossorigin="anonymous">
+      <div class="sc-image-title" id="scImgTitle"></div>
+      <div class="sc-image-why" id="scImgWhy"></div>
+    </div>
+    <div class="sc-footer">dharmas-echo.vercel.app</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Saved</div>
+
 </body>
 </html>
