@@ -1074,7 +1074,17 @@ Format rules:
 - Do NOT mention what the person "wrote" or "described" or "feels" or any phrasing of their entry.
 - The end of the sentence is the teaching distilled.
 
-Now write one caption. No quotes. No preamble.`;
+Now write one caption. No quotes. No preamble.
+
+BEFORE RETURNING, check your draft against these three failure patterns and rewrite if any apply:
+
+CHECK 1 — Does your sentence contain "echo", "echoes", "echoing", "reflects", "reflecting", "mirrors", or "mirroring"? If yes → REWRITE using a teaching-verb (shows, reveals, embodies, points to, names, opens, makes visible — or for wrathful figures: burns through, cuts through, consumes).
+
+CHECK 2 — Does the end of your sentence paraphrase or summarize what the person wrote? Common slips: "the disconnection from one's lived day", "the longing to find home", "the ache of not belonging", "the wandering mind", "the search that defeats itself". If yes → REWRITE. The end of your sentence must distill THE TEACHING in the source quote and verse, not paraphrase the entry.
+
+CHECK 3 — Does your sentence start with "Tibetan", "This", "The image", "Buddhist art"? If yes → REWRITE starting with the figure or visible subject.
+
+Only return the final sentence after passing all three checks. No quotes, no preamble.`;
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -1087,7 +1097,7 @@ Now write one caption. No quotes. No preamble.`;
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 150,
-      temperature: 0.3,
+      temperature: 0.1,
       messages: [{ role: 'user', content: captionPrompt }]
     })
   });
