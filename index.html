@@ -1153,12 +1153,10 @@ async function searchWikimediaForFigure(figure, debugLines) {
         const t = stripDiacritics(p.title);
         const figureWords = cleanedNoDiacritics.split(/\s+/).filter(w => w.length > 3);
         const hasFigure = figureWords.some(w => t.includes(w));
-        // Strong artwork indicator (must be a real artwork, not a museum gallery shot)
         const isStrongArtwork = /thangka|thanka|painting/i.test(t);
-        // Soft artwork indicator (may be a sculpture or other artwork)
-        const isSoftArtwork = /tibetan|nepali|nepal|bhutanese|sculpture/i.test(t);
-        // Pass if: strong artwork keyword OR (figure name AND any artwork keyword)
-        return isStrongArtwork || (hasFigure && isSoftArtwork);
+        const isSoftArtwork = /tibetan|nepali|nepal|bhutanese|sculpture|wellcome|museum/i.test(t);
+        // Pass if: strong artwork keyword, OR figure name is in title (figure-named files are usually artworks)
+        return isStrongArtwork || hasFigure;
       });
 
     if (debugLines) debugLines.push('  after filter: ' + candidates.length);
