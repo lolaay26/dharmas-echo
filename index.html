@@ -365,16 +365,17 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 }
 .image-title {
   font-family: sans-serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--gold-dark);
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.6rem;
 }
 .image-why {
-  font-size: 0.9rem;
-  color: var(--text-label);
-  line-height: 1.75;
+  font-size: 1.05rem;
+  color: var(--text);
+  font-style: italic;
+  line-height: 1.7;
 }
 
 /* Verse */
@@ -538,8 +539,8 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 
 .sc-image-block { background: rgba(255, 251, 240, 0.55); padding: 1rem; margin: 0.5rem 0 1.2rem; text-align: center; border-radius: 2px; }
 .sc-image-block img { max-width: 100%; max-height: 340px; object-fit: contain; display: block; margin: 0 auto 0.9rem; }
-.sc-image-title { font-family: sans-serif; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #a82010; font-weight: 700; margin-bottom: 0.5rem; }
-.sc-image-why { font-size: 12.5px; color: #3a4565; font-style: italic; line-height: 1.7; }
+.sc-image-title { font-family: sans-serif; font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; color: #a82010; font-weight: 700; margin-bottom: 0.5rem; }
+.sc-image-why { font-size: 14.5px; color: #1a2540; font-style: italic; line-height: 1.65; }
 .sc-footer { text-align: center; padding-top: 1.2rem; border-top: 1px solid rgba(120, 105, 80, 0.35); font-family: sans-serif; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: #c85810; }
 
 .share-card.format-square .sc-script-sa { font-size: 38px; }
@@ -1214,10 +1215,30 @@ async function searchWikimediaForFigure(figure, debugLines) {
 
     if (debugLines) debugLines.push('  pool size: ' + topPool.length);
 
-    const cleanTitle = chosen.title
+    let cleanTitle = chosen.title
       .replace(/^File:/, '')
       .replace(/_/g, ' ')
       .replace(/\.[a-z]+$/i, '');
+    // Strip museum cataloging — accession numbers, museum names, "Anonymous", trailing dates
+    cleanTitle = cleanTitle
+      // "Anonymous - " or "Anonymous, " at start
+      .replace(/^Anonymous\s*[-,–—]\s*/i, '')
+      // Patterns like " - 1996.85 - Art Institute of Chicago"
+      .replace(/\s*[-–—]\s*\d{2,4}\.\d+[-\d]*\s*[-–—]\s*[^-–—]+$/i, '')
+      // Patterns like " (AM 1931.626-5)" — accession codes in parens
+      .replace(/\s*\(\s*[A-Z]{1,4}[\s.\-_]?\d[\d\.\-_]*\s*\)/g, '')
+      // Wellcome catalog suffixes like " Wellcome L0015316" or " Wellcome V0018303"
+      .replace(/\s*Wellcome\s+[A-Z]\d+\s*$/i, '')
+      // Trailing accession codes like " - 1986.1314" or " - 1970.486"
+      .replace(/\s*[-–—]\s*\d{4}\.\d+\s*$/i, '')
+      // Museum suffixes after a separator: " - Art Institute of Chicago", "- British Museum", "- Penn Museum"
+      .replace(/\s*[-–—]\s*(Art Institute of Chicago|British Museum|Penn Museum|Victoria \& Albert Museum|Sichuan Provincial Museum|Wellcome Collection)\s*$/i, '')
+      // Museum names at end without a separator
+      .replace(/\s+(Art Institute of Chicago|British Museum|Penn Museum|Victoria \& Albert Museum|Sichuan Provincial Museum|Wellcome Collection)\s*$/i, '')
+      // Whitespace cleanup
+      .replace(/\s+/g, ' ')
+      .replace(/\s*[-–—]\s*$/g, '')
+      .trim();
 
     return {
       url: chosen.imageinfo[0].thumburl || chosen.imageinfo[0].url,
