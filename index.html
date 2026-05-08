@@ -465,6 +465,21 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .format-btn.active { background: var(--text); color: #f0e6c8; border-color: var(--text); }
 .format-btn:hover:not(.active) { background: var(--cream); }
 
+.entry-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 0.6rem;
+  font-family: sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  cursor: pointer;
+  user-select: none;
+}
+.entry-toggle input { margin: 0; cursor: pointer; accent-color: var(--gold-dark); }
+
 /* Off-screen container for rendering */
 .share-card-container {
   position: fixed;
@@ -477,14 +492,14 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   padding: 2.2rem;
   font-family: 'EB Garamond', Georgia, serif;
   color: #1a2540;
-  background: radial-gradient(ellipse at 30% 20%, #fdf5de 0%, #f0e6c0 35%, #9aa8be 80%, #6a7e9a 100%);
-  box-shadow: inset 0 0 60px rgba(40, 55, 95, 0.14);
+  background: radial-gradient(ellipse at 30% 15%, #faecc4 0%, #f5dca0 18%, #e6c080 38%, #b8a890 65%, #8a92a0 88%);
+  box-shadow: inset 0 0 60px rgba(40, 55, 95, 0.10);
 }
 .share-card.format-default { width: 560px; }
 .share-card.format-square { width: 1080px; padding: 4rem; }
 .share-card.format-story { width: 1080px; padding: 4rem 3rem; }
 
-.sc-header { text-align: center; padding-bottom: 1.2rem; border-bottom: 1px solid rgba(110, 130, 170, 0.4); }
+.sc-header { text-align: center; padding-bottom: 1.2rem; border-bottom: 1px solid rgba(120, 105, 80, 0.4); }
 .sc-header-name { font-family: sans-serif; font-size: 11px; letter-spacing: 0.38em; color: #a82010; font-weight: 600; margin-bottom: 0.4rem; }
 .sc-header-sub { font-family: sans-serif; font-size: 8.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #c85810; }
 .share-card.format-square .sc-header-name { font-size: 18px; }
@@ -492,10 +507,10 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .share-card.format-story .sc-header-name { font-size: 20px; }
 .share-card.format-story .sc-header-sub { font-size: 14px; }
 
-.sc-you-wrote { padding: 1rem 0; border-bottom: 1px solid rgba(110, 130, 170, 0.35); }
+.sc-you-wrote { padding: 1rem 0; border-bottom: 1px solid rgba(120, 105, 80, 0.35); }
 .sc-label { font-family: sans-serif; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: #c85810; margin-bottom: 0.35rem; font-weight: 700; }
 .sc-you-wrote-text { font-size: 13px; font-style: italic; color: #2a3555; line-height: 1.55; }
-.sc-opening { padding: 1.2rem 0; font-size: 14.5px; line-height: 1.75; color: #1a2540; border-bottom: 1px solid rgba(110, 130, 170, 0.35); }
+.sc-opening { padding: 1.2rem 0; font-size: 14.5px; line-height: 1.75; color: #1a2540; border-bottom: 1px solid rgba(120, 105, 80, 0.35); }
 
 .sc-term-block { padding: 1.4rem 0 1.2rem; }
 .sc-term-scripts { display: flex; gap: 2.5rem; align-items: flex-start; margin-bottom: 1.1rem; flex-wrap: wrap; }
@@ -505,27 +520,27 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .sc-term-first { font-size: 14px; color: #1a2540; font-weight: 500; line-height: 1.7; margin-bottom: 0.5rem; }
 .sc-term-body { font-size: 13px; color: #3a4565; line-height: 1.8; }
 
-.sc-seal { padding: 0.9rem 0; font-size: 13px; font-style: italic; color: #3a4565; line-height: 1.75; border-top: 1px solid rgba(110, 130, 170, 0.35); border-bottom: 1px solid rgba(110, 130, 170, 0.35); }
+.sc-seal { padding: 0.9rem 0; font-size: 13px; font-style: italic; color: #3a4565; line-height: 1.75; border-top: 1px solid rgba(120, 105, 80, 0.35); border-bottom: 1px solid rgba(120, 105, 80, 0.35); }
 
 .sc-figure-source { padding: 1.2rem 0 1.4rem; }
 .sc-figure-name { font-size: 15px; color: #1a2540; font-weight: 500; margin-bottom: 0.6rem; }
 .sc-source-ref { font-family: sans-serif; font-size: 10px; letter-spacing: 0.16em; color: #a82010; margin-bottom: 0.6rem; font-weight: 700; }
 .sc-source-ref em { font-family: 'EB Garamond', serif; text-transform: none; letter-spacing: 0.02em; font-size: 13px; font-style: italic; }
-.sc-source-box { background: rgba(253, 240, 205, 0.5); padding: 0.9rem 1.1rem; border-left: 2px solid #a82010; border-radius: 2px; }
+.sc-source-box { background: rgba(255, 251, 240, 0.85); padding: 0.9rem 1.1rem; border-left: 2px solid #a82010; border-radius: 2px; }
 .sc-source-passage { font-size: 13px; font-style: italic; color: #1a2540; line-height: 1.75; margin-bottom: 0.4rem; }
 .sc-source-trans { font-family: sans-serif; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #3a4565; }
 .sc-gloss { padding: 0.7rem 0.3rem 0; font-size: 11.5px; font-style: italic; color: #5a6580; line-height: 1.7; }
 
-.sc-verse { padding: 1.2rem 0 1.4rem; border-bottom: 1px solid rgba(110, 130, 170, 0.4); }
+.sc-verse { padding: 1.2rem 0 1.4rem; border-bottom: 1px solid rgba(120, 105, 80, 0.4); }
 .sc-verse-text { font-size: 14px; font-style: italic; color: #1a2540; line-height: 2; margin-bottom: 0.5rem; }
 .sc-verse-attr { font-family: sans-serif; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #c85810; font-weight: 600; }
 .sc-verse-attr em { font-family: 'EB Garamond', serif; text-transform: none; letter-spacing: 0.02em; font-size: 11px; font-style: italic; }
 
-.sc-image-block { background: rgba(253, 240, 205, 0.4); padding: 1rem; margin: 0.5rem 0 1.2rem; text-align: center; border-radius: 2px; }
+.sc-image-block { background: rgba(255, 251, 240, 0.55); padding: 1rem; margin: 0.5rem 0 1.2rem; text-align: center; border-radius: 2px; }
 .sc-image-block img { max-width: 100%; max-height: 340px; object-fit: contain; display: block; margin: 0 auto 0.9rem; }
 .sc-image-title { font-family: sans-serif; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #a82010; font-weight: 700; margin-bottom: 0.5rem; }
 .sc-image-why { font-size: 12.5px; color: #3a4565; font-style: italic; line-height: 1.7; }
-.sc-footer { text-align: center; padding-top: 1.2rem; border-top: 1px solid rgba(110, 130, 170, 0.35); font-family: sans-serif; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: #c85810; }
+.sc-footer { text-align: center; padding-top: 1.2rem; border-top: 1px solid rgba(120, 105, 80, 0.35); font-family: sans-serif; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: #c85810; }
 
 .share-card.format-square .sc-script-sa { font-size: 38px; }
 .share-card.format-square .sc-script-bo { font-size: 32px; }
@@ -818,6 +833,11 @@ async function submitEntry() {
   document.getElementById('againRow').classList.remove('visible');
   const saveRowSubmit = document.getElementById('saveRow');
   if (saveRowSubmit) saveRowSubmit.classList.remove('visible');
+  // Reset include-entry toggle so each new entry starts with it off
+  const toggleSubmit = document.getElementById('includeEntryToggle');
+  if (toggleSubmit) toggleSubmit.checked = false;
+  const youWroteBlockSubmit = document.getElementById('scYouWroteBlock');
+  if (youWroteBlockSubmit) youWroteBlockSubmit.style.display = 'none';
   // Reset visibility of image block in case last response hid it
   const imgBlock = document.querySelector('.image-block');
   if (imgBlock) imgBlock.style.display = '';
@@ -993,6 +1013,9 @@ async function loadImage(d) {
 }
 
 function showDebug(lines, result) {
+  // Debug panel disabled — uncomment block below to re-enable
+  return;
+  /*
   let panel = document.getElementById('debugPanel');
   if (!panel) {
     panel = document.createElement('div');
@@ -1008,6 +1031,7 @@ function showDebug(lines, result) {
     txt += '\n\n→ NO IMAGE FOUND';
   }
   panel.textContent = txt;
+  */
 }
 
 async function generateImageCaption(d, actualImageTitle) {
@@ -1298,6 +1322,11 @@ window.addEventListener('DOMContentLoaded', () => {
   if (imgWhy) imgObserver.observe(imgWhy, { childList: true, subtree: true, characterData: true });
 });
 
+function toggleIncludeEntry(checked) {
+  const block = document.getElementById('scYouWroteBlock');
+  if (block) block.style.display = checked ? 'block' : 'none';
+}
+
 let currentFormat = 'default';
 function setFormat(format) {
   currentFormat = format;
@@ -1414,6 +1443,11 @@ function reset() {
   document.getElementById('againRow').classList.remove('visible');
   const saveRowReset = document.getElementById('saveRow');
   if (saveRowReset) saveRowReset.classList.remove('visible');
+  // Reset include-entry toggle
+  const toggleReset = document.getElementById('includeEntryToggle');
+  if (toggleReset) toggleReset.checked = false;
+  const youWroteBlockReset = document.getElementById('scYouWroteBlock');
+  if (youWroteBlockReset) youWroteBlockReset.style.display = 'none';
   // Un-hide image block + dividers in case they were hidden last response
   const imgBlock = document.querySelector('.image-block');
   if (imgBlock) imgBlock.style.display = '';
@@ -1449,6 +1483,10 @@ document.addEventListener('DOMContentLoaded', function() {
     <button class="format-btn" data-format="square" onclick="setFormat('square')">Square</button>
     <button class="format-btn" data-format="story" onclick="setFormat('story')">Story</button>
   </div>
+  <label class="entry-toggle">
+    <input type="checkbox" id="includeEntryToggle" onchange="toggleIncludeEntry(this.checked)">
+    <span>include your entry</span>
+  </label>
 </div>
 
 <div class="share-card-container" id="shareCardContainer">
@@ -1457,7 +1495,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="sc-header-name">DHARMA'S ECHO</div>
       <div class="sc-header-sub">the dharma echoes back your moment</div>
     </div>
-    <div class="sc-you-wrote">
+    <div class="sc-you-wrote" id="scYouWroteBlock" style="display: none;">
       <div class="sc-label">You wrote</div>
       <div class="sc-you-wrote-text" id="scYouWrote"></div>
     </div>
