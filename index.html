@@ -1011,30 +1011,70 @@ function showDebug(lines, result) {
 }
 
 async function generateImageCaption(d, actualImageTitle) {
-  const captionPrompt = `Write one sentence in this exact pattern:
+  const captionPrompt = `Write one caption with three parts in this exact order, separated by punctuation:
 
-[A specific visible feature of the image — a posture, gesture, expression, color, or element you can name] echoes [5-9 word distillation of the underlying truth in their entry].
+PART 1 — Name the figure or subject in the image (the actual figure visible).
+PART 2 — A very brief lineage or relationship clause (only if image_subject differs from figure_name) — e.g. "Patrul Rinpoche's root teacher", "Nagarjuna's tutelary deity". Skip if image_subject equals figure_name.
+PART 3 — A specific visible feature of the image, then a verb, then a 5-9 word distillation of THE TEACHING — what the source passage and verse are pointing to. NOT a paraphrase of what the person wrote.
+
+CRITICAL — what Part 3 distills:
+
+The 5-9 word phrase at the end is a distillation of the DHARMA TEACHING that the response is offering — what is in the source quote and the verse. It is NOT a summary of the person's entry.
+
+Look at:
+- The source passage: "${d.source_passage || ''}"
+- The verse: "${d.verse_text || ''}"
+- The term: ${d.term_transliteration} — ${d.term_first_line}
+
+The phrase at the end of Part 3 should distill what these are saying. The image embodies this teaching.
+
+The entry tells us what the person needs the teaching to meet. But the caption does not paraphrase the entry — it names what the teaching is, which is the answer to the entry.
+
+CRITICAL — verb logic:
+
+Every image in this app is a teaching image. The image makes the dharma teaching visible. The caption names how it does so. The verb must reflect this — the image is not a mirror of the person's entry. It is making the teaching visible.
+
+Verbs to use:
+- For peaceful figures or pure realms or any image that shows the path/answer: SHOWS, REVEALS, EMBODIES, POINTS TO, MAKES VISIBLE, NAMES, OPENS
+- For wrathful figures (Mahakala, Guru Dragpur, Vajrakilaya, fierce dakinis): BURNS THROUGH, CUTS THROUGH, CONSUMES, DISSOLVES, SEVERS — what they destroy is delusion, clinging, fear, obstacles
+- For samsaric depictions (wheel of life, six realms, hell realms, bardo, Mara's army): NAMES, SHOWS, MAKES VISIBLE — they make the teaching about that territory visible
+
+NEVER use "echoes", "reflects", or "mirrors" — these imply the image is a mirror of the person's experience, which is not the relationship. The image makes the teaching visible.
 
 Inputs:
-- Image title: "${actualImageTitle}"
-- They wrote: "${lastEntryText}"
+- The figure who addresses this entry: ${d.figure_name}
+- The image subject Claude chose: ${d.image_subject || d.figure_name}
+- The actual image title: "${actualImageTitle}"
+- They wrote (for context only — do NOT paraphrase): "${lastEntryText}"
 
-Rules:
-1. The first half must be a SPECIFIC visible feature, not the whole image name. Examples of features: "the Buddha's seated stillness", "Tara's stepping foot", "Milarepa's hand cupped to his ear", "the radiating light", "the calm gaze", "the wheel at the center". Look at the image title and choose what is most likely visible and most relevant.
-2. The verb is "echoes".
-3. The second half names the underlying truth in the entry — what it's really about — in 5-9 words. Distilled, not paraphrased.
-4. The two halves must genuinely meet. The visible feature must actually relate to the truth named. Do not force a connection that is not there. If the image's only visible feature you can name doesn't echo the entry, choose a different feature.
-5. Do not begin with "Tibetan", "This", "The image", "Buddhist".
-6. 12-18 words total.
+Examples (notice each Part 3 distills the teaching, NOT the entry, and uses a teaching-verb):
 
-Examples of genuine echoes (notice each visible feature actually meets each truth):
-- "The wheel at the center of the painting echoes the spinning that mistakes motion for arrival."
-- "Tara's stepping foot echoes the fear that needs no answer to dissolve."
-- "The Buddha's seated stillness echoes the rest beneath endless pursuit."
-- "Milarepa's cupped hand echoes the listening that quiets the wandering mind."
-- "Padmasambhava's steady gaze echoes the longing to be truly seen by the teacher."
+Peaceful figures (use shows/reveals/embodies/points to/names):
+- "Padmasambhava with rainbow body — the dissolving form shows the mind that holds everything yet remains unstained."
+- "Tara — her stepping foot reveals the swift compassion that meets fear before fear can arise."
+- "Mañjuśrī, Nagarjuna's tutelary deity — the upraised sword embodies the wisdom that severs every fixed view."
+- "Avalokiteśvara — the thousand arms point to compassion that reaches every being without exception."
+- "Buddha Śākyamuni — his teaching gesture shows the path of release from craving."
+- "Buddha Amitābha in his Pure Land — the blissful field reveals the buddha-nature already present in awareness."
 
-Now write one sentence for these inputs. No quotes. No preamble.`;
+Wrathful figures (use burns through/cuts through/consumes):
+- "Guru Dragpur, wrathful Padmasambhava — the surrounding flames burn through the delusion that obscures awareness."
+- "Mahakala — his fierce gaze cuts through the obstacles that hide the natural state."
+
+Samsaric or realm depictions (use names/shows/makes visible):
+- "The wheel of life at the center — its turning shows the samsaric round the teaching reveals as suffering."
+- "Mt. Meru and the Buddhist universe — the layered realms make visible the cosmology the teaching points beyond."
+- "The bardo figures wandering between worlds — they name the in-between state the teaching meets with awareness."
+
+Format rules:
+- Comma between Part 1 and Part 2 if Part 2 is included.
+- Em dash (—) before Part 3.
+- 18-26 words total.
+- Do not begin with "Tibetan", "This", "The image".
+- Do NOT mention what the person "wrote" or "described" or "feels" or any phrasing of their entry.
+- The end of the sentence is the teaching distilled.
+
+Now write one caption. No quotes. No preamble.`;
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
