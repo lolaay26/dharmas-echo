@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dharma's Echo</title>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif+Devanagari:wght@300;400;500&family=Jomolhari&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -364,16 +365,17 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 }
 .image-title {
   font-family: sans-serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--gold-dark);
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.6rem;
 }
 .image-why {
-  font-size: 0.9rem;
-  color: var(--text-label);
-  line-height: 1.75;
+  font-size: 1.05rem;
+  color: var(--text);
+  font-style: italic;
+  line-height: 1.7;
 }
 
 /* Verse */
@@ -421,13 +423,152 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 /* Error */
 .error { display: none; padding: 1rem 3rem; color: #904040; font-style: italic; font-size: 0.9rem; }
 .error.visible { display: block; }
+/* ── Save / Share row ── */
+.save-row {
+  padding: 1rem 3rem 0;
+  display: none;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.save-row.visible { display: flex; }
+.save-btn {
+  background: none;
+  border: 1px solid var(--cream-border);
+  padding: 0.5rem 1.2rem;
+  font-family: sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.save-btn:hover { background: var(--cream); color: var(--text); }
+
+.format-select {
+  display: inline-flex;
+  gap: 0.4rem;
+  margin-left: 0.5rem;
+}
+.format-btn {
+  background: none;
+  border: 1px solid var(--cream-border);
+  padding: 0.4rem 0.8rem;
+  font-family: sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  cursor: pointer;
+}
+.format-btn.active { background: var(--text); color: #f0e6c8; border-color: var(--text); }
+.format-btn:hover:not(.active) { background: var(--cream); }
+
+.entry-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 0.6rem;
+  font-family: sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  cursor: pointer;
+  user-select: none;
+}
+.entry-toggle input { margin: 0; cursor: pointer; accent-color: var(--gold-dark); }
+
+/* Off-screen container for rendering */
+.share-card-container {
+  position: fixed;
+  top: -10000px;
+  left: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+.share-card {
+  padding: 2.2rem;
+  font-family: 'EB Garamond', Georgia, serif;
+  color: #1a2540;
+  background: radial-gradient(ellipse at 30% 15%, #faecc4 0%, #f5dca0 18%, #e6c080 38%, #b8a890 65%, #8a92a0 88%);
+  box-shadow: inset 0 0 60px rgba(40, 55, 95, 0.10);
+}
+.share-card.format-default { width: 560px; }
+.share-card.format-square { width: 1080px; padding: 4rem; }
+.share-card.format-story { width: 1080px; padding: 4rem 3rem; }
+
+.sc-header { text-align: center; padding-bottom: 1.2rem; border-bottom: 1px solid rgba(120, 105, 80, 0.4); }
+.sc-header-name { font-family: sans-serif; font-size: 11px; letter-spacing: 0.38em; color: #a82010; font-weight: 600; margin-bottom: 0.4rem; }
+.sc-header-sub { font-family: sans-serif; font-size: 8.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #c85810; }
+.share-card.format-square .sc-header-name { font-size: 18px; }
+.share-card.format-square .sc-header-sub { font-size: 13px; }
+.share-card.format-story .sc-header-name { font-size: 20px; }
+.share-card.format-story .sc-header-sub { font-size: 14px; }
+
+.sc-you-wrote { padding: 1rem 0; border-bottom: 1px solid rgba(120, 105, 80, 0.35); }
+.sc-label { font-family: sans-serif; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: #c85810; margin-bottom: 0.35rem; font-weight: 700; }
+.sc-you-wrote-text { font-size: 14.5px; font-style: italic; color: #2a3555; line-height: 1.55; }
+.sc-opening { padding: 1.2rem 0; font-size: 14.5px; line-height: 1.75; color: #1a2540; border-bottom: 1px solid rgba(120, 105, 80, 0.35); }
+
+.sc-term-block { padding: 1.4rem 0 1.2rem; }
+.sc-term-scripts { display: flex; gap: 2.5rem; align-items: flex-start; margin-bottom: 1.1rem; flex-wrap: wrap; }
+.sc-script-sa { font-family: 'Noto Serif Devanagari', Georgia, serif; font-size: 24px; color: #1a2540; line-height: 1.2; }
+.sc-script-bo { font-family: 'Jomolhari', Georgia, serif; font-size: 21px; color: #1a2540; line-height: 1.3; }
+.sc-script-roman { font-family: 'EB Garamond', serif; font-size: 14px; font-style: italic; color: #c85810; letter-spacing: 0.02em; margin-top: 0.15rem; }
+.sc-term-first { font-size: 14.5px; color: #1a2540; font-weight: 500; line-height: 1.7; margin-bottom: 0.5rem; }
+.sc-term-body { font-size: 14.5px; color: #3a4565; line-height: 1.8; }
+
+.sc-seal { padding: 0.9rem 0; font-size: 14.5px; color: #3a4565; line-height: 1.75; border-top: 1px solid rgba(120, 105, 80, 0.35); border-bottom: 1px solid rgba(120, 105, 80, 0.35); }
+
+.sc-figure-source { padding: 1.2rem 0 1.4rem; }
+.sc-figure-name { font-size: 15px; color: #1a2540; font-weight: 500; margin-bottom: 0.6rem; }
+.sc-source-ref { font-family: sans-serif; font-size: 8px; letter-spacing: 0.2em; color: #a82010; margin-bottom: 0.6rem; font-weight: 700; text-transform: uppercase; }
+.sc-source-ref em { font-family: 'EB Garamond', serif; text-transform: none; letter-spacing: 0.02em; font-size: 14.5px; font-style: italic; }
+.sc-source-box { background: rgba(255, 251, 240, 0.85); padding: 0.9rem 1.1rem; border-left: 2px solid #a82010; border-radius: 2px; }
+.sc-source-passage { font-size: 14.5px; font-style: italic; color: #1a2540; line-height: 1.75; margin-bottom: 0.4rem; }
+.sc-source-trans { font-family: sans-serif; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: #3a4565; }
+.sc-gloss { padding: 0.7rem 0.3rem 0; font-size: 13px; font-style: italic; color: #5a6580; line-height: 1.7; }
+
+.sc-verse { padding: 1.2rem 0 1.4rem; border-bottom: 1px solid rgba(120, 105, 80, 0.4); }
+.sc-verse-text { font-size: 14.5px; font-style: italic; color: #1a2540; line-height: 2; margin-bottom: 0.5rem; }
+.sc-verse-attr { font-family: sans-serif; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: #c85810; font-weight: 700; }
+.sc-verse-attr em { font-family: 'EB Garamond', serif; text-transform: none; letter-spacing: 0.02em; font-size: 13px; font-style: italic; }
+
+.sc-image-block { background: rgba(255, 251, 240, 0.55); padding: 1rem; margin: 0.5rem 0 1.2rem; text-align: center; border-radius: 2px; }
+.sc-image-block img { max-width: 100%; max-height: 340px; object-fit: contain; display: block; margin: 0 auto 0.9rem; }
+.sc-image-title { font-family: sans-serif; font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; color: #a82010; font-weight: 700; margin-bottom: 0.5rem; }
+.sc-image-why { font-size: 15.5px; color: #1a2540; font-style: italic; line-height: 1.6; }
+.sc-footer { text-align: center; padding-top: 1.2rem; border-top: 1px solid rgba(120, 105, 80, 0.35); font-family: sans-serif; font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase; color: #c85810; }
+
+.share-card.format-square .sc-script-sa { font-size: 38px; }
+.share-card.format-square .sc-script-bo { font-size: 32px; }
+.share-card.format-square .sc-script-roman, .share-card.format-square .sc-you-wrote-text, .share-card.format-square .sc-opening, .share-card.format-square .sc-term-first, .share-card.format-square .sc-term-body, .share-card.format-square .sc-seal, .share-card.format-square .sc-figure-name, .share-card.format-square .sc-source-passage, .share-card.format-square .sc-verse-text { font-size: 22px; }
+.share-card.format-square .sc-label, .share-card.format-square .sc-source-ref, .share-card.format-square .sc-source-trans, .share-card.format-square .sc-image-title, .share-card.format-square .sc-image-why, .share-card.format-square .sc-verse-attr, .share-card.format-square .sc-gloss, .share-card.format-square .sc-footer { font-size: 16px; }
+
+.share-card.format-story .sc-script-sa { font-size: 42px; }
+.share-card.format-story .sc-script-bo { font-size: 36px; }
+.share-card.format-story .sc-script-roman, .share-card.format-story .sc-you-wrote-text, .share-card.format-story .sc-opening, .share-card.format-story .sc-term-first, .share-card.format-story .sc-term-body, .share-card.format-story .sc-seal, .share-card.format-story .sc-figure-name, .share-card.format-story .sc-source-passage, .share-card.format-story .sc-verse-text { font-size: 24px; }
+.share-card.format-story .sc-label, .share-card.format-story .sc-source-ref, .share-card.format-story .sc-source-trans, .share-card.format-story .sc-image-title, .share-card.format-story .sc-image-why, .share-card.format-story .sc-verse-attr, .share-card.format-story .sc-gloss, .share-card.format-story .sc-footer { font-size: 18px; }
+
+.toast {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: #f0e6c8;
+  padding: 0.7rem 1.4rem;
+  font-family: sans-serif; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  border-radius: 2px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000;
+}
+.toast.visible { opacity: 1; }
+
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-name">DHARMA'S ECHO</div>
-  <div class="header-sub">the dharma echoes back what was always already there</div>
+  <div class="header-sub">the dharma echoes back your moment</div>
 </div>
 
 <div class="key-gate" id="keyGate">
@@ -509,6 +650,20 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   <button class="again-btn" onclick="reset()">Write another entry ›</button>
 </div>
 
+<div class="save-row" id="saveRow">
+  <button class="save-btn" onclick="saveCard()">Save ›</button>
+  <button class="save-btn" onclick="shareCard()">Share ›</button>
+  <div class="format-select">
+    <button class="format-btn active" data-format="default" onclick="setFormat('default')">Card</button>
+    <button class="format-btn" data-format="square" onclick="setFormat('square')">Square</button>
+    <button class="format-btn" data-format="story" onclick="setFormat('story')">Story</button>
+  </div>
+  <label class="entry-toggle">
+    <input type="checkbox" id="includeEntryToggle" onchange="toggleIncludeEntry(this.checked)">
+    <span>include your entry</span>
+  </label>
+</div>
+
 <script>
 const IMAGES = [
   { url: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg", title: "Buddha, First Sermon, Sarnath", artist: "Gupta period, 5th century CE", tradition: "Indian Buddhist", tags: ["buddha", "first sermon", "dharma", "four noble truths", "wheel of dharma", "teaching", "path", "sarnath", "gupta", "pali", "dukkha"] },
@@ -547,6 +702,7 @@ function selectImage(keywords) {
 }
 
 let API_KEY = '';
+let lastEntryText = '';
 function saveKey() {
   const k = document.getElementById('keyInput').value.trim();
   if (!k) return;
@@ -629,7 +785,7 @@ THE SOURCE — strict hierarchy:
 
 Passage: under 40 words, verified and precise. From Pali Canon, use Bhikkhu Bodhi or Bhikkhu Sujato translation and name them. From copyrighted translations (Padmakara, Shambhala, others), paraphrase carefully and name translator, publisher, chapter. For the translator credit always prefix with "Trans." Never invent a quote. If uncertain about the exact passage, choose one you are certain of rather than approximating.
 
-THE IMAGE — two parts:
+THE IMAGE — one part:
 
 image_subject: The single most precise visual subject for this entry. Either the figure itself (if a painting tradition for them exists — Padmasambhava, Milarepa, Tara, Avalokiteśvara, Mañjuśrī, Buddha Śākyamuni, Amitābha, Maitreya, Vajrasattva, Samantabhadra, Cakrasaṃvara, Yeshe Tsogyal) or — if the figure is a treatise author with no painting tradition — the deity, lineage holder, or visual subject that most precisely embodies the same territory. Examples:
   · Patrul Rinpoche → Padmasambhava (the Longchen Nyingthig lineage he transmitted)
@@ -642,10 +798,7 @@ image_subject: The single most precise visual subject for this entry. Either the
   · Milarepa → Milarepa (paintings exist)
 Use the figure's name itself as image_subject if a painting tradition exists. Use a precise alternate only if no paintings of the figure exist on Wikimedia Commons. Always one short noun phrase, never a description.
 
-artwork_why: One short specific sentence that connects THIS image to THIS entry. Two patterns:
-  · If image_subject equals figure_name: name the precise visual quality and why it meets the entry. Example: "Tara's swift step — the foot already in motion before the question of fear is fully formed."
-  · If image_subject is a precise alternate to the figure: name the precise lineage or transmission relationship. Example: "Padmasambhava — Patrul Rinpoche's root lineage. The transmission he was carrying when he wrote." Or: "Mañjuśrī — Nagarjuna's deity. The wisdom that cuts through the very view his text dismantles."
-The caption MUST connect the image to either the figure, the entry, or the territory. Never generic art commentary. Never "thangkas often show..." Never "this teaching shares the quality..." Always specific. Under 25 words.
+(The caption that connects the image to the entry will be generated separately, after the actual image is selected.)
 
 THE VERSE — real verified verse only. Never invented. Lines separated by \\n. Not italic.
 
@@ -676,7 +829,6 @@ Return ONLY valid JSON, no markdown, no backticks, no preamble:
   "source_passage": "Passage under 40 words. Paraphrased carefully if copyrighted.",
   "concept_keywords": "6–8 keywords from: dukkha, samsara, anicca, anatta, sunyata, bodhicitta, compassion, impermanence, emptiness, nirvana, rigpa, clinging, self, interdependence, liberation, wisdom, suffering, practice, renunciation, purification, natural state, four noble truths, beyond extremes, mahamudra, dzogchen, path, teaching, dharma, first sermon, buddha, viveka, solitude, mountain, madhyamaka, second seal, third seal, fourth seal, pali",
   "image_subject": "Single noun phrase — the figure's name if a painting tradition exists, else a precise visual alternate (deity, lineage holder, or subject embodying the same territory). See THE IMAGE instructions.",
-  "artwork_why": "One short sentence connecting THIS image to THIS entry — see THE IMAGE instructions. Specific. Under 25 words. Never generic.",
   "verse_text": "3–5 lines. Real verified verse only. Lines separated by \\n.",
   "verse_attribution": "Name · tradition · century — omit tradition entirely if the speaker is Buddha Śākyamuni",
   "verse_source": "Title of text"
@@ -686,6 +838,7 @@ async function submitEntry() {
   if (!API_KEY) { alert('Please enter your Anthropic API key first.'); return; }
   const entry = document.getElementById('entry').value.trim();
   if (!entry) return;
+  lastEntryText = entry;
 
   const btn = document.getElementById('echoBtn');
   btn.disabled = true;
@@ -693,6 +846,13 @@ async function submitEntry() {
   document.getElementById('response').classList.remove('visible');
   document.getElementById('error').classList.remove('visible');
   document.getElementById('againRow').classList.remove('visible');
+  const saveRowSubmit = document.getElementById('saveRow');
+  if (saveRowSubmit) saveRowSubmit.classList.remove('visible');
+  // Reset include-entry toggle so each new entry starts with it off
+  const toggleSubmit = document.getElementById('includeEntryToggle');
+  if (toggleSubmit) toggleSubmit.checked = false;
+  const youWroteBlockSubmit = document.getElementById('scYouWroteBlock');
+  if (youWroteBlockSubmit) youWroteBlockSubmit.style.display = 'none';
   // Reset visibility of image block in case last response hid it
   const imgBlock = document.querySelector('.image-block');
   if (imgBlock) imgBlock.style.display = '';
@@ -813,38 +973,179 @@ function render(d) {
 
   document.getElementById('response').classList.add('visible');
   document.getElementById('againRow').classList.add('visible');
+  document.getElementById('saveRow').classList.add('visible');
+  populateShareCard(d);
   document.getElementById('response').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ── Image loading: Wikimedia first, fall back to image_subject, hide if both fail ──
+// ── Image loading: Wikimedia first, then second Claude call for caption ──
 async function loadImage(d) {
   const figureName = d.figure_name || '';
   const imageSubject = d.image_subject || figureName;
 
+  // Debug panel
+  const debugLines = [];
+  debugLines.push('figure_name: ' + figureName);
+  debugLines.push('image_subject: ' + imageSubject);
+
   // Try figure_name first (in case it has paintings even though image_subject differs)
-  let result = await searchWikimediaForFigure(figureName);
+  let result = await searchWikimediaForFigure(figureName, debugLines);
 
   // If no result and image_subject is different, try it
   if (!result && imageSubject && imageSubject.toLowerCase() !== figureName.toLowerCase()) {
-    result = await searchWikimediaForFigure(imageSubject);
+    debugLines.push('--- trying image_subject ---');
+    result = await searchWikimediaForFigure(imageSubject, debugLines);
   }
+
+  // Show debug
+  showDebug(debugLines, result);
 
   if (!result) {
     hideImageBlock();
     return;
   }
 
-  // Render the image
+  // Render the image first — caption arrives second
   const artEl = document.getElementById('artImg');
   artEl.src = result.url;
   artEl.alt = result.title;
   artEl.style.display = 'block';
   artEl.onerror = function() { hideImageBlock(); };
-
-  // Title shows: image subject · "Wikimedia Commons" attribution
   document.getElementById('imgTitle').textContent = result.cleanTitle;
-  // Caption (Claude's artwork_why) — the precision connection
-  document.getElementById('imgWhy').textContent = d.artwork_why || '';
+
+  // Show "Loading..." state for caption while it generates
+  document.getElementById('imgWhy').textContent = '';
+
+  // Now make a second call to Claude to get a caption that fits THIS image
+  try {
+    const caption = await generateImageCaption(d, result.cleanTitle);
+    if (caption) {
+      document.getElementById('imgWhy').textContent = caption;
+    }
+  } catch (e) {
+    console.error('Caption generation failed:', e);
+  }
+}
+
+function showDebug(lines, result) {
+  // Debug panel disabled — uncomment block below to re-enable
+  return;
+  /*
+  let panel = document.getElementById('debugPanel');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'debugPanel';
+    panel.style.cssText = 'margin: 1rem 3rem; padding: 0.8rem 1rem; background: #fff8e0; border: 1px dashed #c8a030; font-family: monospace; font-size: 0.7rem; line-height: 1.6; color: #4a3a18; white-space: pre-wrap; word-break: break-all;';
+    document.querySelector('.response').appendChild(panel);
+  }
+  let txt = '── DEBUG (delete this section once images are working) ──\n';
+  txt += lines.join('\n');
+  if (result) {
+    txt += '\n\n→ CHOSEN: ' + result.title;
+  } else {
+    txt += '\n\n→ NO IMAGE FOUND';
+  }
+  panel.textContent = txt;
+  */
+}
+
+async function generateImageCaption(d, actualImageTitle) {
+  const captionPrompt = `Write one caption with three parts in this exact order, separated by punctuation:
+
+PART 1 — Name the figure or subject in the image (the actual figure visible).
+PART 2 — A very brief lineage or relationship clause (only if image_subject differs from figure_name) — e.g. "Patrul Rinpoche's root teacher", "Nagarjuna's tutelary deity". Skip if image_subject equals figure_name.
+PART 3 — A specific visible feature of the image, then a verb, then a 5-9 word distillation of THE TEACHING — what the source passage and verse are pointing to. NOT a paraphrase of what the person wrote.
+
+CRITICAL — what Part 3 distills:
+
+The 5-9 word phrase at the end is a distillation of the DHARMA TEACHING that the response is offering — what is in the source quote and the verse. It is NOT a summary of the person's entry.
+
+Look at:
+- The source passage: "${d.source_passage || ''}"
+- The verse: "${d.verse_text || ''}"
+- The term: ${d.term_transliteration} — ${d.term_first_line}
+
+The phrase at the end of Part 3 should distill what these are saying. The image embodies this teaching.
+
+The entry tells us what the person needs the teaching to meet. But the caption does not paraphrase the entry — it names what the teaching is, which is the answer to the entry.
+
+CRITICAL — verb logic:
+
+Every image in this app is a teaching image. The image makes the dharma teaching visible. The caption names how it does so. The verb must reflect this — the image is not a mirror of the person's entry. It is making the teaching visible.
+
+Verbs to use:
+- For peaceful figures or pure realms or any image that shows the path/answer: SHOWS, REVEALS, EMBODIES, POINTS TO, MAKES VISIBLE, NAMES, OPENS
+- For wrathful figures (Mahakala, Guru Dragpur, Vajrakilaya, fierce dakinis): BURNS THROUGH, CUTS THROUGH, CONSUMES, DISSOLVES, SEVERS — what they destroy is delusion, clinging, fear, obstacles
+- For samsaric depictions (wheel of life, six realms, hell realms, bardo, Mara's army): NAMES, SHOWS, MAKES VISIBLE — they make the teaching about that territory visible
+
+NEVER use "echoes", "reflects", or "mirrors" — these imply the image is a mirror of the person's experience, which is not the relationship. The image makes the teaching visible.
+
+Inputs:
+- The figure who addresses this entry: ${d.figure_name}
+- The image subject Claude chose: ${d.image_subject || d.figure_name}
+- The actual image title: "${actualImageTitle}"
+- They wrote (for context only — do NOT paraphrase): "${lastEntryText}"
+
+Examples (notice each Part 3 distills the teaching, NOT the entry, and uses a teaching-verb):
+
+Peaceful figures (use shows/reveals/embodies/points to/names):
+- "Padmasambhava with rainbow body — the dissolving form shows the mind that holds everything yet remains unstained."
+- "Tara — her stepping foot reveals the swift compassion that meets fear before fear can arise."
+- "Mañjuśrī, Nagarjuna's tutelary deity — the upraised sword embodies the wisdom that severs every fixed view."
+- "Avalokiteśvara — the thousand arms point to compassion that reaches every being without exception."
+- "Buddha Śākyamuni — his teaching gesture shows the path of release from craving."
+- "Buddha Amitābha in his Pure Land — the blissful field reveals the buddha-nature already present in awareness."
+
+Wrathful figures (use burns through/cuts through/consumes):
+- "Guru Dragpur, wrathful Padmasambhava — the surrounding flames burn through the delusion that obscures awareness."
+- "Mahakala — his fierce gaze cuts through the obstacles that hide the natural state."
+
+Samsaric or realm depictions (use names/shows/makes visible):
+- "The wheel of life at the center — its turning shows the samsaric round the teaching reveals as suffering."
+- "Mt. Meru and the Buddhist universe — the layered realms make visible the cosmology the teaching points beyond."
+- "The bardo figures wandering between worlds — they name the in-between state the teaching meets with awareness."
+
+Format rules:
+- Comma between Part 1 and Part 2 if Part 2 is included.
+- Em dash (—) before Part 3.
+- 18-26 words total.
+- Do not begin with "Tibetan", "This", "The image".
+- Do NOT mention what the person "wrote" or "described" or "feels" or any phrasing of their entry.
+- The end of the sentence is the teaching distilled.
+
+Now write one caption. No quotes. No preamble.
+
+BEFORE RETURNING, check your draft against these three failure patterns and rewrite if any apply:
+
+CHECK 1 — Does your sentence contain "echo", "echoes", "echoing", "reflects", "reflecting", "mirrors", or "mirroring"? If yes → REWRITE using a teaching-verb (shows, reveals, embodies, points to, names, opens, makes visible — or for wrathful figures: burns through, cuts through, consumes).
+
+CHECK 2 — Does the end of your sentence paraphrase or summarize what the person wrote? Common slips: "the disconnection from one's lived day", "the longing to find home", "the ache of not belonging", "the wandering mind", "the search that defeats itself". If yes → REWRITE. The end of your sentence must distill THE TEACHING in the source quote and verse, not paraphrase the entry.
+
+CHECK 3 — Does your sentence start with "Tibetan", "This", "The image", "Buddhist art"? If yes → REWRITE starting with the figure or visible subject.
+
+Only return the final sentence after passing all three checks. No quotes, no preamble.`;
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 150,
+      temperature: 0.1,
+      messages: [{ role: 'user', content: captionPrompt }]
+    })
+  });
+
+  if (!res.ok) return null;
+  const data = await res.json();
+  const text = data.content.map(b => b.text || '').join('').trim();
+  // Strip any quotes the model might have added despite instructions
+  return text.replace(/^["'`]+|["'`]+$/g, '');
 }
 
 function hideImageBlock() {
@@ -856,59 +1157,102 @@ function hideImageBlock() {
   if (dividers.length > 0) dividers[dividers.length - 1].style.display = 'none';
 }
 
-async function searchWikimediaForFigure(figure) {
-  if (!figure) return null;
+async function searchWikimediaForFigure(figure, debugLines) {
+  if (!figure) {
+    if (debugLines) debugLines.push('  search: empty figure, skip');
+    return null;
+  }
   // Strip honorifics that confuse search
   const cleaned = figure.replace(/Rinpoche|Lama|Bhante/g, '').trim();
+  // Strip diacritics for filter matching (Śākyamuni → Sakyamuni)
+  const stripDiacritics = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const cleanedNoDiacritics = stripDiacritics(cleaned);
   const query = cleaned + ' thangka';
+  if (debugLines) debugLines.push('  search: "' + query + '"');
   const url = 'https://commons.wikimedia.org/w/api.php?' +
     'action=query&format=json&origin=*' +
     '&generator=search&gsrnamespace=6' +
     '&gsrsearch=' + encodeURIComponent(query) +
-    '&gsrlimit=12' +
+    '&gsrlimit=15' +
     '&prop=imageinfo&iiprop=url|size|mediatype&iiurlwidth=600';
 
   try {
     const res = await fetch(url);
-    if (!res.ok) return null;
+    if (!res.ok) {
+      if (debugLines) debugLines.push('  HTTP ' + res.status);
+      return null;
+    }
     const data = await res.json();
-    if (!data.query || !data.query.pages) return null;
+    if (!data.query || !data.query.pages) {
+      if (debugLines) debugLines.push('  no pages in response');
+      return null;
+    }
 
-    const candidates = Object.values(data.query.pages)
+    const allResults = Object.values(data.query.pages);
+    if (debugLines) {
+      debugLines.push('  raw results: ' + allResults.length);
+      allResults.slice(0, 5).forEach(p => debugLines.push('    - ' + p.title));
+    }
+
+    const candidates = allResults
       .filter(p => p.imageinfo && p.imageinfo[0])
       .filter(p => p.imageinfo[0].mediatype === 'BITMAP')
       .filter(p => p.imageinfo[0].size > 50000)
       .filter(p => {
-        // Title MUST contain the figure name AND look like an artwork
-        const t = p.title.toLowerCase();
-        const figLower = cleaned.toLowerCase();
-        // Allow partial match — e.g. "Sakyamuni" matches "Buddha Sakyamuni"
-        const figureWords = figLower.split(/\s+/).filter(w => w.length > 3);
+        const t = stripDiacritics(p.title);
+        const figureWords = cleanedNoDiacritics.split(/\s+/).filter(w => w.length > 3);
         const hasFigure = figureWords.some(w => t.includes(w));
-        const isArtwork = /thangka|thanka|painting|tibetan|nepali/i.test(t);
-        // Both required — figure name AND artwork indicator
-        return hasFigure && isArtwork;
+        const isStrongArtwork = /thangka|thanka|painting/i.test(t);
+        const isSoftArtwork = /tibetan|nepali|nepal|bhutanese|sculpture|wellcome|museum/i.test(t);
+        // Pass if: strong artwork keyword, OR figure name is in title (figure-named files are usually artworks)
+        return isStrongArtwork || hasFigure;
       });
+
+    if (debugLines) debugLines.push('  after filter: ' + candidates.length);
 
     if (candidates.length === 0) return null;
 
-    // Prefer ones that contain the figure name AND "thangka"/"thanka" in title
-    const figLower = cleaned.toLowerCase();
+    // Score and sort: figure name + artwork keyword in title gets top priority
     candidates.sort((a, b) => {
-      const ta = a.title.toLowerCase();
-      const tb = b.title.toLowerCase();
-      const aHasFig = ta.includes(figLower) ? 1 : 0;
-      const bHasFig = tb.includes(figLower) ? 1 : 0;
+      const ta = stripDiacritics(a.title);
+      const tb = stripDiacritics(b.title);
+      const aHasFig = ta.includes(cleanedNoDiacritics) ? 1 : 0;
+      const bHasFig = tb.includes(cleanedNoDiacritics) ? 1 : 0;
       const aIsArt = /thangka|thanka|painting/i.test(ta) ? 1 : 0;
       const bIsArt = /thangka|thanka|painting/i.test(tb) ? 1 : 0;
       return (bHasFig + bIsArt) - (aHasFig + aIsArt);
     });
 
-    const chosen = candidates[0];
-    const cleanTitle = chosen.title
+    // Pick randomly from top 5 (or however many we have) for variety
+    const topPool = candidates.slice(0, Math.min(5, candidates.length));
+    const chosen = topPool[Math.floor(Math.random() * topPool.length)];
+
+    if (debugLines) debugLines.push('  pool size: ' + topPool.length);
+
+    let cleanTitle = chosen.title
       .replace(/^File:/, '')
       .replace(/_/g, ' ')
       .replace(/\.[a-z]+$/i, '');
+    // Strip museum cataloging — accession numbers, museum names, "Anonymous", trailing dates
+    cleanTitle = cleanTitle
+      // "Anonymous - " or "Anonymous, " at start
+      .replace(/^Anonymous\s*[-,–—]\s*/i, '')
+      // Patterns like " - 1996.85 - Art Institute of Chicago"
+      .replace(/\s*[-–—]\s*\d{2,4}\.\d+[-\d]*\s*[-–—]\s*[^-–—]+$/i, '')
+      // Patterns like " (AM 1931.626-5)" — accession codes in parens
+      .replace(/\s*\(\s*[A-Z]{1,4}[\s.\-_]?\d[\d\.\-_]*\s*\)/g, '')
+      // Wellcome catalog suffixes like " Wellcome L0015316" or " Wellcome V0018303"
+      .replace(/\s*Wellcome\s+[A-Z]\d+\s*$/i, '')
+      // Trailing accession codes like " - 1986.1314" or " - 1970.486"
+      .replace(/\s*[-–—]\s*\d{4}\.\d+\s*$/i, '')
+      // Museum suffixes after a separator: " - Art Institute of Chicago", "- British Museum", "- Penn Museum"
+      .replace(/\s*[-–—]\s*(Art Institute of Chicago|British Museum|Penn Museum|Victoria \& Albert Museum|Sichuan Provincial Museum|Wellcome Collection)\s*$/i, '')
+      // Museum names at end without a separator
+      .replace(/\s+(Art Institute of Chicago|British Museum|Penn Museum|Victoria \& Albert Museum|Sichuan Provincial Museum|Wellcome Collection)\s*$/i, '')
+      // Whitespace cleanup
+      .replace(/\s+/g, ' ')
+      .replace(/\s*[-–—]\s*$/g, '')
+      .trim();
 
     return {
       url: chosen.imageinfo[0].thumburl || chosen.imageinfo[0].url,
@@ -917,8 +1261,214 @@ async function searchWikimediaForFigure(figure) {
       cleanTitle: cleanTitle
     };
   } catch (e) {
+    if (debugLines) debugLines.push('  error: ' + e.message);
     console.error('Wikimedia search error:', e);
     return null;
+  }
+}
+
+// ── Share card population ──
+let lastShareData = null;
+let lastShareImageUrl = '';
+let lastShareImageTitle = '';
+let lastShareCaption = '';
+
+function populateShareCard(d) {
+  lastShareData = d;
+  document.getElementById('scYouWrote').textContent = lastEntryText;
+  const openingRaw = d.opening || '';
+  document.getElementById('scOpening').innerHTML = openingRaw.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+  document.getElementById('scScriptSa').textContent = d.term_sanskrit || '';
+  document.getElementById('scScriptSaRoman').textContent = d.term_transliteration || '';
+  if (d.term_tibetan && d.term_tibetan.trim()) {
+    document.getElementById('scScriptBo').textContent = d.term_tibetan;
+    document.getElementById('scScriptBoRoman').textContent = d.term_tibetan_roman || '';
+    document.getElementById('scTibGroup').style.display = 'block';
+  } else {
+    document.getElementById('scTibGroup').style.display = 'none';
+  }
+
+  document.getElementById('scTermFirst').textContent = d.term_first_line || '';
+  document.getElementById('scTermBody').textContent = d.term_translation || '';
+  document.getElementById('scSeal').textContent = d.seal || '';
+
+  const isBuddha = (d.figure_name || '').includes('Buddha Śākyamuni');
+  document.getElementById('scFigureName').textContent = d.figure_name || '';
+  const srcRef = document.getElementById('scSourceRef');
+  const refText = d.source_text || '';
+  const refNum = d.source_reference || '';
+  srcRef.innerHTML = '<em>' + refText + '</em>' + (refNum ? ' · ' + refNum : '');
+  document.getElementById('scSourcePassage').textContent = '\u201C' + (d.source_passage || '') + '\u201D';
+  document.getElementById('scSourceTrans').textContent = d.source_translation || '';
+
+  const gloss = document.getElementById('scGloss');
+  if (isBuddha && d.figure_description) {
+    let desc = d.figure_description.replace(/^Buddha Śākyamuni\s+/, '');
+    desc = desc.charAt(0).toLowerCase() + desc.slice(1);
+    gloss.textContent = '(' + desc.replace(/\.$/, '') + ')';
+    gloss.style.display = 'block';
+  } else {
+    gloss.style.display = 'none';
+  }
+
+  // Verse
+  const verseBlock = document.getElementById('scVerseBlock');
+  const verseLines = (d.verse_text || '').split('\n').map(l => l.trim()).filter(Boolean);
+  if (verseLines.length > 0) {
+    document.getElementById('scVerseText').innerHTML = verseLines.join('<br>');
+    let attr = d.verse_attribution || '';
+    if (attr.includes('Buddha') && attr.includes('Theravada')) {
+      attr = attr.replace(/[·\s]*Theravada[\s]*/g, '');
+    }
+    document.getElementById('scVerseAttr').innerHTML = attr + (d.verse_source ? ' · <em>' + d.verse_source + '</em>' : '');
+    verseBlock.style.display = 'block';
+  } else {
+    verseBlock.style.display = 'none';
+  }
+
+  // Image — populated separately when image loads
+  syncShareCardImage();
+}
+
+function syncShareCardImage() {
+  // Mirror current image into the share card
+  const artImg = document.getElementById('artImg');
+  const scImg = document.getElementById('scImg');
+  const scImageBlock = document.getElementById('scImageBlock');
+  if (!artImg || !scImg) return;
+
+  if (artImg.style.display === 'none' || !artImg.src) {
+    scImageBlock.style.display = 'none';
+    return;
+  }
+  scImageBlock.style.display = 'block';
+  scImg.src = artImg.src;
+  document.getElementById('scImgTitle').textContent = document.getElementById('imgTitle').textContent;
+  document.getElementById('scImgWhy').textContent = document.getElementById('imgWhy').textContent;
+}
+
+// Re-sync share card image whenever the page image updates
+const imgObserver = new MutationObserver(() => syncShareCardImage());
+window.addEventListener('DOMContentLoaded', () => {
+  const artImg = document.getElementById('artImg');
+  const imgWhy = document.getElementById('imgWhy');
+  if (artImg) imgObserver.observe(artImg, { attributes: true, attributeFilter: ['src', 'style'] });
+  if (imgWhy) imgObserver.observe(imgWhy, { childList: true, subtree: true, characterData: true });
+});
+
+function toggleIncludeEntry(checked) {
+  const block = document.getElementById('scYouWroteBlock');
+  if (block) block.style.display = checked ? 'block' : 'none';
+}
+
+let currentFormat = 'default';
+function setFormat(format) {
+  currentFormat = format;
+  const card = document.getElementById('shareCard');
+  card.classList.remove('format-default', 'format-square', 'format-story');
+  card.classList.add('format-' + format);
+  document.querySelectorAll('.format-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.format === format);
+  });
+}
+
+async function preloadShareImage() {
+  const img = document.getElementById('scImg');
+  if (!img.src || img.src.startsWith('data:')) return;
+  try {
+    const r = await fetch(img.src);
+    if (!r.ok) return;
+    const blob = await r.blob();
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    return new Promise((resolve) => {
+      const newImg = new Image();
+      newImg.onload = () => { img.src = dataUrl; setTimeout(resolve, 200); };
+      newImg.onerror = () => resolve();
+      newImg.src = dataUrl;
+    });
+  } catch (e) {
+    console.warn('Image preload failed:', e);
+  }
+}
+
+async function saveCard() {
+  const toast = document.getElementById('toast');
+  toast.textContent = 'Rendering...';
+  toast.classList.add('visible');
+  try {
+    const container = document.getElementById('shareCardContainer');
+    container.style.top = '0';
+    container.style.left = '-10000px';
+    await preloadShareImage();
+    const card = document.getElementById('shareCard');
+    const canvas = await html2canvas(card, {
+      backgroundColor: null, scale: 2, useCORS: true, allowTaint: false, logging: false
+    });
+    container.style.top = '-10000px';
+    const link = document.createElement('a');
+    link.download = 'dharmas-echo-' + Date.now() + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    toast.textContent = 'Saved';
+    setTimeout(() => toast.classList.remove('visible'), 2000);
+  } catch (e) {
+    console.error('Save failed:', e);
+    toast.textContent = 'Save failed';
+    setTimeout(() => toast.classList.remove('visible'), 2500);
+  }
+}
+
+async function shareCard() {
+  const toast = document.getElementById('toast');
+  toast.textContent = 'Preparing...';
+  toast.classList.add('visible');
+  try {
+    const container = document.getElementById('shareCardContainer');
+    container.style.top = '0';
+    container.style.left = '-10000px';
+    await preloadShareImage();
+    const card = document.getElementById('shareCard');
+    const canvas = await html2canvas(card, {
+      backgroundColor: null, scale: 2, useCORS: true, allowTaint: false, logging: false
+    });
+    container.style.top = '-10000px';
+
+    canvas.toBlob(async (blob) => {
+      if (!blob) { throw new Error('Blob failed'); }
+      const file = new File([blob], 'dharmas-echo.png', { type: 'image/png' });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: "Dharma's Echo", text: 'From Dharma\u2019s Echo — dharmas-echo.vercel.app' });
+          toast.textContent = 'Shared';
+          setTimeout(() => toast.classList.remove('visible'), 2000);
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') { toast.classList.remove('visible'); return; }
+        }
+      }
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        toast.textContent = 'Copied to clipboard';
+        setTimeout(() => toast.classList.remove('visible'), 2500);
+      } catch (err) {
+        const link = document.createElement('a');
+        link.download = 'dharmas-echo-' + Date.now() + '.png';
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        toast.textContent = 'Downloaded';
+        setTimeout(() => toast.classList.remove('visible'), 2000);
+      }
+    }, 'image/png');
+  } catch (e) {
+    console.error('Share failed:', e);
+    toast.textContent = 'Share failed';
+    setTimeout(() => toast.classList.remove('visible'), 2500);
   }
 }
 
@@ -926,6 +1476,13 @@ function reset() {
   document.getElementById('entry').value = '';
   document.getElementById('response').classList.remove('visible');
   document.getElementById('againRow').classList.remove('visible');
+  const saveRowReset = document.getElementById('saveRow');
+  if (saveRowReset) saveRowReset.classList.remove('visible');
+  // Reset include-entry toggle
+  const toggleReset = document.getElementById('includeEntryToggle');
+  if (toggleReset) toggleReset.checked = false;
+  const youWroteBlockReset = document.getElementById('scYouWroteBlock');
+  if (youWroteBlockReset) youWroteBlockReset.style.display = 'none';
   // Un-hide image block + dividers in case they were hidden last response
   const imgBlock = document.querySelector('.image-block');
   if (imgBlock) imgBlock.style.display = '';
@@ -953,5 +1510,56 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+
+<div class="share-card-container" id="shareCardContainer">
+  <div class="share-card format-default" id="shareCard">
+    <div class="sc-header">
+      <div class="sc-header-name">DHARMA'S ECHO</div>
+      <div class="sc-header-sub">the dharma echoes back your moment</div>
+    </div>
+    <div class="sc-you-wrote" id="scYouWroteBlock" style="display: none;">
+      <div class="sc-label">You wrote</div>
+      <div class="sc-you-wrote-text" id="scYouWrote"></div>
+    </div>
+    <div class="sc-opening" id="scOpening"></div>
+    <div class="sc-term-block">
+      <div class="sc-term-scripts">
+        <div>
+          <div class="sc-script-sa" id="scScriptSa"></div>
+          <div class="sc-script-roman" id="scScriptSaRoman"></div>
+        </div>
+        <div id="scTibGroup" style="display:none;">
+          <div class="sc-script-bo" id="scScriptBo"></div>
+          <div class="sc-script-roman" id="scScriptBoRoman"></div>
+        </div>
+      </div>
+      <div class="sc-term-first" id="scTermFirst"></div>
+      <div class="sc-term-body" id="scTermBody"></div>
+    </div>
+    <div class="sc-seal" id="scSeal"></div>
+    <div class="sc-figure-source">
+      <div class="sc-figure-name" id="scFigureName"></div>
+      <div class="sc-source-ref" id="scSourceRef"></div>
+      <div class="sc-source-box">
+        <div class="sc-source-passage" id="scSourcePassage"></div>
+        <div class="sc-source-trans" id="scSourceTrans"></div>
+      </div>
+      <div class="sc-gloss" id="scGloss"></div>
+    </div>
+    <div class="sc-verse" id="scVerseBlock">
+      <div class="sc-verse-text" id="scVerseText"></div>
+      <div class="sc-verse-attr" id="scVerseAttr"></div>
+    </div>
+    <div class="sc-image-block" id="scImageBlock">
+      <img id="scImg" src="" alt="" crossorigin="anonymous">
+      <div class="sc-image-title" id="scImgTitle"></div>
+      <div class="sc-image-why" id="scImgWhy"></div>
+    </div>
+    <div class="sc-footer">dharmas-echo.vercel.app</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Saved</div>
+
 </body>
 </html>
