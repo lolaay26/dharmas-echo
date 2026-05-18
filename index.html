@@ -210,17 +210,17 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 }
 .term-script {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.5rem;
+  font-size: 1.56rem;
   font-weight: 300;
-  color: var(--text);
+  color: #a82010;
   letter-spacing: 0.02em;
   line-height: 1.3;
 }
 .term-script-tibetan {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.3rem;
+  font-size: 1.36rem;
   font-weight: 300;
-  color: var(--gold-dark);
+  color: #a82010;
   line-height: 1.4;
 }
 .term-roman {
@@ -358,7 +358,7 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 }
 .image-block img {
   max-width: 100%;
-  max-height: 300px;
+  max-height: 460px;
   object-fit: contain;
   display: block;
   margin: 0 auto 1.1rem;
@@ -370,12 +370,13 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   text-transform: uppercase;
   color: var(--gold-dark);
   margin-bottom: 0.6rem;
+  text-align: center;
 }
 .image-why {
   font-size: 1.05rem;
   color: var(--text);
-  font-style: italic;
   line-height: 1.7;
+  text-align: left;
 }
 
 /* Verse */
@@ -529,7 +530,7 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .sc-source-ref em { font-family: 'EB Garamond', serif; text-transform: none; letter-spacing: 0.02em; font-size: 16px; font-style: italic; }
 .sc-source-box { background: rgba(255, 251, 240, 0.85); padding: 0.9rem 1.1rem; border-left: 2px solid #a82010; border-radius: 2px; }
 .sc-source-passage { font-size: 16px; font-style: italic; color: #1a2540; line-height: 1.75; margin-bottom: 0.4rem; }
-.sc-source-trans { font-family: sans-serif; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #a82010; font-weight: 700; }
+.sc-source-trans { font-family: sans-serif; font-size: 7.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #a82010; font-weight: 500; }
 
 .sc-verse { padding: 0.8rem 0 1.4rem; border-bottom: 1px solid rgba(120, 105, 80, 0.4); }
 .sc-verse-text { font-size: 16px; font-style: italic; color: #1a2540; line-height: 2; margin-bottom: 0.5rem; }
@@ -537,9 +538,9 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .sc-verse-attr em { font-family: 'EB Garamond', serif; text-transform: none; letter-spacing: 0.02em; font-size: 13px; font-style: italic; }
 
 .sc-image-block { background: rgba(255, 251, 240, 0.55); padding: 1rem; margin: 0.5rem 0 1.2rem; text-align: center; border-radius: 2px; }
-.sc-image-block img { max-width: 100%; max-height: 340px; object-fit: contain; display: block; margin: 0 auto 0.9rem; }
+.sc-image-block img { max-width: 100%; max-height: 420px; object-fit: contain; display: block; margin: 0 auto 0.9rem; }
 .sc-image-title { font-family: sans-serif; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #a82010; font-weight: 700; margin-bottom: 0.5rem; }
-.sc-image-why { font-size: 15.5px; color: #1a2540; font-style: italic; line-height: 1.6; }
+.sc-image-why { font-size: 15.5px; color: #1a2540; line-height: 1.6; text-align: left; }
 
 /* Square format — ~1.9x scale of Card, hierarchy preserved */
 .share-card.format-square .sc-script-sa { font-size: 46px; }
@@ -769,13 +770,18 @@ term_tradition: Pali / Sanskrit / Tibetan / Sanskrit and Tibetan — only list t
 term_first_line: One sentence. Not the flat English word — the hook that opens the real meaning.
 term_translation: TWO SENTENCES MAXIMUM. UNDER 40 WORDS TOTAL. First sentence: philosophical precision — what the tradition actually means by this term. No metaphor. Second sentence: one image beginning with "Like" — Thrinley Norbu register. Direct, simple, the image lands without explanation. The simile serves the term, not the person who wrote. Do not explain, do not elaborate, do not add context. If a third sentence feels needed, the first two are wrong. Example: "Tṛṣṇā is the thirst identified in the second noble truth as the root of dukkha. Like consciousness projecting a distant shore while standing on solid ground." Do NOT add a third sentence about Tibetan nuance — if the Tibetan differs, that goes in term_first_line, not here.
 
-THE SEAL — conversational, one sentence, in italic register:
+THE SEAL — conversational, one sentence, in italic register. Be honest about fit:
+
+The four seals are: anicca (impermanence), dukkha (suffering/unsatisfactoriness), anatta (non-self), nirvana is peace. Only invoke a seal when the entry GENUINELY meets it — when impermanence, suffering, non-self, or peace is actually the territory the entry touches.
 
 If the entry genuinely meets a seal:
-"Your entry meets the [first/second/third/fourth] seal — [seal name]. [One-line statement of what that seal actually teaches.]"
+"Your entry meets the [first/second/third/fourth] seal — [seal name]. [One-line statement of what that seal actually teaches, connected to the entry.]"
 
-If the entry moves against the dharma or points away from a seal:
-State the relevant seal clearly and let it speak for itself. "The first seal — anicca — teaches that all compounded things are impermanent." Do not correct the person. The seal is a compass, not a judgment.
+If the entry does NOT genuinely meet any of the four seals — do not force one. Many entries (ethics, compassion, livelihood, relationship, devotion, action in the world) belong to other parts of the dharma. Instead, name the actual framework the entry touches — the brahmavihāras, the pāramitās, the bodhisattva path, dependent origination, right action, the precepts, and so on — in the same register: "Your entry meets the territory of [framework] — [one line of what it teaches]."
+
+If naming a framework would only restate the term already given above (e.g. the term is ahiṃsā and the framework would just say "non-harm"), then OMIT the seal line entirely. Return an empty string for the seal. A redundant line is worse than no line.
+
+Never force a seal to fit. Never correct the person. The seal or framework is a compass, not a judgment.
 
 THE FIGURE — always named. Strict source hierarchy:
 1. The Buddha directly, from the Pali suttas or early Mahayana sutras
@@ -953,7 +959,14 @@ function render(d) {
   document.getElementById('termFirst').textContent = d.term_first_line || '';
   document.getElementById('termBody').textContent = d.term_translation || '';
 
-  document.getElementById('sealLine').textContent = d.seal || '';
+  const sealEl = document.getElementById('sealLine');
+  if (d.seal && d.seal.trim()) {
+    sealEl.textContent = d.seal;
+    sealEl.style.display = '';
+  } else {
+    sealEl.textContent = '';
+    sealEl.style.display = 'none';
+  }
 
   document.getElementById('figureName').textContent = d.figure_name || '';
 
@@ -1283,8 +1296,16 @@ async function searchWikimediaForFigure(figure, debugLines) {
       .replace(/\s*[-–—]\s*(Art Institute of Chicago|British Museum|Penn Museum|Victoria \& Albert Museum|Sichuan Provincial Museum|Wellcome Collection)\s*$/i, '')
       // Museum names at end without a separator
       .replace(/\s+(Art Institute of Chicago|British Museum|Penn Museum|Victoria \& Albert Museum|Sichuan Provincial Museum|Wellcome Collection)\s*$/i, '')
+      // Strip "Painted Banner (Thangka) of/with" → just keep what follows
+      .replace(/^Painted Banner\s*\(Thangka\)\s*(of|with)?\s*/i, '')
+      // Strip parenthetical epithets/aliases like "(Orgyen Dorje Chang)"
+      .replace(/\s*\([^)]*\)/g, '')
+      // Trim co-figure enumerations only: ", with X, Y, and Z" — must contain a comma or " and "
+      // (so short meaningful clauses like "with Rainbow Body" are kept)
+      .replace(/,?\s*with\s+[^-–—]*?(?:,|\sand\s)[^-–—]+?(?=\s*[-–—]\s*\d|$)/i, '')
       // Whitespace cleanup
       .replace(/\s+/g, ' ')
+      .replace(/\s*,\s*$/g, '')
       .replace(/\s*[-–—]\s*$/g, '')
       .trim();
 
@@ -1325,7 +1346,14 @@ function populateShareCard(d) {
 
   document.getElementById('scTermFirst').textContent = d.term_first_line || '';
   document.getElementById('scTermBody').textContent = d.term_translation || '';
-  document.getElementById('scSeal').textContent = d.seal || '';
+  const scSealEl = document.getElementById('scSeal');
+  if (d.seal && d.seal.trim()) {
+    scSealEl.textContent = d.seal;
+    scSealEl.style.display = '';
+  } else {
+    scSealEl.textContent = '';
+    scSealEl.style.display = 'none';
+  }
 
   document.getElementById('scFigureName').textContent = d.figure_name || '';
   const srcRef = document.getElementById('scSourceRef');
