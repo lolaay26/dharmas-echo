@@ -837,7 +837,7 @@ Return ONLY valid JSON, no markdown, no backticks, no preamble:
   "figure_key_verb": "The precise relationship verb — 'author of', 'singer of', 'revealer of', 'translator of'. Empty string if the figure is Buddha Śākyamuni or had no primary text.",
   "figure_key_work": "The single most important text in italics — just the title, no verb. Empty string if the figure is Buddha Śākyamuni or had no primary authored text.",
   "figure_description": "One sentence starting with the figure's name. What they refused, showed, or opened.",
-  ""source_text": "Pali or Sanskrit title first — English title after a dash if it has one. E.g. Khaggavisāṇa Sutta — Rhinoceros Horn Sutta. The source_text displays in uppercase so no italics needed here — italics are handled in the opening line only.",
+  "source_text": "Pali or Sanskrit title in Title Case (e.g. Khaggavisāṇa Sutta — Rhinoceros Horn Sutta) — English title after a dash if it has one. Do NOT write in ALL CAPS. The title will be rendered in italics by the page; just provide the natural Title Case.",
   "source_reference": "Sutta ID, chapter, verse, or song number",
   "source_translation": "Trans. [Name] · [Publisher]",
   "source_passage": "Passage under 40 words. Paraphrased carefully if copyrighted.",
@@ -956,7 +956,13 @@ function render(d) {
   // Source title: italic Pali/Sanskrit name, then reference in uppercase
   const sourceTitleEl = document.getElementById('sourceTitle');
   if (d.source_text) {
-    let titleHTML = '<em>' + d.source_text + '</em>';
+    // Normalize to Title Case if Claude returned ALL CAPS
+    let srcText = d.source_text.trim();
+    const isAllCaps = srcText === srcText.toUpperCase() && /[A-Z]/.test(srcText);
+    if (isAllCaps) {
+      srcText = srcText.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    }
+    let titleHTML = '<em>' + srcText + '</em>';
     if (d.source_reference) {
       titleHTML += ' <span class="source-ref-upper">· ' + d.source_reference + '</span>';
     }
