@@ -245,16 +245,6 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   color: var(--text-mid);
 }
 
-/* Seal line */
-.seal-line {
-  font-family: 'Lora', Georgia, serif;
-  font-size: 0.97rem;
-  line-height: 1.8;
-  color: var(--text-label);
-  margin-bottom: 2.8rem;
-  font-style: italic;
-}
-
 /* Section divider — amber line */
 .section-rule {
   border: none;
@@ -522,8 +512,6 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .sc-term-first { font-size: 16px; color: #1a2540; font-weight: 500; line-height: 1.7; margin-bottom: 0.5rem; }
 .sc-term-body { font-size: 16px; color: #3a4565; line-height: 1.8; }
 
-.sc-seal { padding: 0.9rem 0; font-size: 16px; color: #3a4565; line-height: 1.75; border-top: 1px solid rgba(120, 105, 80, 0.35); border-bottom: 1px solid rgba(120, 105, 80, 0.35); }
-
 .sc-figure-source { padding: 1.2rem 0 0.8rem; }
 .sc-figure-name { font-size: 16px; color: #a82010; font-weight: 500; margin-bottom: 0.6rem; }
 .sc-source-ref { font-family: sans-serif; font-size: 9px; letter-spacing: 0.2em; color: #a82010; margin-bottom: 0.6rem; font-weight: 700; text-transform: uppercase; }
@@ -550,7 +538,6 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .share-card.format-square .sc-opening,
 .share-card.format-square .sc-term-first,
 .share-card.format-square .sc-term-body,
-.share-card.format-square .sc-seal,
 .share-card.format-square .sc-figure-name,
 .share-card.format-square .sc-source-passage,
 .share-card.format-square .sc-source-ref em,
@@ -573,7 +560,6 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .share-card.format-story .sc-opening,
 .share-card.format-story .sc-term-first,
 .share-card.format-story .sc-term-body,
-.share-card.format-story .sc-seal,
 .share-card.format-story .sc-figure-name,
 .share-card.format-story .sc-source-passage,
 .share-card.format-story .sc-source-ref em,
@@ -644,7 +630,6 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
       <div class="term-body" id="termBody"></div>
     </div>
 
-    <div class="seal-line" id="sealLine"></div>
 
     <hr class="section-rule">
 
@@ -770,19 +755,6 @@ term_tradition: Pali / Sanskrit / Tibetan / Sanskrit and Tibetan — only list t
 term_first_line: One sentence. Not the flat English word — the hook that opens the real meaning.
 term_translation: TWO SENTENCES MAXIMUM. UNDER 40 WORDS TOTAL. First sentence: philosophical precision — what the tradition actually means by this term. No metaphor. Second sentence: one image beginning with "Like" — Thrinley Norbu register. Direct, simple, the image lands without explanation. The simile serves the term, not the person who wrote. Do not explain, do not elaborate, do not add context. If a third sentence feels needed, the first two are wrong. Example: "Tṛṣṇā is the thirst identified in the second noble truth as the root of dukkha. Like consciousness projecting a distant shore while standing on solid ground." Do NOT add a third sentence about Tibetan nuance — if the Tibetan differs, that goes in term_first_line, not here.
 
-THE SEAL — conversational, one sentence, in italic register. Be honest about fit:
-
-The four seals are: anicca (impermanence), dukkha (suffering/unsatisfactoriness), anatta (non-self), nirvana is peace. Only invoke a seal when the entry GENUINELY meets it — when impermanence, suffering, non-self, or peace is actually the territory the entry touches.
-
-If the entry genuinely meets a seal:
-"Your entry meets the [first/second/third/fourth] seal — [seal name]. [One-line statement of what that seal actually teaches, connected to the entry.]"
-
-If the entry does NOT genuinely meet any of the four seals — do not force one. Many entries (ethics, compassion, livelihood, relationship, devotion, action in the world) belong to other parts of the dharma. Instead, name the actual framework the entry touches — the brahmavihāras, the pāramitās, the bodhisattva path, dependent origination, right action, the precepts, and so on — in the same register: "Your entry meets the territory of [framework] — [one line of what it teaches]."
-
-If naming a framework would only restate the term already given above (e.g. the term is ahiṃsā and the framework would just say "non-harm"), then OMIT the seal line entirely. Return an empty string for the seal. A redundant line is worse than no line.
-
-Never force a seal to fit. Never correct the person. The seal or framework is a compass, not a judgment.
-
 THE FIGURE — always named. Strict source hierarchy:
 1. The Buddha directly, from the Pali suttas or early Mahayana sutras
 2. Early Indian masters: Nagarjuna, Chandrakirti, Aryadeva, Vasubandhu, Asanga, Shantideva, Atisha
@@ -856,7 +828,6 @@ Return ONLY valid JSON, no markdown, no backticks, no preamble:
   "term_tradition": "Pali / Sanskrit / Tibetan / Sanskrit and Tibetan",
   "term_first_line": "One sentence — the hook, not the flat English word",
   "term_translation": "2–3 sentences of careful philosophical translation",
-  "seal": "One conversational sentence in italic register.",
   "figure_name": "Name — for the Buddha use 'Buddha Śākyamuni' exactly, no other name",
   "figure_tradition": "School — e.g. Nyingma, Madhyamaka, Kagyu, Theravada. Empty string if the figure is Buddha Śākyamuni.",
   "figure_dates": "Birth–death years e.g. 1308–1364. Empty string if the figure is Buddha Śākyamuni.",
@@ -867,7 +838,7 @@ Return ONLY valid JSON, no markdown, no backticks, no preamble:
   "source_reference": "Sutta ID, chapter, verse, or song number",
   "source_translation": "Trans. [Name] · [Publisher]",
   "source_passage": "Passage under 40 words. Paraphrased carefully if copyrighted.",
-  "concept_keywords": "6–8 keywords from: dukkha, samsara, anicca, anatta, sunyata, bodhicitta, compassion, impermanence, emptiness, nirvana, rigpa, clinging, self, interdependence, liberation, wisdom, suffering, practice, renunciation, purification, natural state, four noble truths, beyond extremes, mahamudra, dzogchen, path, teaching, dharma, first sermon, buddha, viveka, solitude, mountain, madhyamaka, second seal, third seal, fourth seal, pali",
+  "concept_keywords": "6–8 keywords from: dukkha, samsara, anicca, anatta, sunyata, bodhicitta, compassion, impermanence, emptiness, nirvana, rigpa, clinging, self, interdependence, liberation, wisdom, suffering, practice, renunciation, purification, natural state, four noble truths, beyond extremes, mahamudra, dzogchen, path, teaching, dharma, first sermon, buddha, viveka, solitude, mountain, madhyamaka, pali",
   "image_subject": "Single noun phrase — the figure's name if a painting tradition exists, else a precise visual alternate (deity, lineage holder, or subject embodying the same territory). See THE IMAGE instructions.",
   "verse_text": "3–5 lines. Real verified verse only. Lines separated by \\n.",
   "verse_attribution": "Name · tradition · century — omit tradition entirely if the speaker is Buddha Śākyamuni",
@@ -958,15 +929,6 @@ function render(d) {
   document.getElementById('termRoman').textContent = romanLine;
   document.getElementById('termFirst').textContent = d.term_first_line || '';
   document.getElementById('termBody').textContent = d.term_translation || '';
-
-  const sealEl = document.getElementById('sealLine');
-  if (d.seal && d.seal.trim()) {
-    sealEl.textContent = d.seal;
-    sealEl.style.display = '';
-  } else {
-    sealEl.textContent = '';
-    sealEl.style.display = 'none';
-  }
 
   document.getElementById('figureName').textContent = d.figure_name || '';
 
@@ -1244,7 +1206,7 @@ async function searchWikimediaForFigure(figure, debugLines) {
     const candidates = allResults
       .filter(p => p.imageinfo && p.imageinfo[0])
       .filter(p => p.imageinfo[0].mediatype === 'BITMAP')
-      .filter(p => p.imageinfo[0].size > 50000)
+      .filter(p => p.imageinfo[0].size > 120000)
       .filter(p => {
         const t = stripDiacritics(p.title);
         const figureWords = cleanedNoDiacritics.split(/\s+/).filter(w => w.length > 3);
@@ -1346,15 +1308,6 @@ function populateShareCard(d) {
 
   document.getElementById('scTermFirst').textContent = d.term_first_line || '';
   document.getElementById('scTermBody').textContent = d.term_translation || '';
-  const scSealEl = document.getElementById('scSeal');
-  if (d.seal && d.seal.trim()) {
-    scSealEl.textContent = d.seal;
-    scSealEl.style.display = '';
-  } else {
-    scSealEl.textContent = '';
-    scSealEl.style.display = 'none';
-  }
-
   document.getElementById('scFigureName').textContent = d.figure_name || '';
   const srcRef = document.getElementById('scSourceRef');
   const refText = d.source_text || '';
@@ -1587,7 +1540,6 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="sc-term-first" id="scTermFirst"></div>
       <div class="sc-term-body" id="scTermBody"></div>
     </div>
-    <div class="sc-seal" id="scSeal"></div>
     <div class="sc-figure-source">
       <div class="sc-figure-name" id="scFigureName"></div>
       <div class="sc-source-ref" id="scSourceRef"></div>
