@@ -383,8 +383,9 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   font-family: 'Lora', Georgia, serif;
   font-size: 1rem;
   font-weight: 400;
+  font-style: italic;
   color: var(--text);
-  line-height: 2.1;
+  line-height: 1.55;
   margin-bottom: 0.8rem;
 }
 .verse-attr {
@@ -979,8 +980,10 @@ function render(d) {
   if (verseAttr.includes('Buddha') && verseAttr.includes('Theravada')) {
     verseAttr = verseAttr.replace(/[·\s]*Theravada[\s]*/g, '');
   }
-  document.getElementById('verseAttr').textContent =
-    verseAttr + (d.verse_source ? ' · ' + d.verse_source : '');
+  // Strip literal markdown asterisks if Claude included them
+  const verseSource = (d.verse_source || '').replace(/^\*+|\*+$/g, '').trim();
+  document.getElementById('verseAttr').innerHTML =
+    verseAttr + (verseSource ? ' · <em>' + verseSource + '</em>' : '');
 
   document.getElementById('response').classList.add('visible');
   document.getElementById('againRow').classList.add('visible');
@@ -1327,7 +1330,8 @@ function populateShareCard(d) {
     if (attr.includes('Buddha') && attr.includes('Theravada')) {
       attr = attr.replace(/[·\s]*Theravada[\s]*/g, '');
     }
-    document.getElementById('scVerseAttr').innerHTML = attr + (d.verse_source ? ' · <em>' + d.verse_source + '</em>' : '');
+    const scVerseSource = (d.verse_source || '').replace(/^\*+|\*+$/g, '').trim();
+    document.getElementById('scVerseAttr').innerHTML = attr + (scVerseSource ? ' · <em>' + scVerseSource + '</em>' : '');
     verseBlock.style.display = 'block';
   } else {
     verseBlock.style.display = 'none';
