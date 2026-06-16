@@ -726,6 +726,7 @@ function selectImage(keywords) {
 
 let API_KEY = '';
 let lastEntryText = '';
+let recentImageTitles = [];
 function saveKey() {
   const k = document.getElementById('keyInput').value.trim();
   if (!k) return;
@@ -1193,8 +1194,8 @@ async function searchWikimediaForFigure(figure, debugLines) {
     'action=query&format=json&origin=*' +
     '&generator=search&gsrnamespace=6' +
     '&gsrsearch=' + encodeURIComponent(query) +
-    '&gsrlimit=15' +
-    '&prop=imageinfo&iiprop=url|size|mediatype&iiurlwidth=600';
+    '&gsrlimit=20' +
+    '&prop=imageinfo&iiprop=url|size|mediatype|dimensions&iiurlwidth=600';
 
   try {
     const res = await fetch(url);
@@ -1214,40 +1215,78 @@ async function searchWikimediaForFigure(figure, debugLines) {
       allResults.slice(0, 5).forEach(p => debugLines.push('    - ' + p.title));
     }
 
+    const figureWords = cleanedNoDiacritics.split(/\s+/).filter(w => w.length > 3);
+
+    // Quality + relevance filter
     const candidates = allResults
       .filter(p => p.imageinfo && p.imageinfo[0])
       .filter(p => p.imageinfo[0].mediatype === 'BITMAP')
       .filter(p => p.imageinfo[0].size > 120000)
       .filter(p => {
+        const ii = p.imageinfo[0];
+        // Aspect ratio: thangkas are portrait. Reject very wide images (gallery/landscape shots).
+        if (ii.width && ii.height) {
+          const ratio = ii.height / ii.width;
+          if (ratio < 0.85) return false; // wider than ~1:1.18 → likely not a thangka
+        }
         const t = stripDiacritics(p.title);
-        const figureWords = cleanedNoDiacritics.split(/\s+/).filter(w => w.length > 3);
         const hasFigure = figureWords.some(w => t.includes(w));
         const isStrongArtwork = /thangka|thanka|painting/i.test(t);
-        const isSoftArtwork = /tibetan|nepali|nepal|bhutanese|sculpture|wellcome|museum/i.test(t);
-        // Pass if: strong artwork keyword, OR figure name is in title (figure-named files are usually artworks)
         return isStrongArtwork || hasFigure;
       });
 
     if (debugLines) debugLines.push('  after filter: ' + candidates.length);
-
     if (candidates.length === 0) return null;
 
-    // Score and sort: figure name + artwork keyword in title gets top priority
-    candidates.sort((a, b) => {
-      const ta = stripDiacritics(a.title);
-      const tb = stripDiacritics(b.title);
-      const aHasFig = ta.includes(cleanedNoDiacritics) ? 1 : 0;
-      const bHasFig = tb.includes(cleanedNoDiacritics) ? 1 : 0;
-      const aIsArt = /thangka|thanka|painting/i.test(ta) ? 1 : 0;
-      const bIsArt = /thangka|thanka|painting/i.test(tb) ? 1 : 0;
-      return (bHasFig + bIsArt) - (aHasFig + aIsArt);
-    });
+    // Score each candidate on relevance + quality
+    const scoreOf = (p) => {
+      const t = stripDiacritics(p.title);
+      const ii = p.imageinfo[0];
+      let score = 0;
+      // Subject match — full figure name present is strongest
+      if (t.includes(cleanedNoDiacritics)) score += 5;
+      // Partial: count how many figure words appear
+      score += figureWords.filter(w => t.includes(w)).length * 2;
+      // Artwork keywords
+      if (/thangka|thanka/i.test(t)) score += 3;
+      else if (/painting/i.test(t)) score += 2;
+      // Aspect ratio bonus — taller is more thangka-like
+      if (ii.width && ii.height) {
+        const ratio = ii.height / ii.width;
+        if (ratio >= 1.2) score += 3;       // classic tall thangka
+        else if (ratio >= 1.0) score += 1;  // portrait-ish
+      }
+      // Resolution bonus — bigger files tend to be better scans
+      if (ii.size > 800000) score += 2;
+      else if (ii.size > 400000) score += 1;
+      // Penalise obvious non-thangka clutter
+      if (/logo|map|diagram|university|stamp|coin|building|temple exterior/i.test(t)) score -= 5;
+      return score;
+    };
 
-    // Pick randomly from top 5 (or however many we have) for variety
-    const topPool = candidates.slice(0, Math.min(5, candidates.length));
-    const chosen = topPool[Math.floor(Math.random() * topPool.length)];
+    candidates.forEach(p => { p._score = scoreOf(p); });
+    candidates.sort((a, b) => b._score - a._score);
 
-    if (debugLines) debugLines.push('  pool size: ' + topPool.length);
+    if (debugLines) {
+      debugLines.push('  scored top 5:');
+      candidates.slice(0, 5).forEach(p => debugLines.push('    [' + p._score + '] ' + p.title));
+    }
+
+    // Anti-repetition: drop anything shown in the last few entries
+    let pool = candidates.filter(p => !recentImageTitles.includes(p.title));
+    if (pool.length === 0) pool = candidates; // all recent → allow repeats rather than fail
+
+    // Weighted pick: take the top-scoring tier (within 2 pts of the best) for variety,
+    // but only among genuinely good matches.
+    const topScore = pool[0]._score;
+    const topTier = pool.filter(p => p._score >= topScore - 2).slice(0, 5);
+    const chosen = topTier[Math.floor(Math.random() * topTier.length)];
+
+    if (debugLines) debugLines.push('  pool: ' + topTier.length + ' (top score ' + topScore + ')');
+
+    // Record for anti-repetition (keep last 6)
+    recentImageTitles.push(chosen.title);
+    if (recentImageTitles.length > 6) recentImageTitles.shift();
 
     let cleanTitle = chosen.title
       .replace(/^File:/, '')
