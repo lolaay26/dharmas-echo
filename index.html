@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -886,7 +887,7 @@ async function submitEntry() {
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1400,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: `Journal entry: "${entry}"` }]
@@ -1164,9 +1165,8 @@ Only return the final sentence after passing all three checks. No quotes, no pre
       'anthropic-dangerous-direct-browser-access': 'true'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 150,
-      temperature: 0.1,
       messages: [{ role: 'user', content: captionPrompt }]
     })
   });
