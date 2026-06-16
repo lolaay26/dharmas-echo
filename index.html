@@ -894,6 +894,11 @@ async function submitEntry() {
     });
 
     const data = await res.json();
+    if (!res.ok || !data.content) {
+      const apiMsg = (data && data.error && data.error.message) ? data.error.message : ('HTTP ' + res.status);
+      console.error('API response:', data);
+      throw new Error('API: ' + apiMsg);
+    }
     const text = data.content.map(b => b.text || '').join('');
     const clean = text.replace(/```json|```/g, '').trim();
     const d = JSON.parse(clean);
@@ -902,7 +907,11 @@ async function submitEntry() {
   } catch(e) {
     console.error(e);
     document.getElementById('loading').classList.remove('visible');
-    document.getElementById('error').classList.add('visible');
+    const errEl = document.getElementById('error');
+    errEl.textContent = (e && e.message && e.message.startsWith('API:'))
+      ? e.message + ' — please try again.'
+      : 'Something did not land. Please try again.';
+    errEl.classList.add('visible');
     btn.disabled = false;
     document.querySelector('.write-area').style.display = '';
     document.querySelector('.echo-row').style.display = '';
