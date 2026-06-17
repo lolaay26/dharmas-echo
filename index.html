@@ -966,10 +966,11 @@ function render(d) {
   const firstEl = document.getElementById('termFirst');
   const translit = (d.term_transliteration || '').trim();
   if (translit && d.term_first_line) {
-    // match the term at the very start, allowing for case/diacritic-insensitive compare
+    // local diacritic-insensitive normalizer (self-contained — no external dependency)
+    const norm = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     const fl = d.term_first_line;
     const startWord = fl.split(/[\s—,.:;]/)[0] || '';
-    if (stripDiacritics(startWord).toLowerCase() === stripDiacritics(translit).toLowerCase()) {
+    if (startWord && norm(startWord) === norm(translit)) {
       firstEl.innerHTML = '<span class="term-inline">' + startWord + '</span>' + fl.slice(startWord.length);
     }
   }
