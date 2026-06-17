@@ -579,10 +579,10 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 /* Tall format runs lean so it fits a 9:16 Story frame: drop the term translation,
    cap the image, tighten spacing. */
 .share-card.format-story .sc-term-body { display: none; }
-.share-card.format-story .sc-image-block { padding: 0.4rem; margin: 0.3rem 0 0.6rem; }
-.share-card.format-story .sc-image-block img { max-height: 560px; }
+.share-card.format-story .sc-image-block { padding: 0; margin: 0.1rem 0 0.3rem; }
+.share-card.format-story .sc-image-block img { max-height: 640px; }
 .share-card.format-story .sc-sunburst { width: 44px; height: 44px; }
-.share-card.format-story .sc-verse-divider { margin: 1.6rem 0; }
+.share-card.format-story .sc-verse-divider { margin: 1.2rem 0; }
 
 .toast {
   position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
@@ -750,8 +750,16 @@ let API_KEY = '';
 let lastEntryText = '';
 let recentImageTitles = [];
 function saveKey() {
-  const k = document.getElementById('keyInput').value.trim();
+  let k = document.getElementById('keyInput').value.trim();
   if (!k) return;
+  // Sanitize: strip whitespace and any character outside the ASCII range that
+  // HTTP headers (ISO-8859-1) cannot carry — a "smart quote", en-dash, zero-width
+  // space, or stray Unicode pasted with the key would otherwise crash the fetch.
+  k = k.replace(/[^\x21-\x7E]/g, '');
+  if (!k) {
+    alert('That key contained characters that could not be read. Please copy it again directly from the Anthropic console.');
+    return;
+  }
   API_KEY = k;
   document.getElementById('keyGate').classList.add('hidden');
 }
