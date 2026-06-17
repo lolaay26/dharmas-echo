@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -870,7 +869,7 @@ Return ONLY valid JSON, no markdown, no backticks, no preamble:
   "figure_key_verb": "The precise relationship verb — 'author of', 'singer of', 'revealer of', 'translator of'. Empty string if the figure is Buddha Śākyamuni or had no primary text.",
   "figure_key_work": "The single most important text in italics — just the title, no verb. Empty string if the figure is Buddha Śākyamuni or had no primary authored text.",
   "figure_description": "One sentence starting with the figure's name. What they refused, showed, or opened.",
-  "share_synthesis": "ONE flowing block for the compact share card. CRITICAL: it MUST begin by naming the term and saying what it means — the share card shows the scripts (Sanskrit/Tibetan) above this block with no other definition, so if you do not name and define the term here, the scripts are meaningless. ALWAYS start with the transliterated term wrapped in double asterisks, then its meaning. Example openings: '**Puṇya** is not a stored quantity — it is what dedication makes inexhaustible...' / '**Vīrya** is not forced willpower but the joy that delights in the wholesome...'. After defining the term, weave in: the source text (its title in *single asterisks* for italics, with reference in brackets in natural case — 'Part Three, Guru Yoga', never ALL CAPS; sutta codes like 'AN 4.49' stay as-is), a condensed sense of what the figure showed, and the distilled essence of the passage. One graceful flowing block, not a list. NO quotation marks anywhere — this is distillation in your own words, never a verbatim quote. Double asterisks ONLY around the term; single asterisks ONLY around the source title.",
+  "share_synthesis": "ONE short flowing block for the compact share card — roughly 2–3 sentences, NOT longer. It MUST open by naming the term (transliteration in **double asterisks**) and give its meaning in a few words, because the scripts above have no other definition — e.g. '**Puṇya** is merit that dedication makes inexhaustible'. Then, briefly, weave in the source text (*title in single asterisks*, reference in brackets, natural case like 'Part Three, Guru Yoga', sutta codes like 'AN 4.49' as-is) and the distilled essence of what was shown. Keep it TIGHT — this is a condensed distillation, not the full teaching. Do not restate the same idea twice. One graceful block. NO quotation marks. Double asterisks ONLY around the term; single asterisks ONLY around the source title.",
   "source_text": "Pali or Sanskrit title in Title Case (e.g. Khaggavisāṇa Sutta — Rhinoceros Horn Sutta) — English title after a dash if it has one. Do NOT write in ALL CAPS. The title will be rendered in italics by the page; just provide the natural Title Case.",
   "source_reference": "Sutta ID, chapter, verse, or song number",
   "source_translation": "Trans. [Name] · [Publisher]",
@@ -1441,23 +1440,6 @@ function populateShareCard(d) {
     let html = synthRaw
       .replace(/\*\*([^*]+)\*\*/g, '<span class="sc-term-inline">$1</span>')
       .replace(/\*([^*]+)\*/g, '<em>$1</em>');
-    // Safety net: if the model didn't name the term in the synthesis, prepend the
-    // condensed term definition so the scripts are never left ungrounded.
-    const translit = (d.term_transliteration || '').trim();
-    const norm = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-    const hasTerm = translit && norm(synthRaw).includes(norm(translit));
-    if (!hasTerm && translit) {
-      const def = (d.term_translation_short || d.term_translation || '').trim();
-      if (def) {
-        let defHtml = def;
-        // color the term in the definition if it opens with it
-        const startWord = def.split(/[\s—,.:;]/)[0] || '';
-        if (startWord && norm(startWord) === norm(translit)) {
-          defHtml = '<span class="sc-term-inline">' + startWord + '</span>' + def.slice(startWord.length);
-        }
-        html = defHtml + ' ' + html;
-      }
-    }
     synthEl.innerHTML = html;
   }
 
