@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -524,7 +525,7 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .sc-verse-attr { font-family: sans-serif; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #a82010; font-weight: 700; }
 .sc-verse-attr em { font-family: 'EB Garamond', serif; text-transform: none; letter-spacing: 0.02em; font-size: 13px; font-style: italic; }
 
-.sc-image-block { background: rgba(255, 251, 240, 0.55); padding: 1rem; margin: 0.5rem 0 1.2rem; text-align: center; border-radius: 2px; }
+.sc-image-block { background: rgba(255, 251, 240, 0.55); padding: 0.7rem; margin: 0.4rem 0 0.9rem; text-align: center; border-radius: 2px; }
 .sc-image-block img { max-width: 100%; max-height: 480px; object-fit: contain; display: block; margin: 0 auto 0.9rem; }
 .sc-image-title { font-family: sans-serif; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #a82010; font-weight: 700; margin-bottom: 0.5rem; }
 .sc-image-why { font-size: 15.5px; color: #1a2540; line-height: 1.6; text-align: left; }
@@ -566,6 +567,11 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .share-card.format-story .sc-verse-attr em,
 .share-card.format-story .sc-header-sub { font-size: 17px; }
 .share-card.format-story .sc-header-name { font-size: 22px; }
+/* Tall format runs lean so it fits a 9:16 Story frame: drop the term translation,
+   cap the image smaller, and tighten the space around it. */
+.share-card.format-story .sc-term-body { display: none; }
+.share-card.format-story .sc-image-block { padding: 0.4rem; margin: 0.3rem 0 0.6rem; }
+.share-card.format-story .sc-image-block img { max-height: 760px; }
 
 .toast {
   position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
