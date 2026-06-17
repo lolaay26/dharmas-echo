@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -565,9 +566,9 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .share-card.format-story .sc-term-body,
 .share-card.format-story .sc-figure-name { font-size: 30px; }
 /* Full-width vertical: body text large, image caption clearly smaller */
-.share-card.format-story .sc-synthesis { font-size: 30px; line-height: 1.6; }
-.share-card.format-story .sc-verse-text { font-size: 31px; line-height: 1.6; }
-.share-card.format-story .sc-image-why { font-size: 23px; }
+.share-card.format-story .sc-synthesis { font-size: 38px; line-height: 1.55; }
+.share-card.format-story .sc-verse-text { font-size: 40px; line-height: 1.55; }
+.share-card.format-story .sc-image-why { font-size: 28px; }
 .share-card.format-story .sc-label,
 .share-card.format-story .sc-figure-meta,
 .share-card.format-story .sc-image-title,
@@ -579,7 +580,7 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
    cap the image, tighten spacing. */
 .share-card.format-story .sc-term-body { display: none; }
 .share-card.format-story .sc-image-block { padding: 0.4rem; margin: 0.3rem 0 0.6rem; }
-.share-card.format-story .sc-image-block img { max-height: 620px; }
+.share-card.format-story .sc-image-block img { max-height: 560px; }
 .share-card.format-story .sc-sunburst { width: 44px; height: 44px; }
 .share-card.format-story .sc-verse-divider { margin: 1.6rem 0; }
 
@@ -961,21 +962,22 @@ function render(d) {
     tibCol.style.display = 'none';
   }
   document.getElementById('termFirst').textContent = d.term_first_line || '';
-
-  // If the first line opens with the term itself, color just that word burnt red (not bold)
-  const firstEl = document.getElementById('termFirst');
-  const translit = (d.term_transliteration || '').trim();
-  if (translit && d.term_first_line) {
-    // local diacritic-insensitive normalizer (self-contained — no external dependency)
-    const norm = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-    const fl = d.term_first_line;
-    const startWord = fl.split(/[\s—,.:;]/)[0] || '';
-    if (startWord && norm(startWord) === norm(translit)) {
-      firstEl.innerHTML = '<span class="term-inline">' + startWord + '</span>' + fl.slice(startWord.length);
-    }
-  }
-
   document.getElementById('termBody').textContent = d.term_translation || '';
+
+  // Color the term burnt red wherever it opens a line (first-line OR translation body, not bold)
+  (function colorOpeningTerm() {
+    const translit = (d.term_transliteration || '').trim();
+    if (!translit) return;
+    const norm = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    [['termFirst', d.term_first_line], ['termBody', d.term_translation]].forEach(([id, txt]) => {
+      if (!txt) return;
+      const startWord = txt.split(/[\s—,.:;]/)[0] || '';
+      if (startWord && norm(startWord) === norm(translit)) {
+        document.getElementById(id).innerHTML =
+          '<span class="term-inline">' + startWord + '</span>' + txt.slice(startWord.length);
+      }
+    });
+  })();
 
   document.getElementById('figureName').textContent = d.figure_name || '';
 
