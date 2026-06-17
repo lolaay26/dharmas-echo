@@ -163,9 +163,9 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 
 /* You wrote */
 .you-wrote {
-  padding: 2.8rem 3rem 2.4rem;
+  padding: 1.4rem 3rem 1.3rem;
   border-bottom: 1px solid var(--amber);
-  margin-bottom: 2.8rem;
+  margin-bottom: 1.6rem;
 }
 .you-wrote-label {
   font-family: sans-serif;
@@ -173,7 +173,7 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--gold-dark);
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.6rem;
 }
 .you-wrote-text {
   font-size: 1.05rem;
@@ -339,18 +339,20 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   margin: 2.4rem 0;
 }
 .divider-line { flex:1; height:1px; background: var(--amber); opacity: 0.4; }
+.mp-sunburst { flex: none; filter: drop-shadow(0 0 2px rgba(240, 184, 28, 0.9)) drop-shadow(0 0 4px rgba(240, 184, 28, 0.45)); }
+.mp-sunburst line { stroke: #f2bc1a; stroke-width: 1.4; }
 
-/* Image */
+/* Image — clean, sits on the background (works for thangkas and sculptures alike) */
 .image-block {
-  background: var(--cream);
-  border: 1px solid var(--cream-border);
-  padding: 1.8rem;
-  margin-bottom: 2.4rem;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 2rem;
   text-align: center;
 }
 .image-block img {
-  max-width: 100%;
-  max-height: 460px;
+  max-width: 88%;
+  max-height: 420px;
   object-fit: contain;
   display: block;
   margin: 0 auto 1.1rem;
@@ -516,24 +518,23 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .sc-term-scripts { display: flex; gap: 2.5rem; align-items: flex-start; margin-bottom: 1.1rem; flex-wrap: wrap; }
 .sc-script-sa { font-family: 'Noto Serif Devanagari', Georgia, serif; font-size: 24px; color: #1a2540; line-height: 1.2; }
 .sc-script-bo { font-family: 'Jomolhari', Georgia, serif; font-size: 21px; color: #1a2540; line-height: 1.3; }
-.sc-script-roman { font-family: 'EB Garamond', serif; font-size: 14px; font-style: italic; color: #c85810; letter-spacing: 0.02em; margin-top: 0.15rem; }
+.sc-script-roman { font-family: 'EB Garamond', serif; font-size: 16px; font-style: italic; color: #c85810; letter-spacing: 0.02em; margin-top: 0.15rem; }
 .sc-figure-meta { font-family: sans-serif; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #a82010; font-weight: 700; margin-bottom: 0.5rem; }
 .sc-synthesis { font-size: 17px; color: #1a2540; line-height: 1.65; margin-bottom: 0.2rem; }
 .sc-synthesis em { font-style: italic; color: #a82010; }
 .sc-term-body { font-size: 16px; color: #3a4565; line-height: 1.8; }
 
-.sc-figure-source { padding: 1.2rem 0 0.8rem; }
+.sc-figure-source { padding: 1.2rem 0 0.4rem; }
 .sc-figure-name { font-size: 16px; color: #a82010; font-weight: 500; margin-bottom: 0.6rem; }
 
-.sc-verse { padding: 1.3rem 0 1.3rem; border-bottom: 1px solid rgba(120, 105, 80, 0.4); }
 .sc-verse-text { font-size: 17px; font-style: italic; color: #1a2540; line-height: 1.55; margin-bottom: 0.85rem; }
 .sc-verse-attr { font-family: sans-serif; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #a82010; font-weight: 700; }
 .sc-verse-attr em { font-family: 'EB Garamond', serif; text-transform: none; letter-spacing: 0.02em; font-size: 13px; font-style: italic; }
 
-.sc-image-block { background: rgba(255, 251, 240, 0.55); padding: 0.7rem; margin: 0.4rem 0 0.9rem; text-align: center; border-radius: 2px; }
-.sc-image-block img { max-width: 100%; max-height: 480px; object-fit: contain; display: block; margin: 0 auto 0.9rem; }
+.sc-image-block { background: none; padding: 0; margin: 0.4rem 0 0.9rem; text-align: center; }
+.sc-image-block img { max-width: 92%; max-height: 440px; object-fit: contain; display: block; margin: 0 auto 0.9rem; }
 .sc-image-title { font-family: sans-serif; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #a82010; font-weight: 700; margin-bottom: 0.5rem; }
-.sc-image-why { font-size: 13px; color: #3a4565; line-height: 1.55; text-align: left; }
+.sc-image-why { font-size: 13px; color: #3a4565; line-height: 1.55; text-align: center; }
 
 /* Square format — ~1.9x scale of Card, hierarchy preserved */
 .share-card.format-square .sc-script-sa { font-size: 46px; }
@@ -638,7 +639,11 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
     </div>
 
 
-    <hr class="section-rule">
+    <div class="divider">
+      <div class="divider-line"></div>
+      <svg class="mp-sunburst" width="16" height="16" viewBox="0 0 20 20"><g><line x1="10" y1="1" x2="10" y2="19"/><line x1="1" y1="10" x2="19" y2="10"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5"/><line x1="16.5" y1="3.5" x2="3.5" y2="16.5"/></g></svg>
+      <div class="divider-line"></div>
+    </div>
 
     <div class="figure-source">
       <div class="figure-name" id="figureName"></div>
@@ -654,7 +659,19 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 
     <div class="divider">
       <div class="divider-line"></div>
-      <svg width="8" height="8" viewBox="0 0 10 10"><polygon points="5,0 6.2,3.8 10,5 6.2,6.2 5,10 3.8,6.2 0,5 3.8,3.8" fill="#b06818" opacity="0.7"/></svg>
+      <svg class="mp-sunburst" width="16" height="16" viewBox="0 0 20 20"><g><line x1="10" y1="1" x2="10" y2="19"/><line x1="1" y1="10" x2="19" y2="10"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5"/><line x1="16.5" y1="3.5" x2="3.5" y2="16.5"/></g></svg>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="verse-block">
+      <div class="verse-label">A verse</div>
+      <div class="verse-text" id="verseText"></div>
+      <div class="verse-attr" id="verseAttr"></div>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <svg class="mp-sunburst" width="16" height="16" viewBox="0 0 20 20"><g><line x1="10" y1="1" x2="10" y2="19"/><line x1="1" y1="10" x2="19" y2="10"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5"/><line x1="16.5" y1="3.5" x2="3.5" y2="16.5"/></g></svg>
       <div class="divider-line"></div>
     </div>
 
@@ -662,12 +679,6 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
       <img id="artImg" src="" alt="" style="display:none;" onerror="this.style.display='none'">
       <div class="image-title" id="imgTitle"></div>
       <div class="image-why" id="imgWhy"></div>
-    </div>
-
-    <div class="verse-block">
-      <div class="verse-label">A verse</div>
-      <div class="verse-text" id="verseText"></div>
-      <div class="verse-attr" id="verseAttr"></div>
     </div>
 
   </div>
