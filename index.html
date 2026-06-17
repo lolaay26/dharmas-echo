@@ -294,8 +294,10 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   font-family: sans-serif;
   font-size: 0.66rem;
   letter-spacing: 0.14em;
-  color: var(--gold-dark);
-  margin-bottom: 0.7rem;
+  color: #a82010;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--cream-border);
 }
 .source-title em {
   font-style: italic;
@@ -510,13 +512,12 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .sc-script-bo { font-family: 'Jomolhari', Georgia, serif; font-size: 21px; color: #1a2540; line-height: 1.3; }
 .sc-script-roman { font-family: 'EB Garamond', serif; font-size: 14px; font-style: italic; color: #c85810; letter-spacing: 0.02em; margin-top: 0.15rem; }
 .sc-figure-meta { font-family: sans-serif; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #a82010; font-weight: 700; margin-bottom: 0.5rem; }
-.sc-figure-desc { font-size: 16px; color: #3a4565; line-height: 1.7; font-style: italic; margin-bottom: 0.6rem; }
+.sc-synthesis { font-size: 16px; color: #1a2540; line-height: 1.65; margin-bottom: 0.2rem; }
+.sc-synthesis em { font-style: italic; color: #a82010; }
 .sc-term-body { font-size: 16px; color: #3a4565; line-height: 1.8; }
 
 .sc-figure-source { padding: 1.2rem 0 0.8rem; }
 .sc-figure-name { font-size: 16px; color: #a82010; font-weight: 500; margin-bottom: 0.6rem; }
-.sc-source-ref { font-family: sans-serif; font-size: 9px; letter-spacing: 0.14em; color: #a82010; margin-bottom: 0.2rem; font-weight: 700; text-transform: uppercase; line-height: 1.5; }
-.sc-source-ref em { font-family: 'EB Garamond', serif; text-transform: none; letter-spacing: 0.02em; font-size: 14px; font-style: italic; }
 
 .sc-verse { padding: 1.3rem 0 1.3rem; border-bottom: 1px solid rgba(120, 105, 80, 0.4); }
 .sc-verse-text { font-size: 17px; font-style: italic; color: #1a2540; line-height: 1.55; margin-bottom: 0.85rem; }
@@ -533,15 +534,13 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .share-card.format-square .sc-script-bo { font-size: 40px; }
 .share-card.format-square .sc-script-roman { font-size: 27px; }
 .share-card.format-square .sc-you-wrote-text,
-.share-card.format-square .sc-figure-desc,
+.share-card.format-square .sc-synthesis,
 .share-card.format-square .sc-term-body,
-.share-card.format-square .sc-figure-name,
-.share-card.format-square .sc-source-ref em { font-size: 30px; }
+.share-card.format-square .sc-figure-name { font-size: 30px; }
 .share-card.format-square .sc-verse-text { font-size: 32px; line-height: 1.55; }
 .share-card.format-square .sc-verse { padding: 2.2rem 0 2.2rem; }
 .share-card.format-square .sc-image-why { font-size: 29px; }
 .share-card.format-square .sc-label,
-.share-card.format-square .sc-source-ref,
 .share-card.format-square .sc-figure-meta,
 .share-card.format-square .sc-image-title,
 .share-card.format-square .sc-verse-attr { font-size: 17px; }
@@ -554,15 +553,13 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .share-card.format-story .sc-script-bo { font-size: 40px; }
 .share-card.format-story .sc-script-roman { font-size: 27px; }
 .share-card.format-story .sc-you-wrote-text,
-.share-card.format-story .sc-figure-desc,
+.share-card.format-story .sc-synthesis,
 .share-card.format-story .sc-term-body,
-.share-card.format-story .sc-figure-name,
-.share-card.format-story .sc-source-ref em { font-size: 30px; }
+.share-card.format-story .sc-figure-name { font-size: 30px; }
 .share-card.format-story .sc-verse-text { font-size: 32px; line-height: 1.55; }
 .share-card.format-story .sc-verse { padding: 2.2rem 0 2.2rem; }
 .share-card.format-story .sc-image-why { font-size: 29px; }
 .share-card.format-story .sc-label,
-.share-card.format-story .sc-source-ref,
 .share-card.format-story .sc-figure-meta,
 .share-card.format-story .sc-image-title,
 .share-card.format-story .sc-verse-attr { font-size: 17px; }
@@ -634,8 +631,8 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
       <div class="figure-tradition" id="figureTradition"></div>
       <div class="figure-key-work" id="figureKeyWork"></div>
       <div class="figure-desc" id="figureDesc"></div>
-      <div class="source-title" id="sourceTitle"></div>
       <div class="source-box">
+        <div class="source-title" id="sourceTitle"></div>
         <div class="source-passage" id="sourcePassage"></div>
         <div class="source-translator" id="sourceTranslator"></div>
       </div>
@@ -832,7 +829,7 @@ Return ONLY valid JSON, no markdown, no backticks, no preamble:
   "figure_key_verb": "The precise relationship verb — 'author of', 'singer of', 'revealer of', 'translator of'. Empty string if the figure is Buddha Śākyamuni or had no primary text.",
   "figure_key_work": "The single most important text in italics — just the title, no verb. Empty string if the figure is Buddha Śākyamuni or had no primary authored text.",
   "figure_description": "One sentence starting with the figure's name. What they refused, showed, or opened.",
-  "figure_description_short": "A condensed version of figure_description for the compact share card — one short clause keeping the core of what the figure showed, close to the original wording. May start with or without the name.",
+  "share_synthesis": "ONE flowing block for the compact share card that weaves three things together: (1) the source text, named and woven into the sentence, (2) a condensed version of what the figure showed, and (3) the essence of the source passage — its core point, distilled, NOT a verbatim quote and NOT in quotation marks. Format: 'In [source text] ([reference]), [Figure] showed [condensed teaching] — [distilled essence of the passage].' The source reference in brackets must use natural case, never ALL CAPS (e.g. 'Part Three, Guru Yoga' not 'PART THREE, GURU YOGA'); numeric sutta codes stay as-is (e.g. 'AN 4.49', 'MN 63'). Keep it graceful and not crammed. Do NOT use quotation marks anywhere — this is a distillation in your own words, not a quote. Wrap ONLY the source text title in *asterisks* for italics; nothing else.",
   "source_text": "Pali or Sanskrit title in Title Case (e.g. Khaggavisāṇa Sutta — Rhinoceros Horn Sutta) — English title after a dash if it has one. Do NOT write in ALL CAPS. The title will be rendered in italics by the page; just provide the natural Title Case.",
   "source_reference": "Sutta ID, chapter, verse, or song number",
   "source_translation": "Trans. [Name] · [Publisher]",
@@ -1371,12 +1368,18 @@ function populateShareCard(d) {
   if (d.figure_tradition && d.figure_tradition.trim()) metaParts.push(d.figure_tradition.trim());
   if (d.figure_dates && d.figure_dates.trim()) metaParts.push(d.figure_dates.trim());
   document.getElementById('scFigureMeta').textContent = metaParts.join(' · ');
-  // Condensed figure description (fall back to full)
-  document.getElementById('scFigureDesc').textContent = d.figure_description_short || d.figure_description || '';
-  const srcRef = document.getElementById('scSourceRef');
-  const refText = d.source_text || '';
-  const refNum = d.source_reference || '';
-  srcRef.innerHTML = '<em>' + refText + '</em>' + (refNum ? ' · ' + refNum : '');
+  // Synthesis block — weave source + teaching + essence. *italics* → <em>. Fallback if missing.
+  const synthEl = document.getElementById('scSynthesis');
+  let synthRaw = (d.share_synthesis || '').trim();
+  if (!synthRaw) {
+    // Fallback: build from parts if the synthesis field is missing (older cached responses)
+    const fig = d.figure_description_short || d.figure_description || '';
+    const src = d.source_text ? ('In <em>' + d.source_text + '</em>' + (d.source_reference ? ' (' + d.source_reference + ')' : '') + ', ') : '';
+    synthRaw = src + fig;
+    synthEl.innerHTML = synthRaw;
+  } else {
+    synthEl.innerHTML = synthRaw.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  }
 
   // Verse
   const verseBlock = document.getElementById('scVerseBlock');
@@ -1604,8 +1607,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="sc-figure-source">
       <div class="sc-figure-name" id="scFigureName"></div>
       <div class="sc-figure-meta" id="scFigureMeta"></div>
-      <div class="sc-figure-desc" id="scFigureDesc"></div>
-      <div class="sc-source-ref" id="scSourceRef"></div>
+      <div class="sc-synthesis" id="scSynthesis"></div>
     </div>
     <div class="sc-image-block" id="scImageBlock">
       <img id="scImg" src="" alt="" crossorigin="anonymous">
@@ -1623,4 +1625,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
-
