@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -490,10 +489,47 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   color: #1a2540;
   background: radial-gradient(ellipse at 30% 15%, #faecc4 0%, #f5dca0 18%, #e6c080 38%, #b8a890 65%, #8a92a0 88%);
   box-shadow: inset 0 0 60px rgba(40, 55, 95, 0.10);
+  display: flex;
+  flex-direction: column;
+}
+/* Default (Card) + Square: stacked. Duo is transparent so its children flow,
+   and we order them figure-source → image → verse. */
+.sc-header { order: 0; }
+.sc-you-wrote { order: 1; }
+.sc-term-block { order: 2; }
+.sc-duo { display: contents; }
+.sc-figure-source { order: 3; }
+.sc-image-block { order: 4; }
+.sc-verse { order: 5; }
+/* Card/Square verse: soft panel + centered for contrast/readability */
+.share-card.format-default .sc-verse,
+.share-card.format-square .sc-verse {
+  background: rgba(255, 251, 240, 0.5);
+  border-radius: 3px;
+  padding: 1.1rem 1.2rem;
+  text-align: center;
+  border-bottom: none;
 }
 .share-card.format-default { width: 560px; }
 .share-card.format-square { width: 1080px; padding: 4rem; }
 .share-card.format-story { width: 1080px; padding: 4rem 3rem; }
+/* Tall (Story): synthesis | verse side by side, above the image, verse as poetry */
+.share-card.format-story .sc-duo {
+  display: flex;
+  flex-direction: row;
+  gap: 2.2rem;
+  order: 3;
+  margin-bottom: 0.5rem;
+}
+.share-card.format-story .sc-figure-source { order: 0; flex: 1; padding: 1rem 0 0.5rem; }
+.share-card.format-story .sc-verse {
+  order: 0; flex: 1;
+  border-left: 1px solid rgba(120, 105, 80, 0.4);
+  border-bottom: none;
+  padding: 1rem 0 0.5rem 2.2rem;
+  text-align: left;
+}
+.share-card.format-story .sc-image-block { order: 4; }
 
 .sc-header { text-align: center; padding-bottom: 1.2rem; border-bottom: 1px solid rgba(120, 105, 80, 0.4); }
 .sc-header-name { font-family: sans-serif; font-size: 11px; letter-spacing: 0.38em; color: #a82010; font-weight: 600; margin-bottom: 0.4rem; }
@@ -554,24 +590,24 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .share-card.format-story .sc-script-bo { font-size: 40px; }
 .share-card.format-story .sc-script-roman { font-size: 27px; }
 .share-card.format-story .sc-you-wrote-text,
-.share-card.format-story .sc-synthesis,
 .share-card.format-story .sc-term-body,
 .share-card.format-story .sc-figure-name { font-size: 30px; }
-.share-card.format-story .sc-verse-text { font-size: 32px; line-height: 1.55; }
-.share-card.format-story .sc-verse { padding: 2.2rem 0 2.2rem; }
-.share-card.format-story .sc-image-why { font-size: 29px; }
+/* Two-column band: synthesis + verse sit in ~half-width columns, so size them down to fit */
+.share-card.format-story .sc-synthesis { font-size: 23px; line-height: 1.5; }
+.share-card.format-story .sc-verse-text { font-size: 22px; line-height: 1.5; }
+.share-card.format-story .sc-image-why { font-size: 24px; }
 .share-card.format-story .sc-label,
 .share-card.format-story .sc-figure-meta,
 .share-card.format-story .sc-image-title,
-.share-card.format-story .sc-verse-attr { font-size: 17px; }
+.share-card.format-story .sc-verse-attr { font-size: 16px; }
 .share-card.format-story .sc-verse-attr em,
-.share-card.format-story .sc-header-sub { font-size: 17px; }
+.share-card.format-story .sc-header-sub { font-size: 16px; }
 .share-card.format-story .sc-header-name { font-size: 22px; }
 /* Tall format runs lean so it fits a 9:16 Story frame: drop the term translation,
-   cap the image smaller, and tighten the space around it. */
+   cap the image, tighten spacing. (Verse layout handled in the side-by-side rules above.) */
 .share-card.format-story .sc-term-body { display: none; }
 .share-card.format-story .sc-image-block { padding: 0.4rem; margin: 0.3rem 0 0.6rem; }
-.share-card.format-story .sc-image-block img { max-height: 760px; }
+.share-card.format-story .sc-image-block img { max-height: 680px; }
 
 .toast {
   position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
@@ -1610,19 +1646,21 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
       <div class="sc-term-body" id="scTermBody"></div>
     </div>
-    <div class="sc-figure-source">
-      <div class="sc-figure-name" id="scFigureName"></div>
-      <div class="sc-figure-meta" id="scFigureMeta"></div>
-      <div class="sc-synthesis" id="scSynthesis"></div>
+    <div class="sc-duo" id="scDuo">
+      <div class="sc-figure-source">
+        <div class="sc-figure-name" id="scFigureName"></div>
+        <div class="sc-figure-meta" id="scFigureMeta"></div>
+        <div class="sc-synthesis" id="scSynthesis"></div>
+      </div>
+      <div class="sc-verse" id="scVerseBlock">
+        <div class="sc-verse-text" id="scVerseText"></div>
+        <div class="sc-verse-attr" id="scVerseAttr"></div>
+      </div>
     </div>
     <div class="sc-image-block" id="scImageBlock">
       <img id="scImg" src="" alt="" crossorigin="anonymous">
       <div class="sc-image-title" id="scImgTitle"></div>
       <div class="sc-image-why" id="scImgWhy"></div>
-    </div>
-    <div class="sc-verse" id="scVerseBlock">
-      <div class="sc-verse-text" id="scVerseText"></div>
-      <div class="sc-verse-attr" id="scVerseAttr"></div>
     </div>
   </div>
 </div>
