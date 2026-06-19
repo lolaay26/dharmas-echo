@@ -45,7 +45,7 @@ body {
 }
 .header-sub {
   font-family: sans-serif;
-  font-size: 0.5rem;
+  font-size: 0.56rem;
   letter-spacing: 0.25em;
   text-transform: none;
   color: var(--gold);
@@ -114,7 +114,7 @@ textarea {
 textarea::placeholder { color: var(--text-faint); font-style: italic; font-size: 1.05rem; }
 .write-hint {
   font-family: sans-serif;
-  font-size: 0.58rem;
+  font-size: 0.8rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-faint);
@@ -605,7 +605,7 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 
 <div class="header">
   <div class="header-name">DHARMA'S ECHO</div>
-  <div class="header-sub">the Dharma echoes back your moment</div>
+  <div class="header-sub">The Dharma echoes back your moment</div>
 </div>
 
 <div class="key-gate" id="keyGate">
@@ -615,7 +615,7 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 </div>
 
 <div class="write-area">
-  <textarea id="entry" placeholder="write"></textarea>
+  <textarea id="entry" placeholder="write a thought here."></textarea>
   <div class="write-hint" id="writeHint">the Dharma will find the echo</div>
 </div>
 <div class="echo-row">
@@ -1059,6 +1059,130 @@ function render(d) {
 }
 
 // ── Image loading: Wikimedia first, then second Claude call for caption ──
+// ── Curated image library ──────────────────────────────────────────────
+// Hand-picked images, checked BEFORE the Wikimedia search. Each entry maps a
+// figure/deity (with name variants) to one or more local images in /images.
+// The model still writes the contextual caption (generateImageCaption); the
+// library only supplies the image + a descriptive title + attribution.
+const CURATED_IMAGE_LIBRARY = [
+  { keys: ['Longchenpa', 'Longchen Rabjam'],
+    images: [
+      { file: 'DE-Images/longchempa.jpg', title: 'Longchenpa', attribution: '' },
+      { file: 'DE-Images/Longchenpa_.jpg', title: 'Longchenpa', attribution: '' } ] },
+  { keys: ['Jigme Lingpa'],
+    images: [
+      { file: 'DE-Images/jigme-lingpa.jpg', title: 'Jigme Lingpa', attribution: '' } ] },
+  { keys: ['Maitreya'],
+    images: [
+      { file: 'DE-Images/Sculpture_of_Maitreya_in_Dhyana_mudra__Loriyan_Tangai__circa_2nd_century_CE__Located_Indian_Museum__Kolkata.jpg', title: 'Maitreya in dhyāna mudrā, Loriyan Tangai, c. 2nd century CE', attribution: 'Indian Museum, Kolkata' },
+      { file: 'DE-Images/buddha-kabul.jpg', title: 'Maitreya, seated bodhisattva holding a flask, Gandhāra', attribution: '' } ] },
+  { keys: ['Machig Labdron', 'Machik Labdron', 'Machig Labdrön'],
+    images: [
+      { file: 'DE-Images/Machik_Labdron.jpg', title: 'Machig Labdrön', attribution: '' },
+      { file: 'DE-Images/Machig_Labdron__the_Tibetan_Yogini_-_Google_Art_Project.jpg', title: 'Machig Labdrön, the Tibetan yoginī', attribution: 'Google Art Project' } ] },
+  { keys: ['Padmasambhava', 'Guru Rinpoche', 'Guru Padmasambhava', 'Pema Jungne', 'Orgyen Rinpoche'],
+    images: [
+      { file: 'DE-Images/Pema_Jungne-One-of-manifestations-of-Padmasambhava.jpg', title: 'Padmasambhava (Pema Jungne)', attribution: '' },
+      { file: 'DE-Images/Padmasambhava.jpg', title: 'Padmasambhava', attribution: '' },
+      { file: 'DE-Images/Padmasambhava__Orgyen_Dorje_Chang___with_Yeshe_Tsogyal__emanations__Nyingma_gurus_and_Samantabhadra_-_17th_century_Tibetan_thangka.jpg', title: 'Padmasambhava (Orgyen Dorje Chang) with Yeshe Tsogyal, Nyingma gurus and Samantabhadra, 17th century', attribution: '' } ] },
+  { keys: ['Mahakala', 'Mahākāla'],
+    images: [
+      { file: 'DE-Images/Mahakala__Distemper_on_cloth__Tibet__18th_century__Sotheby_s.jpg', title: 'Mahākāla, distemper on cloth, Tibet, 18th century', attribution: "Sotheby's" },
+      { file: 'DE-Images/Mahakala.png', title: 'Mahākāla', attribution: '' } ] },
+  { keys: ['Kurukulla', 'Kurukullā'],
+    images: [
+      { file: 'DE-Images/Kurukulla_Boston_MFA.jpg', title: 'Kurukullā, 16th century', attribution: 'Museum of Fine Arts, Boston' } ] },
+  { keys: ['Hevajra'],
+    images: [
+      { file: 'DE-Images/Hevajra-Tibetan.jpg', title: 'Hevajra', attribution: '' } ] },
+  { keys: ['White Tara', 'Sitatara', 'Sitatārā', 'Sita Tara'],
+    images: [
+      { file: 'DE-Images/White-Tara.jpg', title: 'White Tara (Sitatārā)', attribution: '' },
+      { file: 'DE-Images/White_Tara__Sitatara___Tibet__Malla_period__1500-1600_AD__gilded_copper_-_Victoria_and_Albert_Museum_-_London__England_-_DSC04794.jpg', title: 'White Tara (Sitatārā), Tibet, Malla period, 1500–1600, gilded copper', attribution: 'Victoria and Albert Museum, London' } ] },
+  { keys: ['Vajrasattva'],
+    images: [
+      { file: 'DE-Images/Vajrasattva_HAR.jpg', title: 'Vajrasattva', attribution: 'Himalayan Art Resources' },
+      { file: 'DE-Images/Vajrasattva_Thangka.png', title: 'Vajrasattva', attribution: '' } ] },
+  { keys: ['Sarasvati', 'Sarasvatī'],
+    images: [
+      { file: 'DE-Images/Sarasvati_thangka.jpg', title: 'Sarasvatī', attribution: '' } ] },
+  { keys: ['Prajnaparamita', 'Prajñāpāramitā'],
+    images: [
+      { file: 'DE-Images/Nepal_Thangka_with_Prajnaparamita.jpg', title: 'Prajñāpāramitā, Nepal', attribution: '' } ] },
+  { keys: ['Avalokitesvara', 'Avalokiteshvara', 'Avalokiteśvara', 'Chenrezig', 'Lokeshvara', 'Kannon'],
+    images: [
+      { file: 'DE-Images/1000_armed_Avalokiteshvara.jpg', title: 'Thousand-armed Avalokiteśvara (Sahasrabhuja)', attribution: '' },
+      { file: 'DE-Images/Avalokiteshvara.jpg', title: 'Avalokiteśvara', attribution: '' } ] },
+  { keys: ['Ushnishavijaya', 'Usnisavijaya', 'Uṣṇīṣavijayā', 'Ushnisha Vijaya'],
+    images: [
+      { file: 'DE-Images/Unshnisha_Vijaya.jpg', title: 'Uṣṇīṣavijayā', attribution: '' } ] },
+  { keys: ['Buddha Sakyamuni', 'Buddha Shakyamuni', 'Buddha Śākyamuni', 'Sakyamuni', 'Shakyamuni', 'Śākyamuni', 'Sakyamuni Buddha', 'Shakyamuni Buddha', 'Gautama Buddha', 'The Buddha', 'Buddha'],
+    images: [
+      { file: 'DE-Images/Sakyamuni_Buddha_in_a_rainbow_glory__performing_a_miracle_of_reduplication_-_19th_century_Tibetan_thangka.png', title: 'Buddha Śākyamuni in rainbow glory, performing the miracle of reduplication, 19th century', attribution: '' },
+      { file: 'DE-Images/Buddha-standing.jpg', title: 'Standing Buddha Śākyamuni, Gandhāra', attribution: '' },
+      { file: 'DE-Images/Buddhaandpastlives.jpg', title: 'Buddha Śākyamuni with scenes of his past lives', attribution: '' } ] },
+  { keys: ['Manjusri', 'Manjushri', 'Mañjuśrī', 'Jampelyang'],
+    images: [
+      { file: 'DE-Images/Manjushri.jpg', title: 'Mañjuśrī', attribution: '' } ] },
+  { keys: ['Cakrasamvara', 'Chakrasamvara', 'Cakrasaṃvara', 'Cakrasamvara and Vajravarahi', 'Chakrasamvara and Vajravarahi', 'Heruka'],
+    images: [
+      { file: 'DE-Images/chakrasamvara-and-vajravarahi.jpg', title: 'Cakrasaṃvara and Vajravārāhī', attribution: '' } ] },
+  { keys: ['Vajradhara', 'Dorje Chang'],
+    images: [
+      { file: 'DE-Images/vajradhara.jpg', title: 'Vajradhara', attribution: '' } ] },
+  { keys: ['Nagarjuna', 'Nāgārjuna', 'Nagrjuna'],
+    images: [
+      { file: 'DE-Images/Nagrjuna.jpg', title: 'Nāgārjuna', attribution: '' } ] },
+  { keys: ['Acala', 'Acalanatha', 'Achala', 'Fudo Myoo', 'Fudo', 'Fudō Myōō'],
+    images: [
+      { file: 'DE-Images/Acala_-_Fudo_Myoo_.jpg', title: 'Acala (Fudō Myōō)', attribution: '' } ] }
+];
+
+// Normalize a figure name for matching: strip diacritics, lowercase, collapse
+// non-alphanumerics to single spaces. So "Mañjuśrī" -> "manjusri".
+function normLibKey(s) {
+  return (s || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Build a quick lookup map (normalized key -> images) once.
+const CURATED_KEY_MAP = (function () {
+  const m = {};
+  for (const entry of CURATED_IMAGE_LIBRARY) {
+    for (const k of entry.keys) {
+      const nk = normLibKey(k);
+      if (nk && !m[nk]) m[nk] = entry.images;
+    }
+  }
+  return m;
+})();
+
+// Return a result-shaped object (like the Wikimedia search) if the figure or
+// image subject matches a curated entry; otherwise null. Picks one image at
+// random when an entry has several.
+function lookupLibraryImage(figureName, imageSubject) {
+  const candidates = [figureName, imageSubject].map(normLibKey).filter(Boolean);
+  for (const c of candidates) {
+    const images = CURATED_KEY_MAP[c];
+    if (images && images.length) {
+      const pick = images[Math.floor(Math.random() * images.length)];
+      return {
+        url: pick.file,
+        fullUrl: pick.file,
+        title: pick.title,
+        cleanTitle: pick.title,
+        attribution: pick.attribution || '',
+        fromLibrary: true
+      };
+    }
+  }
+  return null;
+}
+
 async function loadImage(d) {
   const figureName = d.figure_name || '';
   const imageSubject = d.image_subject || figureName;
@@ -1068,8 +1192,16 @@ async function loadImage(d) {
   debugLines.push('figure_name: ' + figureName);
   debugLines.push('image_subject: ' + imageSubject);
 
-  // Try figure_name first (in case it has paintings even though image_subject differs)
-  let result = await searchWikimediaForFigure(figureName, debugLines);
+  // Curated library first — use a hand-picked local image if we have one.
+  let result = lookupLibraryImage(figureName, imageSubject);
+  if (result) {
+    debugLines.push('--- matched curated library: ' + result.cleanTitle + ' ---');
+  }
+
+  // No curated match → fall back to Wikimedia. Try figure_name first.
+  if (!result) {
+    result = await searchWikimediaForFigure(figureName, debugLines);
+  }
 
   // If no result and image_subject is different, try it
   if (!result && imageSubject && imageSubject.toLowerCase() !== figureName.toLowerCase()) {
@@ -1653,7 +1785,7 @@ document.addEventListener('DOMContentLoaded', function() {
   <div class="share-card format-default" id="shareCard">
     <div class="sc-header">
       <div class="sc-header-name">DHARMA'S ECHO</div>
-      <div class="sc-header-sub">the Dharma echoes back your moment</div>
+      <div class="sc-header-sub">The Dharma echoes back your moment</div>
     </div>
     <div class="sc-you-wrote" id="scYouWroteBlock" style="display: none;">
       <div class="sc-label">You wrote</div>
