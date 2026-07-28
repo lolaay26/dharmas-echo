@@ -452,25 +452,6 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 }
 .save-btn:hover { background: var(--cream); color: var(--text); }
 
-.format-select {
-  display: inline-flex;
-  gap: 0.4rem;
-  margin-left: 0.5rem;
-}
-.format-btn {
-  background: none;
-  border: 1px solid var(--cream-border);
-  padding: 0.4rem 0.8rem;
-  font-family: sans-serif;
-  font-size: 0.55rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold-dark);
-  cursor: pointer;
-}
-.format-btn.active { background: var(--text); color: #f0e6c8; border-color: var(--text); }
-.format-btn:hover:not(.active) { background: var(--cream); }
-
 .entry-toggle {
   display: inline-flex;
   align-items: center;
@@ -494,103 +475,172 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   pointer-events: none;
   z-index: -1;
 }
+/* ══════════════════════════════════════════════════════════════
+   Share card — ONE format, 1080 × 1920 (true 9:16, IG/FB story)
+   Height is pinned, so the artwork flexes to absorb whatever
+   vertical space the text leaves. Text is never clipped first.
+   Note: literal hex only in here — no var() — because the card
+   is rasterised by html2canvas, and the rest of this card was
+   already written that way.
+   ══════════════════════════════════════════════════════════════ */
 .share-card {
-  padding: 2.2rem;
+  width: 1080px;
+  height: 1920px;
+  padding: 58px 66px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   font-family: 'EB Garamond', Georgia, serif;
   color: #1a2540;
-  background: radial-gradient(ellipse at 30% 15%, #faecc4 0%, #f5dca0 18%, #e6c080 38%, #b8a890 65%, #8a92a0 88%);
-  box-shadow: inset 0 0 60px rgba(40, 55, 95, 0.10);
+  /* Warm white core, sampled from the LIMN card: #fdfbf7.
+     The centre stays clean paper — orange only creeps in from the
+     outer edges and from the sun sitting above the top edge. */
+  /* Pure white core for contrast — colour lives only on the rim.
+     One band per edge (not an ellipse), each fading over roughly the same
+     pixel depth, so the rim reads even the whole way round. */
+  background-color: #ffffff;
+  background-image:
+    /* the sun over the top rim */
+    linear-gradient(to bottom, rgba(250,206,56,0.34) 0%, rgba(248,198,44,0.12) 7%, rgba(246,192,32,0.00) 16%),
+    /* even gold rim */
+    linear-gradient(to bottom, rgba(242,186,26,0.20) 0%, rgba(242,186,26,0.00) 6%),
+    linear-gradient(to top,    rgba(242,186,26,0.18) 0%, rgba(242,186,26,0.00) 5%),
+    linear-gradient(to right,  rgba(242,186,26,0.20) 0%, rgba(242,186,26,0.00) 9%),
+    linear-gradient(to left,   rgba(242,186,26,0.20) 0%, rgba(242,186,26,0.00) 9%);
+  border: 1px solid rgba(234,180,34,0.45);
 }
-/* Verse: vertical, before the image, set off by glowing sunburst hairline dividers (no box) */
-.sc-verse { padding: 0.4rem 0 0.8rem; text-align: center; border-bottom: none; }
-.sc-verse-divider { display: flex; align-items: center; gap: 14px; margin: 1.2rem 0; }
-.sc-verse-rule { flex: 1; height: 1px; background: rgba(120, 105, 80, 0.45); }
-.sc-sunburst { flex: none; filter: drop-shadow(0 0 2.5px rgba(240, 184, 28, 0.95)) drop-shadow(0 0 5px rgba(240, 184, 28, 0.5)); }
-.sc-sunburst line { stroke: #f2bc1a; stroke-width: 1.3; }
-.share-card.format-default { width: 560px; }
-.share-card.format-square { width: 1080px; padding: 4rem; }
-.share-card.format-story { width: 1080px; padding: 4rem 3rem; }
 
-.sc-header { text-align: center; padding-bottom: 1.2rem; border-bottom: 1px solid rgba(120, 105, 80, 0.4); }
-.sc-header-name { font-family: sans-serif; font-size: 11px; letter-spacing: 0.38em; color: #a82010; font-weight: 600; margin-bottom: 0.4rem; }
-.sc-header-sub { font-family: sans-serif; font-size: 9px; letter-spacing: 0.16em; text-transform: none; color: #a82010; }
-.share-card.format-square .sc-header-name { font-size: 18px; }
-.share-card.format-square .sc-header-sub { font-size: 13px; }
-.share-card.format-story .sc-header-name { font-size: 20px; }
-.share-card.format-story .sc-header-sub { font-size: 14px; }
+/* ── Wordmark, top ── */
+.sc-header {
+  flex: none;
+  text-align: center;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(176,136,44,0.38);
+}
+.sc-header-name {
+  font-family: sans-serif; font-size: 36px; letter-spacing: 0.34em;
+  color: #7a3530; font-weight: 600; margin-bottom: 10px;
+}
+.sc-header-sub {
+  font-family: sans-serif; font-size: 22px; letter-spacing: 0.14em;
+  text-transform: none; color: #8f4a42;
+}
 
-.sc-you-wrote { padding: 1rem 0; border-bottom: 1px solid rgba(120, 105, 80, 0.35); }
-.sc-label { font-family: sans-serif; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #a82010; margin-bottom: 0.35rem; font-weight: 700; }
-.sc-you-wrote-text { font-size: 16px; font-style: italic; color: #2a3555; line-height: 1.55; }
+/* ── Optional entry — capped at ~3 lines so it can't crowd the frame ── */
+.sc-you-wrote {
+  flex: none; padding: 16px 0;
+  border-bottom: 1px solid rgba(176,136,44,0.30);
+}
+.sc-label {
+  font-family: sans-serif; font-size: 20px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: #a2701a; font-weight: 700;
+  margin-bottom: 10px;
+}
+.sc-you-wrote-text {
+  font-size: 30px; font-style: italic; color: #2a3555; line-height: 1.42;
+  max-height: 86px; overflow: hidden;   /* hard cap: 2 lines */
+}
 
-.sc-term-block { padding: 1.4rem 0 1.2rem; }
-.sc-term-scripts { display: flex; gap: 2.5rem; align-items: flex-start; margin-bottom: 1.1rem; flex-wrap: wrap; }
-.sc-script-sa { font-family: 'Noto Serif Devanagari', Georgia, serif; font-size: 24px; color: #1a2540; line-height: 1.2; }
-.sc-script-bo { font-family: 'Jomolhari', Georgia, serif; font-size: 21px; color: #1a2540; line-height: 1.3; }
-.sc-script-roman { font-family: 'EB Garamond', serif; font-size: 18px; font-style: italic; color: #a82010; letter-spacing: 0.02em; margin-top: 0.2rem; }
-.sc-figure-meta { font-family: sans-serif; font-size: 13px; letter-spacing: 0.04em; text-transform: none; color: #a82010; font-weight: 600; margin-bottom: 0.5rem; }
-.sc-synthesis { font-size: 17px; color: #1a2540; line-height: 1.55; margin-bottom: 0.2rem; }
-.sc-synthesis em { font-style: italic; color: #a82010; }
-.sc-synthesis p { margin: 0; }
-.sc-synthesis p + p { text-indent: 1.6em; }
+/* ── Term scripts ── */
+.sc-term-block { flex: none; padding: 22px 0 14px; }
+.sc-term-scripts {
+  display: flex; gap: 64px; align-items: flex-start;
+  flex-wrap: wrap; justify-content: center; text-align: center;
+}
+.sc-script-sa {
+  font-family: 'Noto Serif Devanagari', Georgia, serif;
+  font-size: 54px; color: #1a2540; line-height: 1.2;
+}
+.sc-script-bo {
+  font-family: 'Jomolhari', Georgia, serif;
+  font-size: 46px; color: #1a2540; line-height: 1.3;
+}
+.sc-script-roman {
+  font-family: 'EB Garamond', serif; font-size: 34px; font-style: italic;
+  color: #a2701a; letter-spacing: 0.02em; margin-top: 6px;
+}
+/* The synthesis already names the term, so the separate definition
+   stays out of this format — same call the story format made before. */
 .sc-term-body { display: none; }
-.sc-term-inline { color: #a82010; }
+.sc-term-inline { color: #a2701a; }
 
-.sc-figure-source { padding: 0.5rem 0 0.4rem; }
-.sc-figure-name { font-size: 16px; color: #a82010; font-weight: 500; margin-bottom: 0.6rem; }
+/* ── Figure + synthesis ── */
+.sc-figure-source { flex: none; padding: 0 0 4px; }
+.sc-figure-name {
+  font-size: 34px; color: #a2701a; font-weight: 500; margin-bottom: 6px;
+}
+.sc-figure-meta {
+  font-family: sans-serif; font-size: 21px; letter-spacing: 0.04em;
+  text-transform: none; color: #8f4a42; font-weight: 600; margin-bottom: 12px;
+}
 
-.sc-verse-text { font-size: 17px; font-style: normal; color: #1a2540; line-height: 1.55; margin-bottom: 0.85rem; }
-.sc-verse-attr { font-family: sans-serif; font-size: 13px; letter-spacing: 0.04em; text-transform: none; color: #a82010; font-weight: 600; }
-.sc-verse-attr em { font-family: sans-serif; text-transform: none; letter-spacing: 0.01em; font-size: 1em; font-style: italic; font-weight: 700; }
+/* ── Verse, set off by sunburst hairlines ── */
+.sc-verse { flex: none; padding: 0; text-align: center; border-bottom: none; }
+.sc-verse-divider {
+  display: flex; align-items: center; gap: 18px; margin: 20px 0;
+}
+.sc-verse-rule { flex: 1; height: 1px; background: rgba(176,136,44,0.45); }
+.sc-sunburst {
+  flex: none; width: 46px; height: 46px;
+  filter: drop-shadow(0 0 3px rgba(240,184,28,0.9));
+}
+.sc-sunburst line { stroke: #e0a418; stroke-width: 1.3; }
+.sc-verse-text {
+  font-size: 34px; font-style: normal; color: #1a2540;
+  line-height: 1.42; margin-bottom: 14px;
+}
+.sc-verse-attr {
+  font-family: sans-serif; font-size: 21px; letter-spacing: 0.04em;
+  text-transform: none; color: #8f4a42; font-weight: 600;
+}
+.sc-verse-attr em {
+  font-family: sans-serif; text-transform: none; letter-spacing: 0.01em;
+  font-size: 1em; font-style: italic; font-weight: 700;
+}
 
-.sc-image-block { background: none; padding: 0; margin: 0.4rem 0 0.9rem; text-align: center; }
-.sc-image-block img { max-width: 92%; max-height: 440px; object-fit: contain; display: block; margin: 0 auto 0.9rem; }
-.sc-image-title { font-family: sans-serif; font-size: 13px; letter-spacing: 0.04em; text-transform: none; color: #a82010; font-weight: 600; margin-bottom: 0.5rem; }
-.sc-image-why { font-size: 13px; color: #1a2038; line-height: 1.55; text-align: center; }
+/* ── Artwork — the flex element. Takes whatever the text leaves. ──
+   If html2canvas mishandles the growing flex column, the fallback is
+   to swap `flex: 1 1 auto; min-height: 0` on .sc-image-block for a
+   fixed `height: 420px`, and give the img `max-height: 300px`. */
+.sc-image-block {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  background: none; padding: 0; margin: 16px 0 0; text-align: center;
+}
+.sc-image-block img {
+  flex: 1 1 auto; min-height: 0;
+  width: 100%; object-fit: contain; object-position: center bottom;
+  display: block; margin: 0 0 14px;
+}
+.sc-image-title {
+  flex: none; font-family: sans-serif; font-size: 21px; letter-spacing: 0.04em;
+  text-transform: none; color: #8f4a42; font-weight: 600; margin-bottom: 8px;
+}
+.sc-image-why {
+  flex: none; font-size: 27px; color: #1a2038; line-height: 1.40; text-align: center;
+  max-height: 76px; overflow: hidden;   /* hard cap: 2 lines, protects the artwork */
+}
 
-/* Square format — ~1.9x scale of Card, hierarchy preserved */
-.share-card.format-square .sc-script-sa { font-size: 46px; }
-.share-card.format-square .sc-script-bo { font-size: 40px; }
-.share-card.format-square .sc-script-roman { font-size: 31px; }
-.share-card.format-square .sc-you-wrote-text,
-.share-card.format-square .sc-synthesis,
-.share-card.format-square .sc-term-body,
-.share-card.format-square .sc-figure-name { font-size: 30px; }
-.share-card.format-square .sc-verse-text { font-size: 32px; line-height: 1.6; }
-.share-card.format-square .sc-image-why { font-size: 23px; }
-.share-card.format-square .sc-label,
-.share-card.format-square .sc-figure-meta,
-.share-card.format-square .sc-image-title,
-.share-card.format-square .sc-verse-attr { font-size: 18px; }
-.share-card.format-square .sc-header-sub { font-size: 17px; }
-.share-card.format-square .sc-header-name { font-size: 22px; }
-.share-card.format-square .sc-sunburst { width: 44px; height: 44px; }
-.share-card.format-square .sc-verse-divider { margin: 1.6rem 0; }
+/* ── Term | Teacher: two matched columns ──
+   Both headings share face, size and baseline: the term's name on the
+   left answers the teacher's name on the right. min-height keeps them
+   locked when one name wraps and the other does not. */
+.sc-split { display: flex; gap: 40px; align-items: stretch; padding: 6px 0 18px; }
+.sc-split-col { flex: 1 1 0; min-width: 0; }
+.sc-split-col + .sc-split-col { padding-left: 40px; border-left: 1px solid rgba(160,110,60,0.32); }
+.sc-col-name { font-size: 34px; color: #7a3530; font-weight: 500; line-height: 1.25;
+  margin-bottom: 5px; min-height: 43px; }
+.sc-col-meta { font-family: sans-serif; font-size: 19px; letter-spacing: 0.03em;
+  color: #8f4a42; font-weight: 600; line-height: 1.35; margin-bottom: 14px; min-height: 26px; }
+.sc-col-body { font-size: 34px; line-height: 1.42; color: #1a2540; }
+.sc-col-body em { font-style: italic; color: #b5761f; }
 
-/* Story format — same width as Square, same scale */
-.share-card.format-story .sc-script-sa { font-size: 46px; }
-.share-card.format-story .sc-script-bo { font-size: 40px; }
-.share-card.format-story .sc-script-roman { font-size: 31px; }
-.share-card.format-story .sc-you-wrote-text,
-.share-card.format-story .sc-figure-name { font-size: 30px; }
-/* Full-width vertical: body text large, image caption clearly smaller */
-.share-card.format-story .sc-term-body { font-size: 36px; line-height: 1.55; }
-.share-card.format-story .sc-synthesis { font-size: 38px; line-height: 1.55; }
-.share-card.format-story .sc-verse-text { font-size: 40px; line-height: 1.55; }
-.share-card.format-story .sc-image-why { font-size: 28px; }
-.share-card.format-story .sc-label,
-.share-card.format-story .sc-figure-meta,
-.share-card.format-story .sc-image-title,
-.share-card.format-story .sc-verse-attr { font-size: 18px; }
-.share-card.format-story .sc-header-sub { font-size: 17px; }
-.share-card.format-story .sc-header-name { font-size: 22px; }
-/* Tall format runs lean to fit 9:16. The synthesis itself names the term, so the
-   separate term definition is dropped here. */
-.share-card.format-story .sc-term-body { display: none; }
-.share-card.format-story .sc-image-block { padding: 0; margin: 0.1rem 0 0.3rem; }
-.share-card.format-story .sc-image-block img { max-height: 640px; }
-.share-card.format-story .sc-sunburst { width: 44px; height: 44px; }
-.share-card.format-story .sc-verse-divider { margin: 1.2rem 0; }
+/* The key point — «guillemets» in the model's output become this. */
+.sc-key { color: #b5761f; }
+
+/* Verse label */
+.sc-verse-label { font-family: sans-serif; font-size: 19px; letter-spacing: 0.20em;
+  text-transform: uppercase; color: #7a3530; font-weight: 700; margin-bottom: 16px; }
 
 .toast {
   position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
@@ -706,11 +756,6 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 <div class="save-row" id="saveRow">
   <button class="save-btn" onclick="saveCard()">Save ›</button>
   <button class="save-btn" onclick="shareCard()">Share ›</button>
-  <div class="format-select">
-    <button class="format-btn active" data-format="default" onclick="setFormat('default')">Card</button>
-    <button class="format-btn" data-format="square" onclick="setFormat('square')">Square</button>
-    <button class="format-btn" data-format="story" onclick="setFormat('story')">Story</button>
-  </div>
   <label class="entry-toggle">
     <input type="checkbox" id="includeEntryToggle" onchange="toggleIncludeEntry(this.checked)">
     <span>include your entry</span>
@@ -718,42 +763,8 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 </div>
 
 <script>
-const IMAGES = [
-  { url: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Buddha_in_Sarnath_Museum_%28Dhammajak_Mutra%29.jpg", title: "Buddha, First Sermon, Sarnath", artist: "Gupta period, 5th century CE", tradition: "Indian Buddhist", tags: ["buddha", "first sermon", "dharma", "four noble truths", "wheel of dharma", "teaching", "path", "sarnath", "gupta", "pali", "dukkha"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Buddha_Shakyamuni_and_scenes_from_his_lives_18th_century_Victoria_%26_Albert_Museum.jpg", title: "Buddha Śākyamuni and Scenes from His Lives", artist: "Tibetan, 18th century", tradition: "Tibetan Buddhist", tags: ["jataka", "previous lives", "rebirth", "biography", "narrative", "shakyamuni", "compassion", "bodhisattva path"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/5/50/Shakyamuni_Buddha_with_Scenes_of_His_Former_Lives._17th_century%2C_British_Museum.jpg", title: "Śākyamuni Buddha with Scenes of His Former Lives", artist: "Tibetan, 17th century", tradition: "Tibetan Buddhist", tags: ["jataka", "previous lives", "rebirth", "biography", "narrative", "shakyamuni", "bodhisattva path"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/f/fe/Seated_thousand-armed_boddhisattva_Avalokitshvara_%28Guanyin%29.jpg", title: "Thousand-armed Avalokiteśvara (Guanyin)", artist: "East Asian Buddhist sculpture", tradition: "Mahayana Buddhist", tags: ["avalokiteshvara", "chenrezig", "guanyin", "compassion", "karuna", "bodhicitta", "thousand arms", "infinite reach", "interdependence"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/2/20/1000_armed_Avalokiteshvara.jpg", title: "Thousand-armed Avalokiteśvara", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["avalokiteshvara", "chenrezig", "compassion", "karuna", "bodhicitta", "thousand arms", "all-seeing"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Tara_thangka.jpg", title: "Tārā Thangka", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["tara", "compassion", "fear", "protection", "swift", "feminine", "bodhicitta"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/e/ed/Green_Tara_%2834000421075%29.jpg", title: "Green Tārā", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["green tara", "tara", "swift action", "compassion", "fear", "obstacles", "protection", "feminine"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/d/d3/Anonymous_-_Painted_Banner_%28Thangka%29_of_Green_Tara_Surrounded_by_Twenty_Manifestations_-_1986.1314_-_Art_Institute_of_Chicago.jpg", title: "Green Tārā with Twenty Manifestations", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["tara", "twenty taras", "many forms", "compassion", "fear", "protection", "swift", "feminine"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/9/9d/White_Tara%2C_Tibet%2C_1644-1911_AD_-_Sichuan_Provincial_Museum_-_Chengdu%2C_China_-_DSC04498.jpg", title: "White Tārā", artist: "Tibetan, Qing period", tradition: "Tibetan Buddhist", tags: ["white tara", "long life", "healing", "longevity", "stillness", "feminine", "compassion"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/e/eb/Padmasambhava_with_Rainbow_Body_-_19th_century_Tibetan_thangka.jpg", title: "Padmasambhava with Rainbow Body", artist: "Tibetan, 19th century", tradition: "Nyingma, Tibetan Buddhist", tags: ["padmasambhava", "guru rinpoche", "rainbow body", "nyingma", "dzogchen", "tantra", "transmission", "guru", "lineage", "luminous"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/f/f2/Painting_of_Padmasambhava%2C_from_Bhutan%2C_ca.1692%E2%80%9393.jpg", title: "Padmasambhava (Bhutanese)", artist: "Bhutanese, c. 1692–93", tradition: "Nyingma, Tibetan Buddhist", tags: ["padmasambhava", "guru rinpoche", "nyingma", "tantra", "transmission", "guru", "lineage"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Jigme_Lingpa.jpg", title: "Jigme Lingpa", artist: "Tibetan, 18th century", tradition: "Nyingma, Tibetan Buddhist", tags: ["jigme lingpa", "nyingma", "longchen nyingthig", "heart essence", "terma", "treasure revealer", "vast expanse", "dzogchen", "nature of mind"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/a/ad/Gesar_of_Ling_riding_a_reindeer._Distemper_painting._Wellcome_L0040370.jpg", title: "Gesar of Ling", artist: "Tibetan", tradition: "Tibetan Buddhist", tags: ["gesar", "warrior", "courage", "fearlessness", "obstacles", "awakened activity", "bodhicitta in action"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Il_fullxfull2467910941_t2g5-sw_800x.jpg", title: "Mañjuśrī", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["manjushri", "wisdom", "prajna", "discriminating wisdom", "sword of wisdom", "third seal", "anatta", "emptiness", "insight", "cuts through delusion"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/4/48/Nepal_Thangka_with_Prajnaparamita.jpg", title: "Prajñāpāramitā", artist: "Nepalese thangka", tradition: "Mahayana Buddhist", tags: ["prajnaparamita", "perfection of wisdom", "emptiness", "sunyata", "third seal", "anatta", "heart sutra", "diamond sutra", "feminine wisdom", "mother of buddhas"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Sarasvati_thangka.jpg", title: "Sarasvatī Thangka", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["sarasvati", "speech", "learning", "music", "feminine", "knowledge", "study", "scholarship"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Vajrasattva_Thangka.png", title: "Vajrasattva", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["vajrasattva", "purification", "confession", "regret", "obscurations", "primordial purity", "ngondro", "preliminary practice"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/f/f7/Clevelandart_1982.50.jpg", title: "Vajravārāhī", artist: "Tibetan, 13th–14th century", tradition: "Tibetan Buddhist", tags: ["vajravarahi", "dakini", "feminine principle", "wisdom dakini", "tantra", "vajrayana", "non-dual wisdom", "fierce wisdom", "yidam"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/7/70/Buddha_Amitabha_in_His_Pure_Land_of_Suvakti.JPG", title: "Buddha Amitābha in His Pure Land", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["amitabha", "sukhavati", "pure land", "fourth seal", "nirvana", "infinite light", "death", "liberation", "devotion", "rebirth"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/0/02/Vajrapani_Bodhisattva.jpg", title: "Vajrapāṇi Bodhisattva", artist: "Tibetan thangka", tradition: "Tibetan Buddhist", tags: ["vajrapani", "power", "fierce compassion", "obstacles", "protection", "wrathful", "energy of awakening"] },
-  { url: "https://upload.wikimedia.org/wikipedia/commons/7/76/Bhutanese_thanka_of_Mt._Meru_and_the_Buddhist_Universe.jpg", title: "Mt. Meru and the Buddhist Universe", artist: "Bhutanese thangka", tradition: "Tibetan Buddhist", tags: ["mount meru", "cosmology", "buddhist universe", "samsara", "six realms", "wheel of life", "conditioned existence", "rebirth", "axis mundi"] },
-];
-
-function selectImage(keywords) {
-  const terms = (keywords || '').toLowerCase();
-  let best = IMAGES[Math.floor(Math.random() * IMAGES.length)];
-  let bestScore = 0;
-  for (const img of IMAGES) {
-    let score = 0;
-    for (const tag of img.tags) { if (terms.includes(tag)) score++; }
-    if (score > bestScore) { bestScore = score; best = img; }
-  }
-  return best;
-}
-
+// NOTE: the old 21-entry IMAGES pool and selectImage() were removed — neither was
+// ever called. The live path is CURATED_IMAGE_LIBRARY → Wikimedia (see ~line 1265).
 let API_KEY = '';
 let lastEntryText = '';
 let recentImageTitles = [];
@@ -809,7 +820,9 @@ THE FIGURE — always named. Strict source hierarchy:
      · Dudjom Rinpoche: for tantric view, the nature of perception, the purity of phenomena.
      · Chogyur Lingpa: for terma and Rimé territory.
      · Yeshe Tsogyal: for the feminine principle, the dakini, the ground of experience.
-   — The Khyentse lineage (Jamyang Khyentse Wangpo 1820–1892, Jamgön Kongtrül Lodrö Thayé 1813–1899, Jamyang Khyentse Chökyi Lodrö 1893–1959) is NEVER prominent by default. Reach for them ONLY when the entry sits squarely in their specific territory: the Rimé non-sectarian synthesis, terma revelation, the encyclopedic integration of view across schools, or extraordinary guru devotion in the Rimé register. If the entry could be answered well by Longchenpa, Patrul Rinpoche, or Jigme Lingpa, choose them instead. The Khyentse lineage appears through precision of fit, never through rotation.
+     · Jamyang Khyentse Wangpo (1820–1892): for the Rimé non-sectarian view, terma revelation, and the gathering of near-lost transmissions across schools.
+     · Jamgön Kongtrül Lodrö Thayé (1813–1899): for the encyclopedic treasuries and the integration of view across traditions.
+     · Jamyang Khyentse Chökyi Lodrö (1893–1959): for guru devotion in the Rimé register and the living transmission across lineages.
    — Sakya second: Sakya Pandita, Gorampa — for precise philosophical and Lamdre territory
    — Kagyu third — ONLY when the concept is specifically and precisely Mahamudra territory, or the entry is unmistakably in the Kagyu stream (mountain solitude, the dohas, the songs of realization). Do not default to Milarepa. Milarepa is one figure among many — reach for Longchenpa, Patrul Rinpoche, or Jigme Lingpa first unless the Kagyu match is exact.
      · Milarepa: his domain is the songs (Mila Grubum), mountain retreat, the direct path through hardship, Mahamudra realization through practice. Not a default.
@@ -817,6 +830,13 @@ THE FIGURE — always named. Strict source hierarchy:
    — Gelug: Tsongkhapa — when Madhyamaka philosophical precision specifically requires it
 4. Later masters: Thrinley Norbu Rinpoche (elements and elemental mind), Dilgo Khyentse Rinpoche, Dzongsar Khyentse Rinpoche
 5. Contemporary teachers only when nothing above fits more precisely
+
+THE LIST IS NOT EXHAUSTIVE — DIG PAST THE OBVIOUS.
+The masters named above are a floor, not a ceiling. Read them as MARKERS OF TERRITORY, not as a menu: each name stands for a domain — the Dzogchen ground and rigpa, terma revelation and the treasure tradition, the Rimé non-sectarian synthesis, bodhicitta and the preliminaries, Madhyamaka precision, Mahamudra realized through hardship, the feminine principle and the dakini, the elements and elemental mind. What the entry needs is the territory. Whoever has worked most precisely in it is the figure — named above or not.
+
+Your training carries statistical weights, and certain masters will surface before others: the most canonized, the most translated, the most written about in English. The name that arrives first may be the most precise match, or it may simply be the most weighted. Before committing, ask — across the full breadth of the tradition, every school, every century, every lineage, including those rarely translated — who has worked most precisely in the territory this entry opens? Hold one genuine second candidate against the entry and choose honestly between the two. A name's familiarity is not evidence of fit, and a name's absence from the list above is not evidence against it.
+
+The source hierarchy (1–5) still governs: it ranks TEXTUAL AUTHORITY, and that ordering holds regardless of which figure you reach for.
 
 The figure's name always comes first in the description. Never start with "He" or "She."
 One sentence only. What they refused, showed, or opened. Never biographical.
@@ -852,6 +872,12 @@ image_subject: The single most precise visual subject for this entry. Either the
   · Milarepa → Milarepa (paintings exist)
 Use the figure's name itself as image_subject if a painting tradition exists. Use a precise alternate only if no paintings of the figure exist on Wikimedia Commons. Always one short noun phrase, never a description.
 
+DIG PAST THE OBVIOUS. Your training carries statistical weights, and certain figures and deities will surface before others. The subject that arrives first may be the most precise — or it may simply be the most weighted. Before committing, ask: across the full breadth of Buddhist visual tradition, which subject most precisely embodies what THIS entry opened? The mapping above is a floor, not an answer — reach for it when nothing more precise presents itself, never as a lookup.
+
+MATCH THE TEACHING, NOT THE VOCABULARY. A subject chosen because its name echoes a word in the entry, or in the term, is a reflex rather than a reading. Choose the subject whose gesture answers what the source passage and the verse are actually pointing to: what the posture enacts, what is held, what is given, what is cut through, what stays still. Before committing, hold one genuine second candidate against the teaching and choose honestly between the two.
+
+The image has to exist, so prefer a subject with a real painting or sculpture tradition. If nothing genuinely answers the teaching, fall back to the figure's own name rather than forcing a symbolic match.
+
 (The caption that connects the image to the entry will be generated separately, after the actual image is selected.)
 
 THE VERSE — real verified verse only. Never invented. Lines separated by \\n. Not italic. The verse should come from a DIFFERENT source than the source passage above — a different voice, text, or tradition — so the two illuminate the same territory from different angles rather than restating each other. The different voice may be another master, or a sutra, or a tantra — a genuinely different kind of source, not just a different author. Let the entry's territory determine which fits; draw from the established hierarchy already given (the Buddha's sutras, the early Indian masters, the tantras, and the Nyingma, Sakya, and Kagyu traditions), choosing by genuine fit, never by name. Prefer a different source from the passage above, but never force a weak or inauthentic match just to differ — a real, verified verse that genuinely fits the territory always wins over a different-but-weak one.
@@ -877,16 +903,17 @@ Return ONLY valid JSON, no markdown, no backticks, no preamble:
   "figure_key_verb": "The precise relationship verb — 'author of', 'singer of', 'revealer of', 'translator of'. Empty string if the figure is Buddha Śākyamuni or had no primary text.",
   "figure_key_work": "The single most important text in italics — just the title, no verb. Empty string if the figure is Buddha Śākyamuni or had no primary authored text.",
   "figure_description": "One sentence starting with the figure's name. What they refused, showed, or opened.",
-  "share_synthesis": "ONE short flowing block for the compact share card — 2–3 sentences maximum and no longer. Build it by CONDENSING the actual content you wrote in figure_description and source_passage — stay true to them, do not invent new ideas or new closing lines, and do not drift into generic spiritual phrasing. Hard limits: at most 3 sentences, under ~70 words total. Use each image only ONCE — never repeat an image (the needle, the magnet, the deer) or restate a clause you have already written, and add no extra closing line beyond the three parts below. Prefer short sentences over one long clause-stacked sentence. Structure: (1) open by naming the term (transliteration in **double asterisks**) with its meaning in a few words, since the scripts above have no other definition — e.g. '**Śraddhā** is confidence in the path that endures beneath the coming and going of inspiration'; (2) name the FIGURE by name (never passive — say 'Patrul Rinpoche showed...', not 'it is shown...') and condense what figure_description says they showed; (3) keep the CONCRETE IMAGE from source_passage if it has one (the hook and iron ring, the fire, the river, the mirror) — that specific image is the point, do not replace it with a vague paraphrase. Weave the source title in *single asterisks* with its reference in brackets (natural case like 'Part Three, Guru Yoga'; sutta codes like 'AN 4.49' as-is). Shorter than the main page, but the same truth and the same images. NO quotation marks. Double asterisks ONLY around the term; single asterisks ONLY around the source title.",
   "source_text": "Pali or Sanskrit title in Title Case (e.g. Khaggavisāṇa Sutta — Rhinoceros Horn Sutta) — English title after a dash if it has one. Do NOT write in ALL CAPS. The title will be rendered in italics by the page; just provide the natural Title Case.",
   "source_reference": "Sutta ID, chapter, verse, or song number",
   "source_translation": "Trans. [Name] · [Publisher]",
   "source_passage": "Passage under 40 words. Paraphrased carefully if copyrighted.",
   "concept_keywords": "6–8 keywords from: dukkha, samsara, anicca, anatta, sunyata, bodhicitta, compassion, impermanence, emptiness, nirvana, rigpa, clinging, self, interdependence, liberation, wisdom, suffering, practice, renunciation, purification, natural state, four noble truths, beyond extremes, mahamudra, dzogchen, path, teaching, dharma, first sermon, buddha, viveka, solitude, mountain, madhyamaka, pali",
   "image_subject": "Single noun phrase — the figure's name if a painting tradition exists, else a precise visual alternate (deity, lineage holder, or subject embodying the same territory). See THE IMAGE instructions.",
+  "term_card_line": "For the share card. Under 22 words, ONE short plain sentence. The term itself already appears as the heading above, so do NOT name it — say only what it means, so a reader who has never heard it understands. Wrap the few words that carry the meaning between « and »: exactly one wrapped phrase, required, never a bare term and never a flourish. Never end on a 'not.'",
+  "figure_card_line": "For the share card. Under 22 words, ONE short plain sentence. The figure's NAME already appears as the heading above, so do NOT name them — start with what they showed, refused, or opened. Keep any concrete image from the source passage (the hook and iron ring, the fire, the mirror). Wrap the few words that carry the meaning between « and »: exactly one wrapped phrase, required. Never end on a 'not.'",
   "verse_text": "3–5 lines. Real verified verse only. Lines separated by \\n.",
   "verse_attribution": "Name · tradition · century — omit tradition entirely if the speaker is Buddha Śākyamuni",
-  "verse_source": "Title of text"
+  "verse_source": "Title of the text the verse comes from. REQUIRED whenever verse_text is present \u2014 never empty. Title only: no author, no verb, no chapter."
 }`;
 
 async function submitEntry() {
@@ -926,7 +953,7 @@ async function submitEntry() {
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-8',
+        model: 'claude-sonnet-5',
         max_tokens: 1400,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: `Journal entry: "${entry}"` }]
@@ -1370,7 +1397,7 @@ Only return the final sentence after passing all three checks. No quotes, no pre
       'anthropic-dangerous-direct-browser-access': 'true'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
+      model: 'claude-sonnet-5',
       max_tokens: 150,
       messages: [{ role: 'user', content: captionPrompt }]
     })
@@ -1565,9 +1592,21 @@ let lastShareImageUrl = '';
 let lastShareImageTitle = '';
 let lastShareCaption = '';
 
+function excerptWords(text, maxWords) {
+  const t = (text || '').trim();
+  if (!t) return '';
+  const words = t.split(/\s+/);
+  if (words.length <= maxWords) return t;
+  return words.slice(0, maxWords).join(' ').replace(/[,;:.\u2014-]+$/, '') + '\u2026';
+}
+
 function populateShareCard(d) {
   lastShareData = d;
-  document.getElementById('scYouWrote').textContent = lastEntryText;
+  // The entry is the user's own text, so it has no prompt-side word limit.
+  // Measured: 28 words fills the 2 lines the card allows; 30 overflows. Trim at a
+  // word boundary with an ellipsis so it reads as an excerpt, never a mid-word cut.
+  // The CSS max-height stays as a backstop but should no longer fire.
+  document.getElementById('scYouWrote').textContent = excerptWords(lastEntryText, 26);
 
   document.getElementById('scScriptSa').textContent = d.term_sanskrit || '';
   document.getElementById('scScriptSaRoman').textContent = d.term_transliteration || '';
@@ -1579,45 +1618,40 @@ function populateShareCard(d) {
     document.getElementById('scTibGroup').style.display = 'none';
   }
 
-  // Condensed term translation for the share card (fall back to full if short missing)
-  // Term definition is carried by the synthesis now; keep this populated for fallback only
-  document.getElementById('scTermBody').textContent = d.term_translation_short || d.term_translation || '';
+  // «phrase» → the gold key point. Escape first so model output can't inject HTML.
+  const cgold = function (t) {
+    return (t || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/\u00ab([\s\S]*?)\u00bb/g, '<span class="sc-key">$1</span>');
+  };
+  // Strip a leading "Term is " / "Name " if the model repeated what the heading
+  // already says — the heading carries it, the sentence should not.
+  const dropLead = function (text, lead) {
+    let t = (text || '').trim();
+    const l = (lead || '').trim();
+    if (l && t.toLowerCase().indexOf(l.toLowerCase()) === 0) {
+      t = t.slice(l.length).replace(/^[\s,—-]*(?:is|are|means|was|showed|shows)?\s*/i, '');
+      if (t) t = t.charAt(0).toUpperCase() + t.slice(1);
+    }
+    return t;
+  };
+
+  // LEFT COLUMN — the term
+  document.getElementById('scTermName').textContent = d.term_transliteration || '';
+  document.getElementById('scTermMeta').textContent = (d.term_tradition || '').trim();
+  document.getElementById('scTermBody').innerHTML =
+    cgold(dropLead(d.term_card_line || d.term_translation_short || d.term_translation || '',
+                   d.term_transliteration));
+
+  // RIGHT COLUMN — the teacher
   document.getElementById('scFigureName').textContent = d.figure_name || '';
+  document.getElementById('scFigureBody').innerHTML =
+    cgold(dropLead(d.figure_card_line || d.figure_description || '', d.figure_name));
   // Figure meta line: tradition · dates (omit empties)
   const metaParts = [];
   if (d.figure_tradition && d.figure_tradition.trim()) metaParts.push(d.figure_tradition.trim());
   if (d.figure_dates && d.figure_dates.trim()) metaParts.push(d.figure_dates.trim());
   document.getElementById('scFigureMeta').textContent = metaParts.join(' · ');
-  // Synthesis block — weave source + teaching + essence. *italics* → <em>. Fallback if missing.
-  const synthEl = document.getElementById('scSynthesis');
-  let synthRaw = (d.share_synthesis || '').trim();
-  if (!synthRaw) {
-    // Fallback: build from parts if the synthesis field is missing (older cached responses)
-    const fig = d.figure_description_short || d.figure_description || '';
-    const src = d.source_text ? ('In <em>' + d.source_text + '</em>' + (d.source_reference ? ' (' + d.source_reference + ')' : '') + ', ') : '';
-    synthRaw = src + fig;
-    synthEl.innerHTML = synthRaw;
-  } else {
-    // **term** → burnt-red term; *source title* → italic. Process ** before * to avoid collision.
-    let html = synthRaw
-      .replace(/\*\*([^*]+)\*\*/g, '<span class="sc-term-inline">$1</span>')
-      .replace(/\*([^*]+)\*/g, '<em>$1</em>');
-    // Break into two paragraphs at the sentence boundary nearest the middle.
-    // Only break where a capital letter follows ". " — skips abbreviations like "Ch. 8".
-    const pts = [];
-    const re = /\.\s+(?=[A-Z\u00C0-\u024F\u1E00-\u1EFF])/g;
-    let mm;
-    while ((mm = re.exec(html)) !== null) { pts.push(mm.index + 1); }
-    if (pts.length) {
-      const target = html.length / 2;
-      let best = pts[0];
-      for (const p of pts) { if (Math.abs(p - target) < Math.abs(best - target)) best = p; }
-      synthEl.innerHTML = '<p>' + html.slice(0, best).trim() + '</p><p>' + html.slice(best).trim() + '</p>';
-    } else {
-      synthEl.innerHTML = '<p>' + html + '</p>';
-    }
-  }
-
   // Verse
   const verseBlock = document.getElementById('scVerseBlock');
   const verseLines = (d.verse_text || '').split('\n').map(l => l.trim()).filter(Boolean);
@@ -1649,7 +1683,7 @@ function syncShareCardImage() {
     scImageBlock.style.display = 'none';
     return;
   }
-  scImageBlock.style.display = 'block';
+  scImageBlock.style.display = 'flex';   // must stay flex: the artwork flexes to fill leftover height
   scImg.src = artImg.src;
   document.getElementById('scImgTitle').textContent = document.getElementById('imgTitle').textContent;
   document.getElementById('scImgWhy').textContent = document.getElementById('imgWhy').textContent;
@@ -1667,17 +1701,6 @@ window.addEventListener('DOMContentLoaded', () => {
 function toggleIncludeEntry(checked) {
   const block = document.getElementById('scYouWroteBlock');
   if (block) block.style.display = checked ? 'block' : 'none';
-}
-
-let currentFormat = 'default';
-function setFormat(format) {
-  currentFormat = format;
-  const card = document.getElementById('shareCard');
-  card.classList.remove('format-default', 'format-square', 'format-story');
-  card.classList.add('format-' + format);
-  document.querySelectorAll('.format-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.format === format);
-  });
 }
 
 async function preloadShareImage() {
@@ -1819,7 +1842,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <div class="share-card-container" id="shareCardContainer">
-  <div class="share-card format-default" id="shareCard">
+  <div class="share-card" id="shareCard">
     <div class="sc-header">
       <div class="sc-header-name">DHARMA'S ECHO</div>
       <div class="sc-header-sub">The Dharma echoes back your moment</div>
@@ -1839,24 +1862,31 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="sc-script-roman" id="scScriptBoRoman"></div>
         </div>
       </div>
-      <div class="sc-term-body" id="scTermBody"></div>
     </div>
-    <div class="sc-figure-source">
-      <div class="sc-figure-name" id="scFigureName"></div>
-      <div class="sc-figure-meta" id="scFigureMeta"></div>
-      <div class="sc-synthesis" id="scSynthesis"></div>
+    <div class="sc-split">
+      <div class="sc-split-col">
+        <div class="sc-col-name" id="scTermName"></div>
+        <div class="sc-col-meta" id="scTermMeta"></div>
+        <div class="sc-col-body" id="scTermBody"></div>
+      </div>
+      <div class="sc-split-col">
+        <div class="sc-col-name" id="scFigureName"></div>
+        <div class="sc-col-meta" id="scFigureMeta"></div>
+        <div class="sc-col-body" id="scFigureBody"></div>
+      </div>
     </div>
     <div class="sc-verse" id="scVerseBlock">
       <div class="sc-verse-divider" aria-hidden="true">
         <span class="sc-verse-rule"></span>
-        <svg class="sc-sunburst" width="32" height="32" viewBox="0 0 20 20"><g><line x1="10" y1="1" x2="10" y2="19"/><line x1="1" y1="10" x2="19" y2="10"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5"/><line x1="16.5" y1="3.5" x2="3.5" y2="16.5"/></g></svg>
+        <svg class="sc-sunburst" viewBox="0 0 20 20"><g><line x1="10" y1="1" x2="10" y2="19"/><line x1="1" y1="10" x2="19" y2="10"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5"/><line x1="16.5" y1="3.5" x2="3.5" y2="16.5"/></g></svg>
         <span class="sc-verse-rule"></span>
       </div>
+      <div class="sc-verse-label">A verse</div>
       <div class="sc-verse-text" id="scVerseText"></div>
       <div class="sc-verse-attr" id="scVerseAttr"></div>
       <div class="sc-verse-divider" aria-hidden="true">
         <span class="sc-verse-rule"></span>
-        <svg class="sc-sunburst" width="32" height="32" viewBox="0 0 20 20"><g><line x1="10" y1="1" x2="10" y2="19"/><line x1="1" y1="10" x2="19" y2="10"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5"/><line x1="16.5" y1="3.5" x2="3.5" y2="16.5"/></g></svg>
+        <svg class="sc-sunburst" viewBox="0 0 20 20"><g><line x1="10" y1="1" x2="10" y2="19"/><line x1="1" y1="10" x2="19" y2="10"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5"/><line x1="16.5" y1="3.5" x2="3.5" y2="16.5"/></g></svg>
         <span class="sc-verse-rule"></span>
       </div>
     </div>
