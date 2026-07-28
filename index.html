@@ -16,7 +16,7 @@
   --gold-dark: #a08030;
   --amber: #b06818;
   --text: #2a2010;
-  --text-mid: #4a3a18; 
+  --text-mid: #4a3a18;
   --text-label: #6a5820;
   --text-faint: #c8a855;
 }
@@ -968,7 +968,11 @@ async function submitEntry() {
         // Sonnet 5 thinks by default and thinking counts against max_tokens.
         // At 1400 the JSON was being truncated, which surfaced as a parse error.
         max_tokens: 8000,
-        effort: 'medium',
+        // Thinking is on by default on Sonnet 5 and bills as output.
+        // 'low' minimises it and skips it entirely on simpler entries.
+        // If the API rejects the level, try 'medium' or delete output_config.
+        thinking: { type: 'adaptive' },
+        output_config: { effort: 'low' },
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: `Journal entry: "${entry}"` }]
       })
@@ -1330,80 +1334,40 @@ function showDebug(lines, result) {
 }
 
 async function generateImageCaption(d, actualImageTitle) {
-  const captionPrompt = `Write one caption with three parts in this exact order, separated by punctuation:
+  const captionPrompt = `Write one caption in three parts, in this order:
 
-PART 1 — Name the figure or subject in the image (the actual figure visible).
-PART 2 — A very brief lineage or relationship clause (only if image_subject differs from figure_name) — e.g. "Patrul Rinpoche's root teacher", "Nagarjuna's tutelary deity". Skip if image_subject equals figure_name.
-PART 3 — A specific visible feature of the image, then a verb, then a 5-9 word distillation of THE TEACHING — what the source passage and verse are pointing to. NOT a paraphrase of what the person wrote.
+PART 1 — Name the figure or subject actually visible in the image.
+PART 2 — A brief lineage clause, ONLY if the image subject differs from the figure (e.g. "Patrul Rinpoche's root teacher", "Nagarjuna's tutelary deity"). Skip it otherwise.
+PART 3 — A specific visible feature, then a teaching-verb, then a 5–9 word distillation of THE TEACHING below.
 
-CRITICAL — what Part 3 distills:
+The teaching to distill:
+- Source passage: "${d.source_passage || ''}"
+- Verse: "${d.verse_text || ''}"
+- Term: ${d.term_transliteration} — ${d.term_first_line}
 
-The 5-9 word phrase at the end is a distillation of the DHARMA TEACHING that the response is offering — what is in the source quote and the verse. It is NOT a summary of the person's entry.
+Every image here is a teaching image: it makes the dharma visible, and the caption names how it does so.
 
-Look at:
-- The source passage: "${d.source_passage || ''}"
-- The verse: "${d.verse_text || ''}"
-- The term: ${d.term_transliteration} — ${d.term_first_line}
-
-The phrase at the end of Part 3 should distill what these are saying. The image embodies this teaching.
-
-The entry tells us what the person needs the teaching to meet. But the caption does not paraphrase the entry — it names what the teaching is, which is the answer to the entry.
-
-CRITICAL — verb logic:
-
-Every image in this app is a teaching image. The image makes the dharma teaching visible. The caption names how it does so. The verb must reflect this — the image is not a mirror of the person's entry. It is making the teaching visible.
-
-Verbs to use:
-- For peaceful figures or pure realms or any image that shows the path/answer: SHOWS, REVEALS, EMBODIES, POINTS TO, MAKES VISIBLE, NAMES, OPENS
-- For wrathful figures (Mahakala, Guru Dragpur, Vajrakilaya, fierce dakinis): BURNS THROUGH, CUTS THROUGH, CONSUMES, DISSOLVES, SEVERS — what they destroy is delusion, clinging, fear, obstacles
-- For samsaric depictions (wheel of life, six realms, hell realms, bardo, Mara's army): NAMES, SHOWS, MAKES VISIBLE — they make the teaching about that territory visible
-
-NEVER use "echoes", "reflects", or "mirrors" — these imply the image is a mirror of the person's experience, which is not the relationship. The image makes the teaching visible.
+VERBS
+- Peaceful figures, pure realms, anything showing the path: shows, reveals, embodies, points to, names, opens, makes visible.
+- Wrathful figures (Mahakala, Guru Dragpur, Vajrakilaya, fierce dakinis): burns through, cuts through, consumes, dissolves, severs — what they destroy is delusion, clinging, fear, obstacles.
+- Samsaric depictions (wheel of life, six realms, bardo, Mara's army): names, shows, makes visible.
+- Never "echoes", "reflects" or "mirrors". The image is not a mirror of anything; it makes the teaching visible.
 
 Inputs:
 - The figure who addresses this entry: ${d.figure_name}
-- The image subject Claude chose: ${d.image_subject || d.figure_name}
+- The image subject chosen: ${d.image_subject || d.figure_name}
 - The actual image title: "${actualImageTitle}"
-- They wrote (for context only — do NOT paraphrase): "${lastEntryText}"
 
-Examples (notice each Part 3 distills the teaching, NOT the entry, and uses a teaching-verb):
-
-Peaceful figures (use shows/reveals/embodies/points to/names):
+Examples:
 - "Padmasambhava with rainbow body — the dissolving form shows the mind that holds everything yet remains unstained."
-- "Tara — her stepping foot reveals the swift compassion that meets fear before fear can arise."
-- "Mañjuśrī, Nagarjuna's tutelary deity — the upraised sword embodies the wisdom that severs every fixed view."
-- "Avalokiteśvara — the thousand arms point to compassion that reaches every being without exception."
-- "Buddha Śākyamuni — his teaching gesture shows the path of release from craving."
-- "Buddha Amitābha in his Pure Land — the blissful field reveals the buddha-nature already present in awareness."
-
-Wrathful figures (use burns through/cuts through/consumes):
+- "Tārā — her stepping foot reveals the swift compassion that meets fear before fear can arise."
+- "Mañjuśrī, Nagarjuna's tutelary deity — the upraised sword embodies the wisdom that severs every fixed view."
 - "Guru Dragpur, wrathful Padmasambhava — the surrounding flames burn through the delusion that obscures awareness."
-- "Mahakala — his fierce gaze cuts through the obstacles that hide the natural state."
+- "The wheel of life at the centre — its turning shows the samsaric round the teaching reveals as suffering."
 
-Samsaric or realm depictions (use names/shows/makes visible):
-- "The wheel of life at the center — its turning shows the samsaric round the teaching reveals as suffering."
-- "Mt. Meru and the Buddhist universe — the layered realms make visible the cosmology the teaching points beyond."
-- "The bardo figures wandering between worlds — they name the in-between state the teaching meets with awareness."
+Format: comma between Part 1 and Part 2; em dash before Part 3; 18–26 words total; never open with "Tibetan", "This", "The image" or "Buddhist art"; the sentence ends on the teaching distilled.
 
-Format rules:
-- Comma between Part 1 and Part 2 if Part 2 is included.
-- Em dash (—) before Part 3.
-- 18-26 words total.
-- Do not begin with "Tibetan", "This", "The image".
-- Do NOT mention what the person "wrote" or "described" or "feels" or any phrasing of their entry.
-- The end of the sentence is the teaching distilled.
-
-Now write one caption. No quotes. No preamble.
-
-BEFORE RETURNING, check your draft against these three failure patterns and rewrite if any apply:
-
-CHECK 1 — Does your sentence contain "echo", "echoes", "echoing", "reflects", "reflecting", "mirrors", or "mirroring"? If yes → REWRITE using a teaching-verb (shows, reveals, embodies, points to, names, opens, makes visible — or for wrathful figures: burns through, cuts through, consumes).
-
-CHECK 2 — Does the end of your sentence paraphrase or summarize what the person wrote? Common slips: "the disconnection from one's lived day", "the longing to find home", "the ache of not belonging", "the wandering mind", "the search that defeats itself". If yes → REWRITE. The end of your sentence must distill THE TEACHING in the source quote and verse, not paraphrase the entry.
-
-CHECK 3 — Does your sentence start with "Tibetan", "This", "The image", "Buddhist art"? If yes → REWRITE starting with the figure or visible subject.
-
-Only return the final sentence after passing all three checks. No quotes, no preamble.`;
+Return only the finished sentence. No quotes, no preamble.`;
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -1416,7 +1380,8 @@ Only return the final sentence after passing all three checks. No quotes, no pre
     body: JSON.stringify({
       model: 'claude-sonnet-5',
       max_tokens: 2000,
-      effort: 'medium',
+      thinking: { type: 'adaptive' },
+      output_config: { effort: 'low' },
       messages: [{ role: 'user', content: captionPrompt }]
     })
   });
