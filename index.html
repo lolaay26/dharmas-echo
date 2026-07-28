@@ -1302,7 +1302,7 @@ async function loadImage(d) {
 
   // Now make a second call to Claude to get a caption that fits THIS image
   try {
-    const caption = await generateImageCaption(d, result.cleanTitle);
+    const caption = await generateImageCaption(d, result.cleanTitle, result.url);
     if (caption) {
       document.getElementById('imgWhy').textContent = caption;
     }
@@ -1333,11 +1333,34 @@ function showDebug(lines, result) {
   */
 }
 
-async function generateImageCaption(d, actualImageTitle) {
+// Fetch the artwork so the caption model can actually see it. Without this the
+// model is asked for "a specific visible feature" while holding only a title,
+// so it invents plausible ones (a sword for Mañjuśrī, and so on).
+async function imageAsBase64(url) {
+  try {
+    const res = await fetch(url, { mode: 'cors' });
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    if (!/^image\/(jpeg|png|gif|webp)$/.test(blob.type)) return null;
+    if (blob.size > 4 * 1024 * 1024) return null;
+    const data = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(String(r.result).split(',')[1]);
+      r.onerror = reject;
+      r.readAsDataURL(blob);
+    });
+    return { media_type: blob.type, data: data };
+  } catch (e) {
+    console.warn('Caption vision unavailable, falling back to title only:', e);
+    return null;
+  }
+}
+
+async function generateImageCaption(d, actualImageTitle, imageUrl) {
   const captionPrompt = `Write one caption in three parts, in this order:
 
-PART 1 — Name the figure or subject actually visible in the image.
-PART 2 — A brief lineage clause, ONLY if the image subject differs from the figure (e.g. "Patrul Rinpoche's root teacher", "Nagarjuna's tutelary deity"). Skip it otherwise.
+PART 1 — Name the figure or subject actually visible in the image. The image you are shown and its title are the ONLY authority on what is depicted. Never name a figure who is not there.
+PART 2 — A brief lineage clause relating that subject to the figure below, ONLY if they are different people (e.g. "Patrul Rinpoche's root teacher", "Nagarjuna's tutelary deity"). Skip it otherwise, and skip it if you are not certain of the relationship.
 PART 3 — A specific visible feature, then a teaching-verb, then a 5–9 word distillation of THE TEACHING below.
 
 The teaching to distill:
@@ -1355,8 +1378,10 @@ VERBS
 
 Inputs:
 - The figure who addresses this entry: ${d.figure_name}
-- The image subject chosen: ${d.image_subject || d.figure_name}
-- The actual image title: "${actualImageTitle}"
+- The title of the image you are shown: "${actualImageTitle}"
+
+The search may have returned something other than what was requested, so describe
+only what the image and its title actually show.
 
 Examples:
 - "Padmasambhava with rainbow body — the dissolving form shows the mind that holds everything yet remains unstained."
@@ -1368,6 +1393,8 @@ Examples:
 Format: comma between Part 1 and Part 2; em dash before Part 3; 18–26 words total; never open with "Tibetan", "This", "The image" or "Buddhist art"; the sentence ends on the teaching distilled.
 
 Return only the finished sentence. No quotes, no preamble.`;
+
+  const visionBlock = imageUrl ? await imageAsBase64(imageUrl) : null;
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -1382,7 +1409,11 @@ Return only the finished sentence. No quotes, no preamble.`;
       max_tokens: 2000,
       thinking: { type: 'adaptive' },
       output_config: { effort: 'low' },
-      messages: [{ role: 'user', content: captionPrompt }]
+      messages: [{ role: 'user', content: visionBlock
+        ? [{ type: 'image', source: { type: 'base64',
+              media_type: visionBlock.media_type, data: visionBlock.data } },
+           { type: 'text', text: captionPrompt }]
+        : captionPrompt }]
     })
   });
 
@@ -1419,7 +1450,7 @@ async function searchWikimediaForFigure(figure, debugLines) {
     '&generator=search&gsrnamespace=6' +
     '&gsrsearch=' + encodeURIComponent(query) +
     '&gsrlimit=20' +
-    '&prop=imageinfo&iiprop=url|size|mediatype|dimensions&iiurlwidth=600';
+    '&prop=imageinfo&iiprop=url|size|mediatype|dimensions&iiurlwidth=1600';
 
   try {
     const res = await fetch(url);
@@ -1715,6 +1746,33 @@ async function preloadShareImage() {
   }
 }
 
+// html2canvas 1.4.1 does not honour object-fit: it draws the artwork stretched
+// to the element box, so the on-screen card is correct but the exported PNG is
+// distorted. Compute the contain-fit in pixels and set it explicitly before
+// capture — explicit dimensions are the one thing html2canvas respects.
+function fitShareImageForExport() {
+  const img = document.getElementById('scImg');
+  const block = document.getElementById('scImageBlock');
+  if (!img || !block || !img.naturalWidth || !img.naturalHeight) return;
+  const availW = block.clientWidth;
+  const availH = Math.round(img.getBoundingClientRect().height);
+  if (!availW || !availH) return;
+  const scale = Math.min(availW / img.naturalWidth, availH / img.naturalHeight);
+  img.style.width  = Math.round(img.naturalWidth  * scale) + 'px';
+  img.style.height = Math.round(img.naturalHeight * scale) + 'px';
+  img.style.objectFit = 'fill';        // the box now matches the ratio exactly
+  img.style.margin = '0 auto 14px';    // centre the letterboxed result
+  img.dataset.exportFit = '1';
+}
+
+function resetShareImageFit() {
+  const img = document.getElementById('scImg');
+  if (!img || !img.dataset.exportFit) return;
+  img.style.width = ''; img.style.height = '';
+  img.style.objectFit = ''; img.style.margin = '';
+  delete img.dataset.exportFit;
+}
+
 async function saveCard() {
   const toast = document.getElementById('toast');
   toast.textContent = 'Rendering...';
@@ -1724,10 +1782,12 @@ async function saveCard() {
     container.style.top = '0';
     container.style.left = '-10000px';
     await preloadShareImage();
+    fitShareImageForExport();
     const card = document.getElementById('shareCard');
     const canvas = await html2canvas(card, {
       backgroundColor: null, scale: 2, useCORS: true, allowTaint: false, logging: false
     });
+    resetShareImageFit();
     container.style.top = '-10000px';
     const link = document.createElement('a');
     link.download = 'dharmas-echo-' + Date.now() + '.png';
@@ -1751,10 +1811,12 @@ async function shareCard() {
     container.style.top = '0';
     container.style.left = '-10000px';
     await preloadShareImage();
+    fitShareImageForExport();
     const card = document.getElementById('shareCard');
     const canvas = await html2canvas(card, {
       backgroundColor: null, scale: 2, useCORS: true, allowTaint: false, logging: false
     });
+    resetShareImageFit();
     container.style.top = '-10000px';
 
     canvas.toBlob(async (blob) => {
