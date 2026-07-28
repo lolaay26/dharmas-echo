@@ -16,7 +16,7 @@
   --gold-dark: #a08030;
   --amber: #b06818;
   --text: #2a2010;
-  --text-mid: #4a3a18;
+  --text-mid: #4a3a18; 
   --text-label: #6a5820;
   --text-faint: #c8a855;
 }
@@ -491,23 +491,22 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
   flex-direction: column;
   overflow: hidden;
   font-family: 'EB Garamond', Georgia, serif;
-  color: #1a2540;
+  color: #1c2f63;
   /* Warm white core, sampled from the LIMN card: #fdfbf7.
      The centre stays clean paper — orange only creeps in from the
      outer edges and from the sun sitting above the top edge. */
   /* Pure white core for contrast — colour lives only on the rim.
      One band per edge (not an ellipse), each fading over roughly the same
      pixel depth, so the rim reads even the whole way round. */
+  /* Pure white core. Colour only on the rim: a warm sun over the top edge
+     where the light enters, sage holding the sides and bottom. */
   background-color: #ffffff;
   background-image:
-    /* the sun over the top rim */
-    linear-gradient(to bottom, rgba(250,206,56,0.34) 0%, rgba(248,198,44,0.12) 7%, rgba(246,192,32,0.00) 16%),
-    /* even gold rim */
-    linear-gradient(to bottom, rgba(242,186,26,0.20) 0%, rgba(242,186,26,0.00) 6%),
-    linear-gradient(to top,    rgba(242,186,26,0.18) 0%, rgba(242,186,26,0.00) 5%),
-    linear-gradient(to right,  rgba(242,186,26,0.20) 0%, rgba(242,186,26,0.00) 9%),
-    linear-gradient(to left,   rgba(242,186,26,0.20) 0%, rgba(242,186,26,0.00) 9%);
-  border: 1px solid rgba(234,180,34,0.45);
+    linear-gradient(to bottom, rgba(250,206,56,0.26) 0%, rgba(248,198,44,0.08) 5%, rgba(246,192,32,0.00) 11%),
+    linear-gradient(to top,    rgba(105,158,98,0.13) 0%, rgba(105,158,98,0.00) 3.5%),
+    linear-gradient(to right,  rgba(105,158,98,0.15) 0%, rgba(105,158,98,0.00) 6%),
+    linear-gradient(to left,   rgba(105,158,98,0.15) 0%, rgba(105,158,98,0.00) 6%);
+  border: 1px solid rgba(105,158,98,0.30);
 }
 
 /* ── Wordmark, top ── */
@@ -519,7 +518,7 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 }
 .sc-header-name {
   font-family: sans-serif; font-size: 36px; letter-spacing: 0.34em;
-  color: #7a3530; font-weight: 600; margin-bottom: 10px;
+  color: #9b2c3d; font-weight: 600; margin-bottom: 10px;
 }
 .sc-header-sub {
   font-family: sans-serif; font-size: 22px; letter-spacing: 0.14em;
@@ -533,7 +532,7 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 }
 .sc-label {
   font-family: sans-serif; font-size: 20px; letter-spacing: 0.2em;
-  text-transform: uppercase; color: #a2701a; font-weight: 700;
+  text-transform: uppercase; color: #9b2c3d; font-weight: 700;
   margin-bottom: 10px;
 }
 .sc-you-wrote-text {
@@ -549,25 +548,25 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 }
 .sc-script-sa {
   font-family: 'Noto Serif Devanagari', Georgia, serif;
-  font-size: 54px; color: #1a2540; line-height: 1.2;
+  font-size: 54px; color: #1c2f63; line-height: 1.2;
 }
 .sc-script-bo {
   font-family: 'Jomolhari', Georgia, serif;
-  font-size: 46px; color: #1a2540; line-height: 1.3;
+  font-size: 46px; color: #1c2f63; line-height: 1.3;
 }
 .sc-script-roman {
   font-family: 'EB Garamond', serif; font-size: 34px; font-style: italic;
-  color: #a2701a; letter-spacing: 0.02em; margin-top: 6px;
+  color: #9b2c3d; letter-spacing: 0.02em; margin-top: 6px;
 }
 /* The synthesis already names the term, so the separate definition
    stays out of this format — same call the story format made before. */
 .sc-term-body { display: none; }
-.sc-term-inline { color: #a2701a; }
+.sc-term-inline { color: #9b2c3d; }
 
 /* ── Figure + synthesis ── */
 .sc-figure-source { flex: none; padding: 0 0 4px; }
 .sc-figure-name {
-  font-size: 34px; color: #a2701a; font-weight: 500; margin-bottom: 6px;
+  font-size: 34px; color: #9b2c3d; font-weight: 500; margin-bottom: 6px;
 }
 .sc-figure-meta {
   font-family: sans-serif; font-size: 21px; letter-spacing: 0.04em;
@@ -581,12 +580,12 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 }
 .sc-verse-rule { flex: 1; height: 1px; background: rgba(176,136,44,0.45); }
 .sc-sunburst {
-  flex: none; width: 46px; height: 46px;
+  flex: none; width: 52px; height: 52px;
   filter: drop-shadow(0 0 3px rgba(240,184,28,0.9));
 }
 .sc-sunburst line { stroke: #e0a418; stroke-width: 1.3; }
 .sc-verse-text {
-  font-size: 34px; font-style: normal; color: #1a2540;
+  font-size: 34px; font-style: normal; color: #1c2f63;
   line-height: 1.42; margin-bottom: 14px;
 }
 .sc-verse-attr {
@@ -628,19 +627,31 @@ textarea::placeholder { color: var(--text-faint); font-style: italic; font-size:
 .sc-split { display: flex; gap: 40px; align-items: stretch; padding: 6px 0 18px; }
 .sc-split-col { flex: 1 1 0; min-width: 0; }
 .sc-split-col + .sc-split-col { padding-left: 40px; border-left: 1px solid rgba(160,110,60,0.32); }
-.sc-col-name { font-size: 34px; color: #7a3530; font-weight: 500; line-height: 1.25;
+.sc-col-name { font-size: 34px; color: #9b2c3d; font-weight: 500; line-height: 1.25;
   margin-bottom: 5px; min-height: 43px; }
 .sc-col-meta { font-family: sans-serif; font-size: 19px; letter-spacing: 0.03em;
   color: #8f4a42; font-weight: 600; line-height: 1.35; margin-bottom: 14px; min-height: 26px; }
-.sc-col-body { font-size: 34px; line-height: 1.42; color: #1a2540; }
+.sc-col-body { font-size: 34px; line-height: 1.42; color: #1c2f63; }
 .sc-col-body em { font-style: italic; color: #b5761f; }
 
 /* The key point — «guillemets» in the model's output become this. */
 .sc-key { color: #b5761f; }
 
+/* The verse rests on sage. The panel does the separating, so there is no
+   second divider under it — a small sun marks the step to the artwork. */
+.sc-verse-panel { background: #f2f6ef; border-radius: 14px; padding: 22px 44px 26px; }
+.sc-mini-sun { flex: none; text-align: center; margin: 20px 0 2px; }
+.sc-sunburst-sm { width: 30px; height: 30px; }
+
+.sc-script-tradition {
+  flex: none; text-align: center; font-family: sans-serif; font-size: 19px;
+  letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600;
+  color: #9b2c3d; opacity: 0.8; margin: -4px 0 22px;
+}
+
 /* Verse label */
 .sc-verse-label { font-family: sans-serif; font-size: 19px; letter-spacing: 0.20em;
-  text-transform: uppercase; color: #7a3530; font-weight: 700; margin-bottom: 16px; }
+  text-transform: uppercase; color: #9b2c3d; font-weight: 700; margin-bottom: 16px; }
 
 .toast {
   position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
@@ -954,7 +965,10 @@ async function submitEntry() {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-5',
-        max_tokens: 1400,
+        // Sonnet 5 thinks by default and thinking counts against max_tokens.
+        // At 1400 the JSON was being truncated, which surfaced as a parse error.
+        max_tokens: 8000,
+        effort: 'medium',
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: `Journal entry: "${entry}"` }]
       })
@@ -965,6 +979,9 @@ async function submitEntry() {
       const apiMsg = (data && data.error && data.error.message) ? data.error.message : ('HTTP ' + res.status);
       console.error('API response:', data);
       throw new Error('API: ' + apiMsg);
+    }
+    if (data.stop_reason === 'max_tokens') {
+      throw new Error('API: the response was cut off (max_tokens reached)');
     }
     const text = data.content.map(b => b.text || '').join('');
     const clean = text.replace(/```json|```/g, '').trim();
@@ -1398,7 +1415,8 @@ Only return the final sentence after passing all three checks. No quotes, no pre
     },
     body: JSON.stringify({
       model: 'claude-sonnet-5',
-      max_tokens: 150,
+      max_tokens: 2000,
+      effort: 'medium',
       messages: [{ role: 'user', content: captionPrompt }]
     })
   });
@@ -1638,7 +1656,12 @@ function populateShareCard(d) {
 
   // LEFT COLUMN — the term
   document.getElementById('scTermName').textContent = d.term_transliteration || '';
-  document.getElementById('scTermMeta').textContent = (d.term_tradition || '').trim();
+  // term_tradition names WHICH SCRIPTS are shown, so it sits under them.
+  const trad = (d.term_tradition || '').trim();
+  document.getElementById('scScriptTradition').textContent = trad;
+  // The left column carries only the term's own language, balancing the teacher's lineage.
+  document.getElementById('scTermMeta').textContent =
+    trad.split(/\s*[·\/]\s*|\s+and\s+/)[0] || '';
   document.getElementById('scTermBody').innerHTML =
     cgold(dropLead(d.term_card_line || d.term_translation_short || d.term_translation || '',
                    d.term_transliteration));
@@ -1863,6 +1886,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
       </div>
     </div>
+    <div class="sc-script-tradition" id="scScriptTradition"></div>
     <div class="sc-split">
       <div class="sc-split-col">
         <div class="sc-col-name" id="scTermName"></div>
@@ -1881,14 +1905,14 @@ document.addEventListener('DOMContentLoaded', function() {
         <svg class="sc-sunburst" viewBox="0 0 20 20"><g><line x1="10" y1="1" x2="10" y2="19"/><line x1="1" y1="10" x2="19" y2="10"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5"/><line x1="16.5" y1="3.5" x2="3.5" y2="16.5"/></g></svg>
         <span class="sc-verse-rule"></span>
       </div>
+      <div class="sc-verse-panel">
       <div class="sc-verse-label">A verse</div>
       <div class="sc-verse-text" id="scVerseText"></div>
       <div class="sc-verse-attr" id="scVerseAttr"></div>
-      <div class="sc-verse-divider" aria-hidden="true">
-        <span class="sc-verse-rule"></span>
-        <svg class="sc-sunburst" viewBox="0 0 20 20"><g><line x1="10" y1="1" x2="10" y2="19"/><line x1="1" y1="10" x2="19" y2="10"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5"/><line x1="16.5" y1="3.5" x2="3.5" y2="16.5"/></g></svg>
-        <span class="sc-verse-rule"></span>
       </div>
+    </div>
+    <div class="sc-mini-sun" aria-hidden="true">
+      <svg class="sc-sunburst sc-sunburst-sm" viewBox="0 0 20 20"><g><line x1="10" y1="1" x2="10" y2="19"/><line x1="1" y1="10" x2="19" y2="10"/><line x1="3.5" y1="3.5" x2="16.5" y2="16.5"/><line x1="16.5" y1="3.5" x2="3.5" y2="16.5"/></g></svg>
     </div>
     <div class="sc-image-block" id="scImageBlock">
       <img id="scImg" src="" alt="" crossorigin="anonymous">
